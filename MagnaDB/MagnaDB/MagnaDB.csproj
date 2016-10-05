@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="MagnaAttributes.cs" />
     <Compile Include="MagnaExceptions.cs" />
+    <Compile Include="MagnaModels.cs" />
     <Compile Include="MagnaUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryMethods.cs" />

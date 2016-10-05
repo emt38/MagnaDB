@@ -19,4 +19,20 @@ namespace MagnaDB
         {
         }
     }
+
+    public class InvalidModelException : Exception
+    {
+        public InvalidModelException(string message, Exception ex = null) : base(message, ex)
+        {
+
+        }
+    }
+
+    public class DbConnectionException : Exception
+    {
+        public DbConnectionException(string message, Exception ex = null) : base(message, ex)
+        {
+
+        }
+    }
 }
