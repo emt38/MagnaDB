@@ -12,4 +12,11 @@ namespace MagnaDB
         {
         }
     }
+
+    public class InvalidTableException : Exception
+    {
+        public InvalidTableException(string message, Exception ex = null) : base(message, ex)
+        {
+        }
+    }
 }
