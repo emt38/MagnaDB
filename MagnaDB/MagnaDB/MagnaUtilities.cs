@@ -2,13 +2,55 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MagnaDB
 {
+    public enum PresenceBehavior
+    {
+        IncludeOnly,
+        ExcludeAll
+    }
+
+    public sealed class MagnaKey
+    {
+        private IDictionary<string, object> key;
+
+        public MagnaKey(IDictionary<string, object> fieldsValues)
+        {
+            key = fieldsValues;
+        }
+    }
+
+    public class Carro
+    {
+        public int Marca { get; set; }
+        public string Modelo { get; set; }
+    }
+
     public static class Utils
     {
+        public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : DataModel<T>
+        {
+            Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
+            
+            foreach (Expression<Func<T, object>> item in properties)
+            {
+                MemberExpression me = item.Body as MemberExpression;
+                if (me == null)
+                {
+                    me = (item.Body as UnaryExpression).Operand as MemberExpression;
+                }
+                PropertyInfo prop = me.Member as PropertyInfo;
+                fieldsValues.Add(prop.Name, prop.GetValue(value));
+            }
+
+            return new MagnaKey(fieldsValues);
+        }
+
         public static bool IsNumberType(this object number)
         {
             if (number == null)
@@ -21,34 +63,33 @@ namespace MagnaDB
     }
 
     /// <summary>
-    /// Representa un Evento para Objetos DBInteractive
+    /// Representa un Evento para Objetos Magnanteractive
     /// </summary>
     /// <param name="sender">La instancia que dispara el evento</param>
     /// <param name="e">Información acerca del evento</param>
     ///
-    public delegate void DBIEventHandler(object sender, DBIEventArgs e);
+    public delegate void MagnaEventHandler(object sender, MagnaEventArgs e);
 
     /// <summary>
-    /// This class contains info about the DBI event context
+    /// This class contains info about the Magna event context
     /// </summary>
-    public class DBIEventArgs : EventArgs
+    public class MagnaEventArgs : EventArgs
     {
-        public DBIEventArgs(int nrows, string connectionString)
+        public MagnaEventArgs(int nrows, string connectionString)
         {
             RowsAffected = nrows;
             ConnectionString = connectionString;
         }
 
-        public DBIEventArgs(int nrows, SqlConnection connection)
+        public MagnaEventArgs(int nrows, SqlConnection connection)
         {
             RowsAffected = nrows;
             CurrentConnection = connection;
             ConnectionString = connection.ConnectionString;
         }
 
-        public DBIEventArgs(int nrows, SqlTransaction transaction)
+        public MagnaEventArgs(int nrows, SqlTransaction transaction)
         {
-            List<DataModel<>> models = new List<DataModel<T>>();
             RowsAffected = nrows;
             CurrentTransaction = transaction;
             CurrentConnection = transaction.Connection;

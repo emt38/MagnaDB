@@ -31,18 +31,18 @@ namespace MagnaDB
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class IdentityAttribute : DMLIgnoreAttribute
+    public sealed class IdentityAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class ColumnNameAttribute : DMLIgnoreAttribute
+    public sealed class ColumnNameAttribute : Attribute
     {
-        public readonly string columnName;
+        public string Name { get; private set; }
         public ColumnNameAttribute(string column)
         {
-            columnName = column;
+            Name = column;
         }
     }
 
