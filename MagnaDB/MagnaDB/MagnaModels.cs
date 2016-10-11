@@ -12,12 +12,7 @@ using static MagnaDB.SqlGenerator;
 
 namespace MagnaDB
 {
-    public interface DataModel<out T>
-    {
-
-    }
-
-    public abstract class TableModel<T> : DataModel<T> where T : TableModel<T>, new()
+    public abstract class ViewModel<T> where T : ViewModel<T>, new()
     {
         protected abstract string TableName { get; }
         protected abstract string ConnectionString { get; }
@@ -38,7 +33,7 @@ namespace MagnaDB
                     values[i] = (values[i] as string).Replace("'", "''");
             }
 
-            string query = GenSelect(reference.TableName) + string.Format(extraConditions, values);
+            string query = GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))) + string.Format(extraConditions, values);
             DataTable temp = TableMake(query, reference.ConnectionString, reference.TableName);
 
             return new List<T>();
@@ -83,10 +78,59 @@ namespace MagnaDB
             return resultProperties;
         }
 
-        protected static IEnumerable<T> TableToEnumerable()
+        protected static IEnumerable<T> Transform(DataTable table, IEnumerable<PropertyInfo> properties)
+        {
+            T itera;
+            Type possibleEnum;
+            List<T> result = new List<T>();
+            ColumnNameAttribute columnName;
+
+            foreach (DataRow row in table.Rows)
+            {
+                itera = new T();
+
+                foreach (PropertyInfo p in properties)
+                {
+                    columnName = p.GetCustomAttribute<ColumnNameAttribute>();
+                    object value = columnName == null ? row[p.Name] : row[columnName.Name];
+
+                    if (value is DBNull)
+                        value = null;
+
+                    if (p.PropertyType == typeof(Nullable<>))
+                    {
+                        possibleEnum = Nullable.GetUnderlyingType(p.PropertyType);
+
+                        if (possibleEnum.IsEnum)
+                        {
+                            if (value != null)
+                            {
+                                p.SetValue(itera, Enum.Parse(possibleEnum, value.ToString()));
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (p.PropertyType.IsEnum && value != null)
+                    {
+                        p.SetValue(itera, Enum.Parse(p.PropertyType, value.ToString()));
+                        continue;
+                    }
+
+                    p.SetValue(itera, value);
+                }
+
+                result.Add(itera);
+            }
+
+            return null;
+        }
+
+        protected static DataTable Transform(IEnumerable<T> entities, IEnumerable<PropertyInfo> properties)
         {
             return null;
         }
+
         protected IEnumerable<string> GetFields(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             Type type = GetType();
@@ -133,7 +177,7 @@ namespace MagnaDB
         }
     }
 
-    public class Nuevo : TableModel<Nuevo>
+    public class Nuevo : ViewModel<Nuevo>
     {
         protected override MagnaKey Key
         {

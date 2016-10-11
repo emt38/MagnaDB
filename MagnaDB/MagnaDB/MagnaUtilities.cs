@@ -33,7 +33,7 @@ namespace MagnaDB
 
     public static class Utils
     {
-        public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : DataModel<T>
+        public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
             

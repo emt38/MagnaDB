@@ -188,6 +188,10 @@ namespace MagnaDB
                 {
                     temp.AppendFormat("{0},", item.ToString());
                 }
+                else if (item is Enum)
+                {
+                    temp.AppendFormat("{0},", Convert.ToInt64(item));
+                }
                 else
                 {
                     temp.AppendFormat("'{0}',", item.ToString().Replace("'", "''"));
@@ -219,6 +223,10 @@ namespace MagnaDB
                 {
                     temp.AppendFormat("{0},", item.ToString());
                 }
+                else if (item is Enum)
+                {
+                    temp.AppendFormat("{0},", Convert.ToInt64(item));
+                }
                 else
                 {
                     temp.AppendFormat("'{0}',", item.ToString().Replace("'", "''"));
@@ -249,6 +257,10 @@ namespace MagnaDB
                 else if (item.Value.IsNumberType())
                 {
                     temp.AppendFormat("{0}={1},", item.Key, item.Value.ToString());
+                }
+                else if (item.Value is Enum)
+                {
+                    temp.AppendFormat("{0}={1},", item.Key, Convert.ToInt64(item.Value));
                 }
                 else
                 {
@@ -284,6 +296,10 @@ namespace MagnaDB
                 {
                     temp.AppendFormat("{0}={1},", fields.ElementAt(x), values.ElementAt(x).ToString());
                 }
+                else if (values.ElementAt(x) is Enum)
+                {
+                    temp.AppendFormat("{0}={1},", fields.ElementAt(x), Convert.ToInt64(values.ElementAt(x)));
+                }
                 else
                 {
                     temp.AppendFormat("{0}='{1}',", fields.ElementAt(x), values.ElementAt(x).ToString().Replace("'", "''"));
@@ -315,6 +331,10 @@ namespace MagnaDB
                 else if(item.Value.IsNumberType())
                 {
                     temp.AppendFormat("{0}={1} AND ", item.Key, item.Value.ToString());
+                }
+                else if (item.Value is Enum)
+                {
+                    temp.AppendFormat("{0}={1} AND ", item.Key, Convert.ToInt64(item.Value));
                 }
                 else
                 {
@@ -349,6 +369,10 @@ namespace MagnaDB
                 else if (values.ElementAt(x).IsNumberType())
                 {
                     temp.AppendFormat("{0}={1} AND ", fields.ElementAt(x), values.ElementAt(x).ToString());
+                }
+                else if (values.ElementAt(x) is Enum)
+                {
+                    temp.AppendFormat("{0}={1} AND ", fields.ElementAt(x), Convert.ToInt64(values.ElementAt(x)));
                 }
                 else
                 {
