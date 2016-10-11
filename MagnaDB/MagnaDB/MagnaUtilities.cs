@@ -17,11 +17,11 @@ namespace MagnaDB
 
     public sealed class MagnaKey
     {
-        private IDictionary<string, object> key;
+        public IDictionary<string, object> KeyDictionary { get; private set; }
 
         public MagnaKey(IDictionary<string, object> fieldsValues)
         {
-            key = fieldsValues;
+            KeyDictionary = fieldsValues;
         }
     }
 
@@ -36,7 +36,8 @@ namespace MagnaDB
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
-            
+            object iteraEvaluation;
+
             foreach (Expression<Func<T, object>> item in properties)
             {
                 MemberExpression me = item.Body as MemberExpression;
@@ -45,7 +46,12 @@ namespace MagnaDB
                     me = (item.Body as UnaryExpression).Operand as MemberExpression;
                 }
                 PropertyInfo prop = me.Member as PropertyInfo;
-                fieldsValues.Add(prop.Name, prop.GetValue(value));
+                iteraEvaluation = prop.GetValue(value);
+
+                if (iteraEvaluation == null)
+                    throw new InvalidKeyException("Columns/Properties belonging to a Primary Key must not be null");
+
+                fieldsValues.Add(prop.Name, iteraEvaluation);
             }
 
             return new MagnaKey(fieldsValues);

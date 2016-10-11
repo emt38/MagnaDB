@@ -37,6 +37,12 @@ namespace MagnaDB
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class DataDisplayableAttribute : Attribute
+    {
+        // Presence-Only Attribute
+    }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class ColumnNameAttribute : Attribute
     {
         public string Name { get; private set; }

@@ -18,12 +18,34 @@ namespace MagnaDB
         protected abstract string ConnectionString { get; }
         protected abstract MagnaKey Key { get; }
 
-        public static IEnumerable<T> ToIEnumerable()
+        public MagnaKey GetKey()
         {
-            return ToIEnumerable(string.Empty);
+            return Key;
         }
 
-        public static IEnumerable<T> ToIEnumerable(string extraConditions, params object[] values)
+        public static DataTable ToDataTable(bool displayableOnly = true, string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+            
+            StringBuilder query = new StringBuilder();
+
+            if (displayableOnly)
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            else
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
+
+            DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName);
+
+            return table;
+        }
+
+        public static DataTable ToDataTable(SqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
 
@@ -33,10 +55,344 @@ namespace MagnaDB
                     values[i] = (values[i] as string).Replace("'", "''");
             }
 
-            string query = GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))) + string.Format(extraConditions, values);
-            DataTable temp = TableMake(query, reference.ConnectionString, reference.TableName);
+            StringBuilder query = new StringBuilder();
 
-            return new List<T>();
+            if (displayableOnly)
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            else
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
+
+            DataTable table = TableMake(query.ToString(), connection, reference.TableName);
+
+            return table;
+        }
+
+        public static async Task<DataTable> ToDataTableAsync(bool displayableOnly = true, string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+
+            if (displayableOnly)
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            else
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
+
+            DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName);
+
+            return table;
+        }
+
+        public static async Task<DataTable> ToDataTableAsync(SqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+
+            if (displayableOnly)
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            else
+                query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
+
+            DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName);
+
+            return table;
+        }
+
+        public static IEnumerable<T> ToIEnumerable(string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+
+            IEnumerable<T> result;
+            
+            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<T> ToIEnumerable(SqlConnection connection, string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+
+            IEnumerable<T> result;
+
+            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            {
+                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+            }
+
+            return result;
+        }
+
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+
+            IEnumerable<T> result;
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+            }
+
+            return result;
+        }
+
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlConnection connection, string extraConditions = "", params object[] values)
+        {
+            T reference = new T();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] is string)
+                    values[i] = (values[i] as string).Replace("'", "''");
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+
+            IEnumerable<T> result;
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            {
+                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+            }
+
+            return result;
+        }
+
+        public static T Get(IDictionary<string, object> key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+
+            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static T Get(SqlConnection connection, IDictionary<string, object> key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+
+            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+            
+            return reference;
+        }
+
+        public static T Get(T model)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+
+            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static T Get(SqlConnection connection, T model)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+
+            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static T Get(MagnaKey key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+
+            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static T Get(SqlConnection connection, MagnaKey key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+
+            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(IDictionary<string, object> key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(SqlConnection connection, IDictionary<string, object> key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(T model)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(SqlConnection connection, T model)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(MagnaKey key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
+        }
+
+        public static async Task<T> GetAsync(SqlConnection connection, MagnaKey key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            {
+                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+            }
+
+            return reference;
         }
 
         protected IEnumerable<PropertyInfo> FilterProperties(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
@@ -126,11 +482,6 @@ namespace MagnaDB
             return null;
         }
 
-        protected static DataTable Transform(IEnumerable<T> entities, IEnumerable<PropertyInfo> properties)
-        {
-            return null;
-        }
-
         protected IEnumerable<string> GetFields(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             Type type = GetType();
@@ -183,12 +534,9 @@ namespace MagnaDB
         {
             get
             {
-                
                 return this.MakeKey(c => c.Id, c => c.Nombre, c => c.Fecha);
             }
         }
-
-        
 
         public int Id { get; set; }
         public int Nombre { get; set; }

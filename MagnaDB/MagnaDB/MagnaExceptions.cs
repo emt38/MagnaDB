@@ -20,6 +20,13 @@ namespace MagnaDB
         }
     }
 
+    public class InvalidKeyException : Exception
+    {
+        public InvalidKeyException(string message, Exception ex = null) : base(message, ex)
+        {
+        }
+    }
+
     public class InvalidModelException : Exception
     {
         public InvalidModelException(string message, Exception ex = null) : base(message, ex)
