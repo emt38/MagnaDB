@@ -171,7 +171,7 @@ namespace MagnaDB
         {
             if (fields.Count() <= 0)
                 return string.Empty;
-
+            
             StringBuilder temp = new StringBuilder();
 
             foreach (object item in fields)

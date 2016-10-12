@@ -139,8 +139,12 @@ namespace MagnaDB
 
         public static IEnumerable<T> ToIEnumerable(string extraConditions = "", params object[] values)
         {
-            T reference = new T();
+            T temp = new T();
+            return temp.ToIEnumerableInner(extraConditions, values);
+        }
 
+        protected IEnumerable<T> ToIEnumerableInner(string extraConditions = "", params object[] values)
+        {
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i] is string)
@@ -148,27 +152,30 @@ namespace MagnaDB
             }
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
 
             IEnumerable<T> result;
             
-            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
-                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
             if (result.Count() > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), reference.ConnectionString));
+                SelectSucceeded(null, new MagnaEventArgs(result.Count(), ConnectionString));
             else
-                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
+                SelectFailed(null, new MagnaEventArgs(0, ConnectionString));
 
             return result;
         }
-
         public static IEnumerable<T> ToIEnumerable(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
+            return reference.ToIEnumerableInner(connection, extraConditions, values);
+        }
 
+        protected IEnumerable<T> ToIEnumerableInner(SqlConnection connection, string extraConditions = "", params object[] values)
+        {
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i] is string)
@@ -176,19 +183,19 @@ namespace MagnaDB
             }
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
 
             IEnumerable<T> result;
 
-            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
-                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
             if (result.Count() > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+                SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
             else
-                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
+                SelectFailed(null, new MagnaEventArgs(0, connection));
 
             return result;
         }
@@ -196,7 +203,11 @@ namespace MagnaDB
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(string extraConditions = "", params object[] values)
         {
             T reference = new T();
+            return await reference.ToIEnumerableAsyncInner(extraConditions, values);
+        }
 
+        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(string extraConditions = "", params object[] values)
+        {
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i] is string)
@@ -204,26 +215,30 @@ namespace MagnaDB
             }
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
 
             IEnumerable<T> result;
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
-                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
             if (result.Count() > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), reference.ConnectionString));
+                SelectSucceeded(null, new MagnaEventArgs(result.Count(), ConnectionString));
             else
-                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
+                SelectFailed(null, new MagnaEventArgs(0, ConnectionString));
 
             return result;
         }
-
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
+            return await reference.ToIEnumerableAsyncInner(connection, extraConditions);
+        }
+
+        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SqlConnection connection, string extraConditions = "", params object[] values)
+        {
 
             for (int i = 0; i < values.Length; i++)
             {
@@ -232,24 +247,30 @@ namespace MagnaDB
             }
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
 
             IEnumerable<T> result;
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
-                result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
             if (result.Count() > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+                SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
             else
-                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
+                SelectFailed(null, new MagnaEventArgs(0, connection));
 
             return result;
         }
 
         public static T Get(IDictionary<string, object> key)
+        {
+            T reference = new T();
+            return reference.GetInner(key);
+        }
+
+        protected T GetInner(IDictionary<string, object> key)
         {
             T reference = new T();
 
@@ -258,13 +279,13 @@ namespace MagnaDB
 
             using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(key, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -273,40 +294,51 @@ namespace MagnaDB
         public static T Get(SqlConnection connection, IDictionary<string, object> key)
         {
             T reference = new T();
-
-            StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
-
-            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
-            {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
-
-                if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
-                else
-                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
-            }
-            
-            return reference;
+            return reference.GetInner(connection, key);
         }
 
-        public static T Get(T model)
+        protected T GetInner(SqlConnection connection, IDictionary<string, object> key)
         {
             T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
 
-            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
                 else
-                    reference.GetFailed(model, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(key, new MagnaEventArgs(0, connection));
+            }
+            
+            return reference;
+        }
+        public static T Get(T model)
+        {
+            T reference = new T();
+            return reference.GetInner(model);
+        }
+
+        protected T GetInner(T model)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+
+            using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
+            {
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+
+                if (reference != null)
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
+                else
+                    GetFailed(model, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -315,19 +347,25 @@ namespace MagnaDB
         public static T Get(SqlConnection connection, T model)
         {
             T reference = new T();
+            return reference.GetInner(connection, model);
+        }
+
+        protected T GetInner(SqlConnection connection, T model)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
 
-            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
                 else
-                    reference.GetFailed(model, new MagnaEventArgs(0, connection));
+                    GetFailed(model, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -336,19 +374,25 @@ namespace MagnaDB
         public static T Get(MagnaKey key)
         {
             T reference = new T();
+            return reference.GetInner(key);
+        }
+
+        protected T GetInner(MagnaKey key)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
 
-            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(key, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -357,19 +401,25 @@ namespace MagnaDB
         public static T Get(SqlConnection connection, MagnaKey key)
         {
             T reference = new T();
+            return reference.GetInner(connection, key);
+        }
+
+        protected T GetInner(SqlConnection connection, MagnaKey key)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
 
-            using (DataTable table = TableMake(query.ToString(), connection, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(key, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -378,19 +428,25 @@ namespace MagnaDB
         public static async Task<T> GetAsync(IDictionary<string, object> key)
         {
             T reference = new T();
+            return await reference.GetAsyncInner(key);
+        }
+
+        protected async Task<T> GetAsyncInner(IDictionary<string, object> key)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(key, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -399,19 +455,25 @@ namespace MagnaDB
         public static async Task<T> GetAsync(SqlConnection connection, IDictionary<string, object> key)
         {
             T reference = new T();
+            return await reference.GetAsyncInner(connection, key);
+        }
+
+        protected async Task<T> GetAsyncInner(SqlConnection connection, IDictionary<string, object> key)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
+                    GetFailed(key, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -420,19 +482,25 @@ namespace MagnaDB
         public static async Task<T> GetAsync(T model)
         {
             T reference = new T();
+            return await reference.GetAsyncInner(model);
+        }
+
+        protected async Task<T> GetAsyncInner(T model)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
                 else
-                    reference.GetFailed(model, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(model, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -441,40 +509,51 @@ namespace MagnaDB
         public static async Task<T> GetAsync(SqlConnection connection, T model)
         {
             T reference = new T();
-
-            StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
-
-            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
-            {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
-
-                if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
-                else
-                    reference.GetFailed(model, new MagnaEventArgs(0, connection));
-            }
-
-            return reference;
+            return await reference.GetAsyncInner(connection, model);
         }
 
-        public static async Task<T> GetAsync(MagnaKey key)
+        protected async Task<T> GetAsyncInner(SqlConnection connection, T model)
         {
             T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(model.Key.KeyDictionary));
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
+                    GetFailed(model, new MagnaEventArgs(0, connection));
+            }
+
+            return reference;
+        }
+        public static async Task<T> GetAsync(MagnaKey key)
+        {
+            T reference = new T();
+            return await reference.GetAsyncInner(key);
+        }
+
+        protected async Task<T> GetAsyncInner(MagnaKey key)
+        {
+            T reference = new T();
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+
+            using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
+            {
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                reference = result.First();
+
+                if (reference != null)
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
+                else
+                    GetFailed(key, new MagnaEventArgs(0, ConnectionString));
             }
 
             return reference;
@@ -483,19 +562,25 @@ namespace MagnaDB
         public static async Task<T> GetAsync(SqlConnection connection, MagnaKey key)
         {
             T reference = new T();
+            return await reference.GetAsyncInner(connection, key);
+        }
+
+        protected async Task<T> GetAsyncInner(SqlConnection connection, MagnaKey key)
+        {
+            T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key.KeyDictionary));
 
-            using (DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName))
+            using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
-                IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
+                IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
 
                 if (reference != null)
-                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                    GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
                 else
-                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
+                    GetFailed(key, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -631,6 +716,56 @@ namespace MagnaDB
             }
 
             return dictionary;
+        }
+    }
+
+    public abstract class TableModel<T> : ViewModel<T> where T : TableModel<T>, new()
+    {
+        public event MagnaEventHandler InsertSucceeded;
+        public event MagnaEventHandler InsertFailed;
+        public event MagnaEventHandler BeforeInsert;
+        public event MagnaEventHandler UpdateSucceeded;
+        public event MagnaEventHandler UpdateFailed;
+        public event MagnaEventHandler BeforeUpdate;
+        public event MagnaEventHandler DeleteSucceeded;
+        public event MagnaEventHandler DeleteFailed;
+        public event MagnaEventHandler BeforeDelete;
+
+        public bool Insert()
+        {
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
+            
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
+            {
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = DoScalar(query.ToString(), ConnectionString);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
+            }
+            else
+            {
+                querySuccessful = DoQuery(query.ToString(), ConnectionString);
+            }
+
+            if(querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, ConnectionString));
+                return false;
+            }
         }
     }
 
