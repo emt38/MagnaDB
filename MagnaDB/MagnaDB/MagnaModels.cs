@@ -14,6 +14,12 @@ namespace MagnaDB
 {
     public abstract class ViewModel<T> where T : ViewModel<T>, new()
     {
+        public event MagnaEventHandler GetFailed;
+        public event MagnaEventHandler GetSucceeded;
+
+        public event MagnaEventHandler SelectFailed;
+        public event MagnaEventHandler SelectSucceeded;
+
         protected abstract string TableName { get; }
         protected abstract string ConnectionString { get; }
         protected abstract MagnaKey Key { get; }
@@ -26,7 +32,7 @@ namespace MagnaDB
         public static DataTable ToDataTable(bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
-
+            
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i] is string)
@@ -41,6 +47,11 @@ namespace MagnaDB
                 query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
 
             DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName);
+
+            if (table.Rows.Count > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
 
             return table;
         }
@@ -64,6 +75,11 @@ namespace MagnaDB
 
             DataTable table = TableMake(query.ToString(), connection, reference.TableName);
 
+            if (table.Rows.Count > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, connection));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
+
             return table;
         }
 
@@ -86,6 +102,11 @@ namespace MagnaDB
 
             DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName);
 
+            if (table.Rows.Count > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
+
             return table;
         }
 
@@ -107,6 +128,11 @@ namespace MagnaDB
                 query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.IncludeOnly, typeof(DataDisplayableAttribute))), string.Format(extraConditions, values));
 
             DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName);
+
+            if (table.Rows.Count > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, connection));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
 
             return table;
         }
@@ -131,6 +157,11 @@ namespace MagnaDB
                 result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
+            if (result.Count() > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), reference.ConnectionString));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
+
             return result;
         }
 
@@ -153,6 +184,11 @@ namespace MagnaDB
             {
                 result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
+
+            if (result.Count() > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
 
             return result;
         }
@@ -177,6 +213,11 @@ namespace MagnaDB
                 result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
+            if (result.Count() > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), reference.ConnectionString));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
+
             return result;
         }
 
@@ -200,6 +241,11 @@ namespace MagnaDB
                 result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
             }
 
+            if (result.Count() > 0)
+                reference.SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+            else
+                reference.SelectFailed(null, new MagnaEventArgs(0, connection));
+
             return result;
         }
 
@@ -214,6 +260,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -230,6 +281,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
             }
             
             return reference;
@@ -246,6 +302,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(model, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -262,6 +323,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                else
+                    reference.GetFailed(model, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -278,6 +344,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -294,6 +365,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -310,6 +386,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -326,6 +407,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -342,6 +428,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(model, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -358,6 +449,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                else
+                    reference.GetFailed(model, new MagnaEventArgs(0, connection));
             }
 
             return reference;
@@ -374,6 +470,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, reference.ConnectionString));
             }
 
             return reference;
@@ -390,6 +491,11 @@ namespace MagnaDB
             {
                 IEnumerable<T> result = Transform(table, reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
                 reference = result.First();
+
+                if (reference != null)
+                    reference.GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
+                else
+                    reference.GetFailed(key, new MagnaEventArgs(0, connection));
             }
 
             return reference;
