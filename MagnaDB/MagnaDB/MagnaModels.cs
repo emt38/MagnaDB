@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -767,37 +766,576 @@ namespace MagnaDB
                 return false;
             }
         }
-    }
 
-    public class Nuevo : ViewModel<Nuevo>
-    {
-        protected override MagnaKey Key
+        public bool Insert(SqlConnection connection)
         {
-            get
+            BeforeInsert(this, new MagnaEventArgs(0, connection));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
             {
-                return this.MakeKey(c => c.Id, c => c.Nombre, c => c.Fecha);
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = DoScalar(query.ToString(), connection);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
+            }
+            else
+            {
+                querySuccessful = DoQuery(query.ToString(), connection);
+            }
+
+            if (querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, connection));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, connection));
+                return false;
             }
         }
 
-        public int Id { get; set; }
-        public int Nombre { get; set; }
-        public DateTime Fecha { get; set; }
-
-        protected override string TableName
+        public bool Insert(SqlTransaction transaction)
         {
-            get
+            BeforeInsert(this, new MagnaEventArgs(0, transaction));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
             {
-                throw new NotImplementedException();
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = DoScalar(query.ToString(), transaction);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
+            }
+            else
+            {
+                querySuccessful = DoQuery(query.ToString(), transaction);
             }
 
+            if (querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, transaction));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, transaction));
+                return false;
+            }
         }
 
-        protected override string ConnectionString
+        public async Task<bool> InsertAsync()
         {
-            get
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
             {
-                throw new NotImplementedException();
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = await DoScalarAsync(query.ToString(), ConnectionString);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
             }
+            else
+            {
+                querySuccessful = await DoQueryAsync(query.ToString(), ConnectionString);
+            }
+
+            if (querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, ConnectionString));
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertAsync(SqlConnection connection)
+        {
+            BeforeInsert(this, new MagnaEventArgs(0, connection));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
+            {
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = await DoScalarAsync(query.ToString(), connection);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
+            }
+            else
+            {
+                querySuccessful = await DoQueryAsync(query.ToString(), connection);
+            }
+
+            if (querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, connection));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, connection));
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertAsync(SqlTransaction transaction)
+        {
+            BeforeInsert(this, new MagnaEventArgs(0, transaction));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
+            bool querySuccessful = false;
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+
+            if (identityProperty != null)
+            {
+                query.Append(" SELECT SCOPE_IDENTITY()");
+                object result = await DoScalarAsync(query.ToString(), transaction);
+                if (result != null)
+                {
+                    querySuccessful = true;
+                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                }
+            }
+            else
+            {
+                querySuccessful = await DoQueryAsync(query.ToString(), transaction);
+            }
+
+            if (querySuccessful)
+            {
+                InsertSucceeded(this, new MagnaEventArgs(1, transaction));
+                return true;
+            }
+            else
+            {
+                InsertFailed(this, new MagnaEventArgs(0, transaction));
+                return false;
+            }
+        }
+
+        public bool Update()
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = DoQuery(query.ToString(), ConnectionString);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, ConnectionString));
+
+            return result;
+        }
+
+        public bool Update(SqlConnection connection)
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, connection));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = DoQuery(query.ToString(), connection);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, connection));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, connection));
+
+            return result;
+        }
+
+        public bool Update(SqlTransaction transaction)
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, transaction));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = DoQuery(query.ToString(), transaction);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, transaction));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, transaction));
+
+            return result;
+        }
+
+        public async Task<bool> UpdateAsync()
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = await DoQueryAsync(query.ToString(), ConnectionString);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, ConnectionString));
+
+            return result;
+        }
+
+        public async Task<bool> UpdateAsync(SqlConnection connection)
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, connection));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = await DoQueryAsync(query.ToString(), connection);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, connection));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, connection));
+
+            return result;
+        }
+
+        public async Task<bool> UpdateAsync(SqlTransaction transaction)
+        {
+            BeforeUpdate(this, new MagnaEventArgs(0, transaction));
+
+            IDictionary<string, object> updateDictionary = ToDictionary(PresenceBehavior.ExcludeAll, typeof(UpdateIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute));
+            foreach (KeyValuePair<string, object> item in Key.KeyDictionary)
+            {
+                if (updateDictionary.ContainsKey(item.Key))
+                    updateDictionary.Remove(item.Key);
+            }
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat("{0} {1}", GenUpdate(TableName, updateDictionary, 1), GenWhere(Key.KeyDictionary));
+
+            bool result = await DoQueryAsync(query.ToString(), transaction);
+
+            if (result)
+                UpdateSucceeded(this, new MagnaEventArgs(1, transaction));
+            else
+                UpdateFailed(this, new MagnaEventArgs(0, transaction));
+
+            return result;
+        }
+
+        public bool Delete()
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = DoQuery(query.ToString(), ConnectionString);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, ConnectionString));
+
+            return result;
+        }
+
+        public bool Delete(SqlConnection connection)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = DoQuery(query.ToString(), connection);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, connection));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, connection));
+
+            return result;
+        }
+
+        public bool Delete(SqlTransaction transaction)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = DoQuery(query.ToString(), transaction);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, transaction));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, transaction));
+
+            return result;
+        }
+
+        public async Task<bool> DeleteAsync()
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = await DoQueryAsync(query.ToString(), ConnectionString);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, ConnectionString));
+
+            return result;
+        }
+
+        public async Task<bool> DeleteAsync(SqlConnection connection)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = await DoQueryAsync(query.ToString(), connection);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, connection));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, connection));
+
+            return result;
+        }
+
+        public async Task<bool> DeleteAsync(SqlTransaction transaction)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
+
+            bool result = await DoQueryAsync(query.ToString(), transaction);
+
+            if (result)
+                DeleteSucceeded(this, new MagnaEventArgs(1, transaction));
+            else
+                DeleteFailed(this, new MagnaEventArgs(0, transaction));
+
+            return result;
+        }
+
+        public bool IsDuplicated()
+        {
+            Type type = GetType();
+            IEnumerable<DuplicationColumnAttribute> itera;
+            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (PropertyInfo item in type.GetProperties())
+            {
+                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
+                foreach (DuplicationColumnAttribute dca in itera)
+                {
+                    if (!llaves.ContainsKey(dca.duplicationIndex))
+                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
+
+                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
+                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
+                    else
+                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
+                }
+            }
+
+            if (llaves.Count <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE ", TableName);
+
+            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            {
+                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+            }
+            temp.Remove(temp.Length - 3, 3);
+
+            int count = Convert.ToInt32(DoScalar(temp.ToString(), ConnectionString));
+
+            return count > 0;
+        }
+
+        public bool IsDuplicated(SqlConnection connection)
+        {
+            Type type = GetType();
+            IEnumerable<DuplicationColumnAttribute> itera;
+            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (PropertyInfo item in type.GetProperties())
+            {
+                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
+                foreach (DuplicationColumnAttribute dca in itera)
+                {
+                    if (!llaves.ContainsKey(dca.duplicationIndex))
+                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
+
+                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
+                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
+                    else
+                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
+                }
+            }
+
+            if (llaves.Count <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE ", TableName);
+
+            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            {
+                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+            }
+            temp.Remove(temp.Length - 3, 3);
+
+            int count = Convert.ToInt32(DoScalar(temp.ToString(), connection));
+
+            return count > 0;
+        }
+
+        public async Task<bool> IsDuplicatedAsync()
+        {
+            Type type = GetType();
+            IEnumerable<DuplicationColumnAttribute> itera;
+            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (PropertyInfo item in type.GetProperties())
+            {
+                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
+                foreach (DuplicationColumnAttribute dca in itera)
+                {
+                    if (!llaves.ContainsKey(dca.duplicationIndex))
+                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
+
+                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
+                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
+                    else
+                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
+                }
+            }
+
+            if (llaves.Count <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE ", TableName);
+
+            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            {
+                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+            }
+            temp.Remove(temp.Length - 3, 3);
+
+            int count = Convert.ToInt32(await DoScalarAsync(temp.ToString(), ConnectionString));
+
+            return count > 0;
+        }
+
+        public async Task<bool> IsDuplicatedAsync(SqlConnection connection)
+        {
+            Type type = GetType();
+            IEnumerable<DuplicationColumnAttribute> itera;
+            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (PropertyInfo item in type.GetProperties())
+            {
+                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
+                foreach (DuplicationColumnAttribute dca in itera)
+                {
+                    if (!llaves.ContainsKey(dca.duplicationIndex))
+                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
+
+                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
+                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
+                    else
+                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
+                }
+            }
+
+            if (llaves.Count <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE ", TableName);
+
+            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            {
+                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+            }
+            temp.Remove(temp.Length - 3, 3);
+
+            int count = Convert.ToInt32(await DoScalarAsync(temp.ToString(), connection));
+
+            return count > 0;
         }
     }
 }
