@@ -57,7 +57,7 @@ namespace MagnaDB
     {
         public int duplicationIndex { get; private set; }
 
-        public DuplicationColumnAttribute(int index)
+        public DuplicationColumnAttribute(int index = 0)
         {
             duplicationIndex = index;
         }

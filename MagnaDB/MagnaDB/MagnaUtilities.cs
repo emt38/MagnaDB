@@ -25,12 +25,6 @@ namespace MagnaDB
         }
     }
 
-    public class Carro
-    {
-        public int Marca { get; set; }
-        public string Modelo { get; set; }
-    }
-
     public static class Utils
     {
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
