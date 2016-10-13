@@ -347,9 +347,9 @@ namespace MagnaDB
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        connection.Close();
                         DataTable temp = new DataTable(tableName);
                         temp.Load(reader);
+                        connection.Close();
                         return temp;
                     }
                 }

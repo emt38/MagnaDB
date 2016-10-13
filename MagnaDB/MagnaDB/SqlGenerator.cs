@@ -316,7 +316,7 @@ namespace MagnaDB
             if (fieldsValues.Count <= 0)
                 return string.Empty;
 
-            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE" : string.Empty);
+            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE " : string.Empty);
 
             foreach (KeyValuePair<string, object> item in fieldsValues)
             {
@@ -354,7 +354,7 @@ namespace MagnaDB
             else if (fields.Count() <= 0)
                 return string.Empty;
 
-            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE" : string.Empty);
+            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE " : string.Empty);
 
             for(int x = 0; x < fields.Count(); x++)
             {

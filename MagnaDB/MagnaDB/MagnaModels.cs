@@ -13,11 +13,11 @@ namespace MagnaDB
 {
     public abstract class ViewModel<T> where T : ViewModel<T>, new()
     {
-        public event MagnaEventHandler GetFailed;
-        public event MagnaEventHandler GetSucceeded;
+        public event MagnaEventHandler GetFailed = delegate { };
+        public event MagnaEventHandler GetSucceeded = delegate { };
 
-        public event MagnaEventHandler SelectFailed;
-        public event MagnaEventHandler SelectSucceeded;
+        public event MagnaEventHandler SelectFailed = delegate { };
+        public event MagnaEventHandler SelectSucceeded = delegate { };
 
         protected abstract string TableName { get; }
         protected abstract string ConnectionString { get; }
@@ -274,12 +274,12 @@ namespace MagnaDB
             T reference = new T();
 
             StringBuilder query = new StringBuilder();
-            query.AppendFormat("{0} {1}", GenSelect(reference.TableName, reference.GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
+            query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), GenWhere(key));
 
-            using (DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName))
+            using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -306,7 +306,7 @@ namespace MagnaDB
             using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
@@ -332,7 +332,7 @@ namespace MagnaDB
             using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -359,7 +359,7 @@ namespace MagnaDB
             using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
@@ -386,7 +386,7 @@ namespace MagnaDB
             using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -413,7 +413,7 @@ namespace MagnaDB
             using (DataTable table = TableMake(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -440,7 +440,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -467,7 +467,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
@@ -494,7 +494,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -521,7 +521,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
@@ -547,7 +547,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), ConnectionString, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, ConnectionString));
@@ -574,7 +574,7 @@ namespace MagnaDB
             using (DataTable table = await TableMakeAsync(query.ToString(), connection, TableName))
             {
                 IEnumerable<T> result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
-                reference = result.First();
+                reference = result.FirstOrDefault();
 
                 if (reference != null)
                     GetSucceeded(reference, new MagnaEventArgs(table.Rows.Count, connection));
@@ -669,7 +669,7 @@ namespace MagnaDB
                 result.Add(itera);
             }
 
-            return null;
+            return result;
         }
 
         protected IEnumerable<string> GetFields(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
@@ -720,15 +720,15 @@ namespace MagnaDB
 
     public abstract class TableModel<T> : ViewModel<T> where T : TableModel<T>, new()
     {
-        public event MagnaEventHandler InsertSucceeded;
-        public event MagnaEventHandler InsertFailed;
-        public event MagnaEventHandler BeforeInsert;
-        public event MagnaEventHandler UpdateSucceeded;
-        public event MagnaEventHandler UpdateFailed;
-        public event MagnaEventHandler BeforeUpdate;
-        public event MagnaEventHandler DeleteSucceeded;
-        public event MagnaEventHandler DeleteFailed;
-        public event MagnaEventHandler BeforeDelete;
+        public event MagnaEventHandler InsertSucceeded = delegate { };
+        public event MagnaEventHandler InsertFailed = delegate { };
+        public event MagnaEventHandler BeforeInsert = delegate { };
+        public event MagnaEventHandler UpdateSucceeded = delegate { };
+        public event MagnaEventHandler UpdateFailed = delegate { };
+        public event MagnaEventHandler BeforeUpdate = delegate { };
+        public event MagnaEventHandler DeleteSucceeded = delegate { };
+        public event MagnaEventHandler DeleteFailed = delegate { };
+        public event MagnaEventHandler BeforeDelete = delegate { };
 
         public bool Insert()
         {
@@ -738,7 +738,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
             if (identityProperty != null)
             {
@@ -775,7 +775,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
 
             if (identityProperty != null)
             {
@@ -812,7 +812,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
 
             if (identityProperty != null)
             {
@@ -849,7 +849,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
 
             if (identityProperty != null)
             {
@@ -886,7 +886,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
 
             if (identityProperty != null)
             {
@@ -923,7 +923,7 @@ namespace MagnaDB
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.First();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
 
             if (identityProperty != null)
             {

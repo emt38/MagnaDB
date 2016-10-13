@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MagnaDB</id>
+    <version>0.9.1</version>
+    <authors>emt38</authors>
+    <owners>emt38</owners>
+    <licenseUrl>https://github.com/emt38/MagnaDB/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/emt38/MagnaDB</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This Packageincludes the MagnaDB Framework Library which consists of Object-Oriented Data Manipulation Tools in .NET Framework</description>
+    <releaseNotes>This release includes the functional models with data access and events, SqlGenerator and QueryMethod tool classes.</releaseNotes>
+    <copyright>Copyright emt38 2016</copyright>
+    <tags>Data emt38 Sql</tags>
+  </metadata>
+</package>
