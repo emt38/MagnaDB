@@ -65,6 +65,21 @@ namespace MagnaDB
             }
         }
 
+
+        public SampleModel()
+        {
+            // It's convenient to assign the EventHandlers inside the constructor
+            // It will keep your model definitions centralized
+            // You can cast the sender object to the class you're defining
+            InsertSucceeded += SampleModel_InsertSucceeded;
+        }
+
+        private void SampleModel_InsertSucceeded(object sender, MagnaEventArgs e)
+        {
+            SampleModel temp = sender as SampleModel;
+            Console.WriteLine("This Model is Alive, and it's ID: {0}", temp.ModelId);
+        }
+
         // If you're using an Identity field in your DB you need to specify it in your model
         // That way it will not be inserted and will be updated if the model object is inserted
         [Identity]

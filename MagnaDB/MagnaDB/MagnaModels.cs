@@ -1337,5 +1337,155 @@ namespace MagnaDB
 
             return count > 0;
         }
+
+        public static bool GroupInsert(IEnumerable<T> tableModels)
+        {
+            T reference = new T();
+            return reference.GroupInsertInner(tableModels);
+        }
+
+        protected bool GroupInsertInner(IEnumerable<T> tableModels)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return DoQuery(temp.ToString(), ConnectionString);
+        }
+
+        public static bool GroupInsert(IEnumerable<T> tableModels, SqlConnection connection)
+        {
+            T reference = new T();
+            return reference.GroupInsertInner(tableModels, connection);
+        }
+
+        protected bool GroupInsertInner(IEnumerable<T> tableModels, SqlConnection connection)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return DoQuery(temp.ToString(), connection);
+        }
+
+        public static bool GroupInsert(IEnumerable<T> tableModels, SqlTransaction transaction)
+        {
+            T reference = new T();
+            return reference.GroupInsertInner(tableModels, transaction);
+        }
+
+        protected bool GroupInsertInner(IEnumerable<T> tableModels, SqlTransaction transaction)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return DoQuery(temp.ToString(), transaction);
+        }
+
+        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels)
+        {
+            T reference = new T();
+            return await reference.GroupInsertAsyncInner(tableModels);
+        }
+
+        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return await DoQueryAsync(temp.ToString(), ConnectionString);
+        }
+
+        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SqlConnection connection)
+        {
+            T reference = new T();
+            return await reference.GroupInsertAsyncInner(tableModels, connection);
+        }
+
+        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SqlConnection connection)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return await DoQueryAsync(temp.ToString(), connection);
+        }
+
+        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SqlTransaction transaction)
+        {
+            T reference = new T();
+            return await reference.GroupInsertAsyncInner(tableModels, transaction);
+        }
+
+        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SqlTransaction transaction)
+        {
+            if (tableModels.Count() <= 0)
+                return false;
+
+            StringBuilder temp = new StringBuilder();
+            IEnumerable<string> fields = GetFields(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute));
+
+            temp.AppendFormat("INSERT INTO {0} ({1}) VALUES ", TableName, GenFieldsEnumeration(fields));
+
+            foreach (T item in tableModels)
+            {
+                temp.AppendFormat("({0}),", GenValuesEnumeration(item.GetValues(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(IdentityAttribute), typeof(DMLIgnoreAttribute))));
+            }
+            temp[temp.Length - 1] = ' ';
+
+            return await DoQueryAsync(temp.ToString(), transaction);
+        }
     }
 }

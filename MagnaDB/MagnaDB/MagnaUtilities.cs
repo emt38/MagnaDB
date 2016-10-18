@@ -27,6 +27,36 @@ namespace MagnaDB
 
     public static class Utils
     {
+        public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new ()
+        {
+            return TableModel<T>.GroupInsert(tableModels);
+        }
+
+        public static bool GroupInsert<T>(this IEnumerable<T> tableModels, SqlConnection connection) where T : TableModel<T>, new()
+        {
+            return TableModel<T>.GroupInsert(tableModels, connection);
+        }
+
+        public static bool GroupInsert<T>(this IEnumerable<T> tableModels, SqlTransaction transaction) where T : TableModel<T>, new()
+        {
+            return TableModel<T>.GroupInsert(tableModels, transaction);
+        }
+
+        public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
+        {
+            return await TableModel<T>.GroupInsertAsync(tableModels);
+        }
+
+        public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels, SqlConnection connection) where T : TableModel<T>, new()
+        {
+            return await TableModel<T>.GroupInsertAsync(tableModels, connection);
+        }
+
+        public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels, SqlTransaction transaction) where T : TableModel<T>, new()
+        {
+            return await TableModel<T>.GroupInsertAsync(tableModels, transaction);
+        }
+
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
