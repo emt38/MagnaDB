@@ -31,13 +31,13 @@ namespace MagnaDB
         public static DataTable ToDataTable(bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
-            
+
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i] is string)
                     values[i] = (values[i] as string).Replace("'", "''");
             }
-            
+
             StringBuilder query = new StringBuilder();
 
             if (displayableOnly)
@@ -154,7 +154,7 @@ namespace MagnaDB
             query.AppendFormat("{0} {1}", GenSelect(TableName, GetFields(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute))), string.Format(extraConditions, values));
 
             IEnumerable<T> result;
-            
+
             using (DataTable table = TableMake(query.ToString(), ConnectionString, TableName))
             {
                 result = Transform(table, FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute)));
@@ -313,7 +313,7 @@ namespace MagnaDB
                 else
                     GetFailed(key, new MagnaEventArgs(0, connection));
             }
-            
+
             return reference;
         }
         public static T Get(T model)
@@ -692,10 +692,34 @@ namespace MagnaDB
         {
             Type type = GetType();
             List<object> values = new List<object>();
+            DateTimeTypeAttribute dateTimeSpecifier;
+            DateTime possibleDate;
+            object itera;
 
             foreach (PropertyInfo property in FilterProperties(behavior, targetAttributes))
             {
-                values.Add(property.GetValue(this));
+                itera = property.GetValue(this);
+
+                if (itera != null && property.TryGetAttribute(out dateTimeSpecifier))
+                {
+                    possibleDate = (DateTime)itera;
+                    switch (dateTimeSpecifier.DateKind)
+                    {
+                        case DateTimeSpecification.Date:
+                            values.Add(possibleDate.ToString("yyyy-MM-dd"));
+                            break;
+                        default:
+                        case DateTimeSpecification.DateAndTime:
+                            values.Add(possibleDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                            break;
+                        case DateTimeSpecification.Time:
+                            values.Add(possibleDate.ToString("hh:mm:ss.fff"));
+                            break;
+                    }
+                    continue;
+                }
+
+                values.Add(itera);
             }
 
             return values;
@@ -706,12 +730,34 @@ namespace MagnaDB
             Type type = GetType();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             ColumnNameAttribute columnName;
+            DateTime possibleDate;
+            DateTimeTypeAttribute dateTimeSpecifier;
+            object itera;
 
             foreach (PropertyInfo property in FilterProperties(behavior, targetAttributes))
             {
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
+                itera = property.GetValue(this);
+                if (itera != null && property.TryGetAttribute(out dateTimeSpecifier))
+                {
+                    possibleDate = (DateTime)itera;
+                    switch (dateTimeSpecifier.DateKind)
+                    {
+                        case DateTimeSpecification.Date:
+                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("yyyy-MM-dd"));
+                            break;
+                        default:
+                        case DateTimeSpecification.DateAndTime:
+                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                            break;
+                        case DateTimeSpecification.Time:
+                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("hh:mm:ss.fff"));
+                            break;
+                    }
+                    continue;
+                }
 
-                dictionary.Add(columnName == null ? property.Name : columnName.Name, property.GetValue(this));
+                dictionary.Add(columnName == null ? property.Name : columnName.Name, itera);
             }
 
             return dictionary;
@@ -733,7 +779,7 @@ namespace MagnaDB
         public bool Insert()
         {
             BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
-            
+
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute))));
             bool querySuccessful = false;
@@ -755,7 +801,7 @@ namespace MagnaDB
                 querySuccessful = DoQuery(query.ToString(), ConnectionString);
             }
 
-            if(querySuccessful)
+            if (querySuccessful)
             {
                 InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
                 return true;
@@ -1186,26 +1232,61 @@ namespace MagnaDB
             return result;
         }
 
-        public bool IsDuplicated()
+        protected Dictionary<int, Dictionary<string, object>> GetDuplicationDictionary()
         {
             Type type = GetType();
-            IEnumerable<DuplicationColumnAttribute> itera;
-            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
+            IEnumerable<DuplicationColumnAttribute> dupliColumn;
+            ColumnNameAttribute columnName;
+            object itera;
+            Dictionary<int, Dictionary<string, object>> keyCompositions = new Dictionary<int, Dictionary<string, object>>();
+            DateTime possibleDate;
+            DateTimeTypeAttribute dateTimeSpecifier;
 
             foreach (PropertyInfo item in type.GetProperties())
             {
-                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
-                foreach (DuplicationColumnAttribute dca in itera)
-                {
-                    if (!llaves.ContainsKey(dca.duplicationIndex))
-                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
+                itera = item.GetValue(this);
 
-                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
-                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
+                if (itera == null)
+                    continue;
+
+                if (item.TryGetAttribute(out dateTimeSpecifier))
+                {
+                    possibleDate = (DateTime)itera;
+                    switch (dateTimeSpecifier.DateKind)
+                    {
+                        case DateTimeSpecification.Date:
+                            itera = possibleDate.ToString("yyyy-MM-dd");
+                            break;
+                        default:
+                        case DateTimeSpecification.DateAndTime:
+                            itera = possibleDate.ToString("yyyy-MM-dd hh:mm:ss");
+                            break;
+                        case DateTimeSpecification.Time:
+                            itera = possibleDate.ToString("hh:mm:ss.fff");
+                            break;
+                    }
+                }
+
+                dupliColumn = item.GetCustomAttributes<DuplicationColumnAttribute>();
+                columnName = item.GetCustomAttribute<ColumnNameAttribute>();
+                foreach (DuplicationColumnAttribute dca in dupliColumn)
+                {
+                    if (!keyCompositions.ContainsKey(dca.duplicationIndex))
+                        keyCompositions[dca.duplicationIndex] = new Dictionary<string, object>();
+
+                    if (keyCompositions[dca.duplicationIndex].ContainsKey(item.Name))
+                        keyCompositions[dca.duplicationIndex][columnName == null ? item.Name : columnName.Name] = itera;
                     else
-                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
+                        keyCompositions[dca.duplicationIndex].Add(columnName == null ? item.Name : columnName.Name, itera);
                 }
             }
+
+            return keyCompositions;
+        }
+
+        public bool IsDuplicated()
+        {
+            Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
                 return false;
@@ -1215,7 +1296,7 @@ namespace MagnaDB
 
             foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
             {
-                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
             }
             temp.Remove(temp.Length - 3, 3);
 
@@ -1226,24 +1307,7 @@ namespace MagnaDB
 
         public bool IsDuplicated(SqlConnection connection)
         {
-            Type type = GetType();
-            IEnumerable<DuplicationColumnAttribute> itera;
-            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
-
-            foreach (PropertyInfo item in type.GetProperties())
-            {
-                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
-                foreach (DuplicationColumnAttribute dca in itera)
-                {
-                    if (!llaves.ContainsKey(dca.duplicationIndex))
-                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
-
-                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
-                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
-                    else
-                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
-                }
-            }
+            Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
                 return false;
@@ -1253,7 +1317,7 @@ namespace MagnaDB
 
             foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
             {
-                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
             }
             temp.Remove(temp.Length - 3, 3);
 
@@ -1264,24 +1328,7 @@ namespace MagnaDB
 
         public async Task<bool> IsDuplicatedAsync()
         {
-            Type type = GetType();
-            IEnumerable<DuplicationColumnAttribute> itera;
-            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
-
-            foreach (PropertyInfo item in type.GetProperties())
-            {
-                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
-                foreach (DuplicationColumnAttribute dca in itera)
-                {
-                    if (!llaves.ContainsKey(dca.duplicationIndex))
-                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
-
-                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
-                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
-                    else
-                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
-                }
-            }
+            Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
                 return false;
@@ -1291,7 +1338,7 @@ namespace MagnaDB
 
             foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
             {
-                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
             }
             temp.Remove(temp.Length - 3, 3);
 
@@ -1302,24 +1349,7 @@ namespace MagnaDB
 
         public async Task<bool> IsDuplicatedAsync(SqlConnection connection)
         {
-            Type type = GetType();
-            IEnumerable<DuplicationColumnAttribute> itera;
-            Dictionary<int, Dictionary<string, object>> llaves = new Dictionary<int, Dictionary<string, object>>();
-
-            foreach (PropertyInfo item in type.GetProperties())
-            {
-                itera = item.GetCustomAttributes<DuplicationColumnAttribute>();
-                foreach (DuplicationColumnAttribute dca in itera)
-                {
-                    if (!llaves.ContainsKey(dca.duplicationIndex))
-                        llaves[dca.duplicationIndex] = new Dictionary<string, object>();
-
-                    if (llaves[dca.duplicationIndex].ContainsKey(item.Name))
-                        llaves[dca.duplicationIndex][item.Name] = item.GetValue(this);
-                    else
-                        llaves[dca.duplicationIndex].Add(item.Name, item.GetValue(this));
-                }
-            }
+            Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
                 return false;
@@ -1329,7 +1359,7 @@ namespace MagnaDB
 
             foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
             {
-                temp.AppendFormat("({0}) AND", GenWhere(item.Value, false));
+                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
             }
             temp.Remove(temp.Length - 3, 3);
 

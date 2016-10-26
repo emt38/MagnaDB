@@ -43,6 +43,16 @@ namespace MagnaDB
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class DateTimeTypeAttribute : Attribute
+    {
+        public DateTimeSpecification DateKind { get; private set; }
+        public DateTimeTypeAttribute(DateTimeSpecification dateClass = DateTimeSpecification.DateAndTime)
+        {
+            DateKind = dateClass;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class ColumnNameAttribute : Attribute
     {
         public string Name { get; private set; }

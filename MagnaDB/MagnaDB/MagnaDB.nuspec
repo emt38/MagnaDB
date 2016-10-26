@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>MagnaDB</id>
-    <version>0.9.5</version>
+    <title>MagnaDB Framework</title>
+    <version>0.9.7</version>
     <authors>emt38</authors>
     <owners>emt38</owners>
     <licenseUrl>https://github.com/emt38/MagnaDB/blob/master/LICENSE</licenseUrl>
@@ -10,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This Package includes the MagnaDB Framework Library which consists of Object-Oriented Data Manipulation Tools in .NET Framework</description>
     <releaseNotes>This release includes the functional models with data access and events, SqlGenerator and QueryMethod tool classes.</releaseNotes>
-    <summary>Fixed some bugs related to the Retrieving methods. Included Sample Class (Fixed)</summary>
+    <summary>Fixed Errors Related to IsDuplicatedMethod, Added DateTimeTypeAttribute class and DateTimeSpecification enum, these can be used to specify different treatments to DateTime properties according to their kind (Date, Time, Date and Time)</summary>
     <copyright>Copyright emt38 2016</copyright>
     <tags>Data emt38 Sql</tags>
   </metadata>

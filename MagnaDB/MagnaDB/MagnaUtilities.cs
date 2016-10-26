@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace MagnaDB
 {
+    public enum DateTimeSpecification
+    {
+        Date,
+        DateAndTime,
+        Time
+    }
+
     public enum PresenceBehavior
     {
         IncludeOnly,
@@ -89,6 +96,19 @@ namespace MagnaDB
             return (number is byte || number is short || number is int || number is long ||
                     number is sbyte || number is ushort || number is uint || number is ulong ||
                     number is float || number is double || number is decimal);
+        }
+
+        public static bool TryGetAttribute<T>(this PropertyInfo property, out T attribute) where T : Attribute
+        {
+            IEnumerable<T> attributes = property.GetCustomAttributes<T>();
+            if (attributes.Count() > 0)
+            {
+                attribute = attributes.First();
+                return true;
+            }
+
+            attribute = null;
+            return false;
         }
     }
 
