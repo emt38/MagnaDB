@@ -32,9 +32,29 @@ namespace MagnaDB
         }
     }
 
-    public static class Utils
+    public static class ModelExtensions
     {
-        public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new ()
+        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerable<T> tableModels, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
+        {
+            return TableModel<T>.ToIEnumerable(extraConditions, values);
+        }
+
+        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerable<T> tableModels, SqlConnection connection, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
+        {
+            return TableModel<T>.ToIEnumerable(connection, extraConditions, values);
+        }
+
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync<T>(this IEnumerable<T> tableModels, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
+        {
+            return await TableModel<T>.ToIEnumerableAsync(extraConditions, values);
+        }
+
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync<T>(this IEnumerable<T> tableModels, SqlConnection connection, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
+        {
+            return await TableModel<T>.ToIEnumerableAsync(connection, extraConditions, values);
+        }
+
+        public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
         {
             return TableModel<T>.GroupInsert(tableModels);
         }
@@ -63,7 +83,10 @@ namespace MagnaDB
         {
             return await TableModel<T>.GroupInsertAsync(tableModels, transaction);
         }
+    }
 
+    public static class MagnaUtils
+    {  
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();

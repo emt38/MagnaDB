@@ -48,7 +48,7 @@ namespace MagnaDB
             DataTable table = TableMake(query.ToString(), reference.ConnectionString, reference.TableName);
 
             if (table.Rows.Count > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                reference.SelectSucceeded(table, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
             else
                 reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
 
@@ -75,7 +75,7 @@ namespace MagnaDB
             DataTable table = TableMake(query.ToString(), connection, reference.TableName);
 
             if (table.Rows.Count > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, connection));
+                reference.SelectSucceeded(table, new MagnaEventArgs(table.Rows.Count, connection));
             else
                 reference.SelectFailed(null, new MagnaEventArgs(0, connection));
 
@@ -102,7 +102,7 @@ namespace MagnaDB
             DataTable table = await TableMakeAsync(query.ToString(), reference.ConnectionString, reference.TableName);
 
             if (table.Rows.Count > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
+                reference.SelectSucceeded(table, new MagnaEventArgs(table.Rows.Count, reference.ConnectionString));
             else
                 reference.SelectFailed(null, new MagnaEventArgs(0, reference.ConnectionString));
 
@@ -129,7 +129,7 @@ namespace MagnaDB
             DataTable table = await TableMakeAsync(query.ToString(), connection, reference.TableName);
 
             if (table.Rows.Count > 0)
-                reference.SelectSucceeded(null, new MagnaEventArgs(table.Rows.Count, connection));
+                reference.SelectSucceeded(table, new MagnaEventArgs(table.Rows.Count, connection));
             else
                 reference.SelectFailed(null, new MagnaEventArgs(0, connection));
 
@@ -161,12 +161,13 @@ namespace MagnaDB
             }
 
             if (result.Count() > 0)
-                SelectSucceeded(null, new MagnaEventArgs(result.Count(), ConnectionString));
+                SelectSucceeded(result, new MagnaEventArgs(result.Count(), ConnectionString));
             else
                 SelectFailed(null, new MagnaEventArgs(0, ConnectionString));
 
             return result;
         }
+
         public static IEnumerable<T> ToIEnumerable(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -192,7 +193,7 @@ namespace MagnaDB
             }
 
             if (result.Count() > 0)
-                SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+                SelectSucceeded(result, new MagnaEventArgs(result.Count(), connection));
             else
                 SelectFailed(null, new MagnaEventArgs(0, connection));
 
@@ -224,7 +225,7 @@ namespace MagnaDB
             }
 
             if (result.Count() > 0)
-                SelectSucceeded(null, new MagnaEventArgs(result.Count(), ConnectionString));
+                SelectSucceeded(result, new MagnaEventArgs(result.Count(), ConnectionString));
             else
                 SelectFailed(null, new MagnaEventArgs(0, ConnectionString));
 
@@ -256,7 +257,7 @@ namespace MagnaDB
             }
 
             if (result.Count() > 0)
-                SelectSucceeded(null, new MagnaEventArgs(result.Count(), connection));
+                SelectSucceeded(result, new MagnaEventArgs(result.Count(), connection));
             else
                 SelectFailed(null, new MagnaEventArgs(0, connection));
 
