@@ -234,7 +234,7 @@ namespace MagnaDB
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
-            return await reference.ToIEnumerableAsyncInner(connection, extraConditions);
+            return await reference.ToIEnumerableAsyncInner(connection, extraConditions, values);
         }
 
         protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SqlConnection connection, string extraConditions = "", params object[] values)
@@ -1517,6 +1517,38 @@ namespace MagnaDB
             temp[temp.Length - 1] = ' ';
 
             return await DoQueryAsync(temp.ToString(), transaction);
+        }
+
+        public static bool CreateTable()
+        {
+            T reference = new T();
+            StringBuilder temp = new StringBuilder();
+            Type tipo = reference.GetType();
+            IdentityAttribute identidad;
+            ColumnNameAttribute columnName;
+
+            temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
+
+            foreach (PropertyInfo property in tipo.GetProperties())
+            {
+                property.TryGetAttribute(out identidad);
+                columnName = property.GetCustomAttribute<ColumnNameAttribute>();
+
+                temp.AppendFormat(" {0} {1} {2}, ", columnName?.Name ?? property.Name, property.PropertyType.ToSqlTypeNameString(), (property.PropertyType == typeof(Nullable<>) || property.PropertyType.IsClass) ? "NULL" : "NOT NULL");
+            }
+
+            temp = temp.Remove(temp.Length - 2, 2);
+            temp.Append(" )");
+
+            try
+            {
+                bool result = DoQuery(temp.ToString(), reference.ConnectionString);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

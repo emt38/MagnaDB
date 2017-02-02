@@ -34,6 +34,34 @@ namespace MagnaDB
 
     public static class ModelExtensions
     {
+        public static string ToSqlTypeNameString(this Type t)
+        {
+            if (t == typeof(byte))
+                return "TINYINT";
+            if (t == typeof(double))
+                return "FLOAT";
+            if (t == typeof(long))
+                return "BIGINT";
+            if (t == typeof(short))
+                return "SMALLINT";
+            if (t == typeof(string))
+                return "NVARCHAR(256)";
+            if (t == typeof(bool))
+                return "BIT";
+            if (t == typeof(char))
+                return "NCHAR(1)";
+            if (t == typeof(DateTimeOffset))
+                return "DATETIMEOFFSET(7)";
+            if (t == typeof(byte[]))
+                return "BINARY";
+            if (t == typeof(float))
+                return "REAL";
+            if (t == typeof(int))
+                return "INT";
+            
+            return t.Name;
+        }
+        
         public static IEnumerable<T> ToIEnumerable<T>(this IEnumerable<T> tableModels, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
         {
             return TableModel<T>.ToIEnumerable(extraConditions, values);
