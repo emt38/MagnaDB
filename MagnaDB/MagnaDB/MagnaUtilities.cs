@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
@@ -58,28 +59,8 @@ namespace MagnaDB
                 return "REAL";
             if (t == typeof(int))
                 return "INT";
-            
+
             return t.Name;
-        }
-        
-        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerable<T> tableModels, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
-        {
-            return TableModel<T>.ToIEnumerable(extraConditions, values);
-        }
-
-        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerable<T> tableModels, SqlConnection connection, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
-        {
-            return TableModel<T>.ToIEnumerable(connection, extraConditions, values);
-        }
-
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync<T>(this IEnumerable<T> tableModels, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
-        {
-            return await TableModel<T>.ToIEnumerableAsync(extraConditions, values);
-        }
-
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync<T>(this IEnumerable<T> tableModels, SqlConnection connection, string extraConditions = "", params object[] values) where T : TableModel<T>, new()
-        {
-            return await TableModel<T>.ToIEnumerableAsync(connection, extraConditions, values);
         }
 
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
@@ -114,7 +95,7 @@ namespace MagnaDB
     }
 
     public static class MagnaUtils
-    {  
+    {
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
@@ -160,6 +141,58 @@ namespace MagnaDB
 
             attribute = null;
             return false;
+        }
+
+        public static bool IsViewModel(this Type t)
+        {
+            if (!t.IsClass || t.IsGenericType)
+                return false;
+            else
+            {
+                try
+                {
+                    return t.IsSubclassOf(typeof(ViewModel<>).MakeGenericType(t));
+                }
+                catch (ArgumentException)
+                {
+                    return false;
+                }
+            }
+
+        }
+
+        public static bool IsViewModelEnumerable(this Type t)
+        {
+            if (!(t.GenericTypeArguments.Length > 0))
+                return false;
+            else
+            {
+                Type g = t.GetGenericArguments()[0];
+                if (g.IsViewModel())
+                {
+                    Type ver = typeof(IEnumerable<>).MakeGenericType(g);
+                    return ver.IsAssignableFrom(t);
+                }
+                else
+                    return false;
+            }
+        }
+
+        public static bool IsViewModelList(this Type t)
+        {
+            if (!(t.GenericTypeArguments.Length > 0))
+                return false;
+            else
+            {
+                Type g = t.GetGenericArguments()[0];
+                if (g.IsViewModel())
+                {
+                    Type ver = typeof(IList<>).MakeGenericType(g);
+                    return ver.IsAssignableFrom(t);
+                }
+                else
+                    return false;
+            }
         }
     }
 

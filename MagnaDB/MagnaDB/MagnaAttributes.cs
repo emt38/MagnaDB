@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MagnaDB
 {
@@ -70,6 +71,36 @@ namespace MagnaDB
         public DuplicationColumnAttribute(int index = 0)
         {
             duplicationIndex = index;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    public sealed class ForeignRelationAttribute : Attribute
+    {
+        public string RelationString { get; private set; }
+
+        public ForeignRelationAttribute(string relStr)
+        {
+            RelationString = relStr;
+        }
+
+        public string GetSelectionFormula(object model, string ownerTable, string innerTable)
+        {
+            Type type = model.GetType();
+            PropertyInfo[] propiedades = type.GetProperties();
+            string relation = string.Format(RelationString, ownerTable, innerTable);
+            string eval;
+
+            foreach (PropertyInfo prop in propiedades)
+            {
+                eval = string.Format("{0}.{1}", ownerTable, prop.Name);
+                if (relation.Contains(eval))
+                {
+                    relation = relation.Replace(eval, prop.GetValue(model).ToString());
+                }
+            }
+
+            return relation;
         }
     }
 }
