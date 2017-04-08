@@ -522,48 +522,51 @@ namespace MagnaDB
             }
 
             object fresult;
-            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute));
-
-            foreach (T item in result)
+            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute)).Where(c => innerModelTypes.Any(d => d.Name == c.PropertyType.Name) || innerModelTypes.Any(d => c.PropertyType.IsGenericType && c.PropertyType?.GenericTypeArguments[0]?.Name == d.Name)).ToList();
+            if (foreignProperties.Count() > 0)
             {
-                foreach (PropertyInfo p in foreignProperties)
+                foreach (T item in result)
                 {
-                    
-                    if (p.PropertyType.IsViewModelList())
+                    foreach (PropertyInfo p in foreignProperties)
                     {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if (fr != null)
+                        if (p.PropertyType.IsViewModelList())
                         {
-                            innerTable = (string)p.PropertyType.GenericTypeArguments[0].InvokeMember("GetTableName", BindingFlags.InvokeMethod, null, null, new object[0]);
-                            rel = fr.GetSelectionFormula(item, ownerTable, innerTable);
-                            fresult = await Task.Run(() => p.PropertyType.GenericTypeArguments[0].InvokeMember("ToIEnumerableAsync", BindingFlags.InvokeMethod, null, null, new object[] { gate, innerModelTypes, rel }));
-                            toList = typeof(Enumerable).GetMethod("ToList").MakeGenericMethod(p.PropertyType);
-                            p.SetValue(item, toList.Invoke(null, new object[] { fresult }));
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = await Task.Run(() => p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToListAsync").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] }));
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
                         }
-                    }
 
-                    if (p.PropertyType.IsViewModelEnumerable())
-                    {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if (fr != null)
+                        if (p.PropertyType.IsViewModelEnumerable())
                         {
-                            innerTable = (string)p.PropertyType.GenericTypeArguments[0].InvokeMember("GetTableName", BindingFlags.InvokeMethod, null, null, new object[0]);
-                            rel = fr.GetSelectionFormula(item, ownerTable, innerTable);
-                            fresult = await Task.Run(() => p.PropertyType.GenericTypeArguments[0].InvokeMember("ToIEnumerableAsync", BindingFlags.InvokeMethod, null, null, new object[] { gate, innerModelTypes, rel }));
-                            p.SetValue(item, fresult);
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = await Task.Run(() => p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToIEnumerable").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] }));
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
                         }
-                    }
 
-                    if (p.PropertyType.IsViewModel())
-                    {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if (fr != null)
+                        if (p.PropertyType.IsViewModel())
                         {
-                            innerTable = (string)p.PropertyType.InvokeMember("GetTableName", BindingFlags.InvokeMethod, null, null, new object[0]);
-                            rel = fr.GetSelectionFormula(item, ownerTable, innerTable);
-                            fresult = await Task.Run(() => p.PropertyType.GenericTypeArguments[0].InvokeMember("ToIEnumerableAsync", BindingFlags.InvokeMethod, null, null, new object[] { gate, innerModelTypes, rel }));
-                            toList = typeof(Enumerable).GetMethod("FirstOrDefault").MakeGenericMethod(p.PropertyType);
-                            p.SetValue(item, toList.Invoke(null, new object[] { fresult }));
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = await Task.Run(() => p.PropertyType.BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToIEnumerable").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] }));
+                                toList = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
+                                p.SetValue(item, toList.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
                         }
                     }
                 }
@@ -623,57 +626,56 @@ namespace MagnaDB
             }
 
             object fresult;
-            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute));
-            Type ftype;
-
-            foreach (T item in result)
+            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute)).Where(c => innerModelTypes.Any(d => d.Name == c.PropertyType.Name) || innerModelTypes.Any(d => c.PropertyType.IsGenericType && c.PropertyType?.GenericTypeArguments[0]?.Name == d.Name)).ToList();
+            if (foreignProperties.Count() > 0)
             {
-                foreach (PropertyInfo p in foreignProperties)
+                foreach (T item in result)
                 {
-                    if (p.PropertyType.IsViewModelList())
+                    foreach (PropertyInfo p in foreignProperties)
                     {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if(fr != null)
+                        if (p.PropertyType.IsViewModelList())
                         {
-                            innerTable = (string)p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
-                            rel = String.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
-                            var me = p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                            fresult = p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToList").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] });
-                            
-                            p.SetValue(item, fresult);
-                            continue;
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToList").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] });
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
                         }
-                    }
 
-                    if (p.PropertyType.IsViewModelEnumerable())
-                    {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if (fr != null)
+                        if (p.PropertyType.IsViewModelEnumerable())
                         {
-                            innerTable = (string)p.PropertyType.GenericTypeArguments[0].InvokeMember("GetTableName", BindingFlags.InvokeMethod, null, null, new object[0]);
-                            rel = fr.GetSelectionFormula(item, ownerTable, innerTable);
-                            fresult = p.PropertyType.GenericTypeArguments[0].InvokeMember("ToIEnumerable", BindingFlags.InvokeMethod, null, null, new object[] { gate, innerModelTypes, rel });
-                            p.SetValue(item, fresult);
-                            continue;
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = p.PropertyType.GenericTypeArguments[0].BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToIEnumerable").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] });
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
                         }
-                    }
 
-                    if (p.PropertyType.IsViewModel())
-                    {
-                        fr = p.GetCustomAttribute<ForeignRelationAttribute>();
-                        if (fr != null)
+                        if (p.PropertyType.IsViewModel())
                         {
-                            innerTable = (string)p.PropertyType.InvokeMember("GetTableName", BindingFlags.InvokeMethod, null, null, new object[0]);
-                            rel = fr.GetSelectionFormula(item, ownerTable, innerTable);
-                            fresult = p.PropertyType.GenericTypeArguments[0].InvokeMember("ToIEnumerable", BindingFlags.InvokeMethod, null, null, new object[] { gate, innerModelTypes, rel });
-                            toList = typeof(Enumerable).GetMethod("FirstOrDefault").MakeGenericMethod(p.PropertyType);
-                            p.SetValue(item, toList.Invoke(null, new object[] { fresult }));
-                            continue;
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)p.PropertyType.BaseType.BaseType.GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = string.Format("WHERE {0}", fr.GetSelectionFormula(item, ownerTable, innerTable));
+                                fresult = p.PropertyType.BaseType.BaseType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 4 && c.Name == "ToIEnumerable").Invoke(null, new object[] { gate, innerModelTypes, rel, new object[0] });
+                                toList = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
+                                p.SetValue(item, toList.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
                         }
                     }
                 }
             }
-
+            
             return result;
         }
 

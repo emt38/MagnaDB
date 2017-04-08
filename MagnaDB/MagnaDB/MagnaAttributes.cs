@@ -74,11 +74,23 @@ namespace MagnaDB
         }
     }
 
+    /// <summary>
+    /// This class is used to specify Relationships between Models and Inner Properties
+    /// of ViewModel<T> and TableModel<T> types. Entities will be loaded when specified
+    /// in parameters when using Select Functions (ToIEnumerable, Get, ToList)
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class ForeignRelationAttribute : Attribute
     {
         public string RelationString { get; private set; }
 
+        /// <summary>
+        /// Create a relationship between the outer model class and this model property
+        /// {0} is used to refer to the Outer Model Table, {1} is referred to this Property
+        /// Model Table. Columns belonging to the Outer Model must be enclosed between tags
+        /// (<{0}.COLUMN>),
+        /// </summary>
+        /// <param name="relStr">Example: <{0}.IdFoo> = {1}.Bar</param>
         public ForeignRelationAttribute(string relStr)
         {
             RelationString = relStr;
@@ -93,7 +105,7 @@ namespace MagnaDB
 
             foreach (PropertyInfo prop in propiedades)
             {
-                eval = string.Format("{0}.{1}", ownerTable, prop.Name);
+                eval = string.Format("<{0}.{1}>", ownerTable, prop.Name);
                 if (relation.Contains(eval))
                 {
                     relation = relation.Replace(eval, prop.GetValue(model).ToString());
