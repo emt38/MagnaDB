@@ -253,6 +253,92 @@ namespace MagnaDB
             return result;
         }
 
+        public static T Get(long id, params Type[] innerModelTypes)
+        {
+            Type t = typeof(T);
+            IdentityAttribute identityField;
+            string idColumn = "Id";
+            foreach (PropertyInfo item in t.GetProperties())
+            {
+                if(item.TryGetAttribute(out identityField))
+                {
+                    idColumn = item.Name;
+                    break;
+                }
+            }
+
+            T reference = new T();
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                gate.Open();
+                T res = reference.GetInner(gate, new Dictionary<string, object>() { { idColumn, id} }, innerModelTypes);
+                gate.Close();
+                return res;
+            }
+        }
+
+        public static T Get(SqlConnection gate, long id, params Type[] innerModelTypes)
+        {
+            Type t = typeof(T);
+            IdentityAttribute identityField;
+            string idColumn = "Id";
+            foreach (PropertyInfo item in t.GetProperties())
+            {
+                if (item.TryGetAttribute(out identityField))
+                {
+                    idColumn = item.Name;
+                    break;
+                }
+            }
+
+
+            T reference = new T();
+            return reference.GetInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
+        }
+
+        public static async Task<T> GetAsync(long id, params Type[] innerModelTypes)
+        {
+            Type t = typeof(T);
+            IdentityAttribute identityField;
+            string idColumn = "Id";
+            foreach (PropertyInfo item in t.GetProperties())
+            {
+                if (item.TryGetAttribute(out identityField))
+                {
+                    idColumn = item.Name;
+                    break;
+                }
+            }
+
+            T reference = new T();
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                await gate.OpenAsync();
+                T res = await reference.GetAsyncInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
+                gate.Close();
+                return res;
+            }
+        }
+
+        public static async Task<T> GetAsync(SqlConnection gate, long id, params Type[] innerModelTypes)
+        {
+            Type t = typeof(T);
+            IdentityAttribute identityField;
+            string idColumn = "Id";
+            foreach (PropertyInfo item in t.GetProperties())
+            {
+                if (item.TryGetAttribute(out identityField))
+                {
+                    idColumn = item.Name;
+                    break;
+                }
+            }
+
+
+            T reference = new T();
+            return await reference.GetAsyncInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
+        }
+
         public static T Get(IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
