@@ -96,7 +96,7 @@ namespace MagnaDB
             RelationString = relStr;
         }
 
-        public string GetSelectionFormula(object model, string ownerTable, string innerTable)
+        public string GetSelectionFormula(object model, string ownerTable, string innerTable, bool removeTableIdentifiers = false)
         {
             Type type = model.GetType();
             PropertyInfo[] propiedades = type.GetProperties();
@@ -112,7 +112,7 @@ namespace MagnaDB
                 }
             }
 
-            return relation;
+            return removeTableIdentifiers ? relation.Replace(string.Format("{0}.", innerTable), "") : relation;
         }
     }
 }
