@@ -63,6 +63,27 @@ namespace MagnaDB
             return t.Name;
         }
 
+        public static List<T> LoadRelationships<T>(this IList<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, innerModelTypes).ToList();
+        }
+
+        public static List<T> LoadRelationships<T>(this IList<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes).ToList();
+        }
+
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this IList<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes)).ToList();
+        }
+
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this IList<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes)).ToList();
+        }
+
+
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
         {
             return TableModel<T>.GroupInsert(tableModels);

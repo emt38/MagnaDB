@@ -529,6 +529,268 @@ namespace MagnaDB
             return (await ToIEnumerableAsync(connection, innerModelTypes, extraConditions, values)).ToList();
         }
 
+        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, params Type[] innerModelTypes)
+        {
+            T reference = new T();
+            IEnumerable<T> res;
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                gate.Open();
+                res = LoadRelationships(result, gate, innerModelTypes);
+                gate.Close();
+            }
+            return res;
+        }
+
+        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SqlConnection gate, params Type[] innerModelTypes)
+        {
+            ForeignRelationAttribute fr;
+            MethodInfo methodInvoker;
+            Dictionary<string, Tuple<StringBuilder, Type>> tablesFiller = new Dictionary<string, Tuple<StringBuilder, Type>>();
+            Dictionary<string, DataTable> propertiesTables = new Dictionary<string, DataTable>();
+
+            string rel;
+            string ownerTable = GetTableName();
+            string innerTable;
+            object fresult;
+            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute)).Where(c => innerModelTypes.Any(d => d.Name == c.PropertyType.Name) || innerModelTypes.Any(d => c.PropertyType.IsGenericType && c.PropertyType?.GenericTypeArguments[0]?.Name == d.Name));
+
+            foreach (T itera in result)
+            {
+                foreach (PropertyInfo p in foreignProperties)
+                {
+                    if (p.PropertyType.IsViewModel())
+                    {
+                        innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                        if (!tablesFiller.ContainsKey(p.Name))
+                            tablesFiller.Add(p.Name, new Tuple<StringBuilder, Type>(new StringBuilder("WHERE "), p.PropertyType));
+                    }
+                    else if (p.PropertyType.IsViewModelEnumerable())
+                    {
+                        innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                        if (!tablesFiller.ContainsKey(p.Name))
+                            tablesFiller.Add(p.Name, new Tuple<StringBuilder, Type>(new StringBuilder("WHERE "), p.PropertyType.GenericTypeArguments[0]));
+                    }
+                    else
+                        continue;
+
+                    fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                    rel = string.Format("{0}", fr.GetSelectionFormula(itera, ownerTable, innerTable));
+                    tablesFiller[p.Name].Item1.AppendFormat("({0}) OR ", rel);
+                }
+            }
+
+            foreach (KeyValuePair<string, Tuple<StringBuilder, Type>> item in tablesFiller)
+            {
+                methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTable" && m.GetParameters().Length == 4);
+                rel = item.Value.Item1.ToString();
+                rel = rel.Substring(0, rel.Length - 3);
+                propertiesTables.Add(item.Key, (DataTable)methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] }));
+                item.Value.Item1.Clear();
+            }
+
+            if (foreignProperties.Count() > 0)
+            {
+                foreach (T item in result)
+                {
+                    foreach (PropertyInfo p in foreignProperties)
+                    {
+                        if (p.PropertyType.IsViewModelList())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
+                                p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
+                        }
+
+                        if (p.PropertyType.IsViewModelEnumerable())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
+                        }
+
+                        if (p.PropertyType.IsViewModel())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
+                                p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, params Type[] innerModelTypes)
+        {
+            T reference = new T();
+            IEnumerable<T> res;
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                await gate.OpenAsync();
+                res = await LoadRelationshipsAsync(result, gate, innerModelTypes);
+                gate.Close();
+            }
+            return res;
+        }
+
+        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SqlConnection gate, params Type[] innerModelTypes)
+        {
+            ForeignRelationAttribute fr;
+            MethodInfo methodInvoker;
+            Dictionary<string, Tuple<StringBuilder, Type>> tablesFiller = new Dictionary<string, Tuple<StringBuilder, Type>>();
+            Dictionary<string, DataTable> propertiesTables = new Dictionary<string, DataTable>();
+
+            string rel;
+            string ownerTable = GetTableName();
+            string innerTable;
+            object fresult;
+            IEnumerable<PropertyInfo> foreignProperties = new T().FilterProperties(PresenceBehavior.IncludeOnly, typeof(ForeignRelationAttribute)).Where(c => innerModelTypes.Any(d => d.Name == c.PropertyType.Name) || innerModelTypes.Any(d => c.PropertyType.IsGenericType && c.PropertyType?.GenericTypeArguments[0]?.Name == d.Name));
+
+            foreach (T itera in result)
+            {
+                foreach (PropertyInfo p in foreignProperties)
+                {
+                    if (p.PropertyType.IsViewModel())
+                    {
+                        innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                        if (!tablesFiller.ContainsKey(p.Name))
+                            tablesFiller.Add(p.Name, new Tuple<StringBuilder, Type>(new StringBuilder("WHERE "), p.PropertyType));
+                    }
+                    else if (p.PropertyType.IsViewModelEnumerable())
+                    {
+                        innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                        if (!tablesFiller.ContainsKey(p.Name))
+                            tablesFiller.Add(p.Name, new Tuple<StringBuilder, Type>(new StringBuilder("WHERE "), p.PropertyType.GenericTypeArguments[0]));
+                    }
+                    else
+                        continue;
+
+                    fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                    rel = string.Format("{0}", fr.GetSelectionFormula(itera, ownerTable, innerTable));
+                    tablesFiller[p.Name].Item1.AppendFormat("({0}) OR ", rel);
+                }
+            }
+
+            foreach (KeyValuePair<string, Tuple<StringBuilder, Type>> item in tablesFiller)
+            {
+                methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTableAsync" && m.GetParameters().Length == 4);
+                rel = item.Value.Item1.ToString();
+                rel = rel.Substring(0, rel.Length - 3);
+                propertiesTables.Add(item.Key, await Task.Run(() => (DataTable)methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] })));
+                item.Value.Item1.Clear();
+            }
+
+            if (foreignProperties.Count() > 0)
+            {
+                foreach (T item in result)
+                {
+                    foreach (PropertyInfo p in foreignProperties)
+                    {
+                        if (p.PropertyType.IsViewModelList())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
+                                p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
+                        }
+
+                        if (p.PropertyType.IsViewModelEnumerable())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                p.SetValue(item, fresult);
+                                continue;
+                            }
+                        }
+
+                        if (p.PropertyType.IsViewModel())
+                        {
+                            fr = p.GetCustomAttribute<ForeignRelationAttribute>();
+                            if (fr != null)
+                            {
+                                innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
+                                rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
+                                p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static T LoadRelationships(T result, params Type[] innerModelTypes)
+        {
+            T reference = new T();
+            IEnumerable<T> res;
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                gate.OpenAsync();
+                res = LoadRelationships(new List<T>() { result }, gate, innerModelTypes);
+                gate.Close();
+            }
+            return res.FirstOrDefault();
+        }
+
+        public static T LoadRelationships(T result, SqlConnection gate, params Type[] innerModelTypes)
+        {
+            return LoadRelationships(new List<T>() { result }, gate, innerModelTypes).FirstOrDefault();
+        }
+
+        public async static Task<T> LoadRelationshipsAsync(T result, params Type[] innerModelTypes)
+        {
+            T reference = new T();
+            IEnumerable<T> res;
+            using (SqlConnection gate = new SqlConnection(reference.ConnectionString))
+            {
+                await gate.OpenAsync();
+                res = await LoadRelationshipsAsync(new List<T>() { result }, gate, innerModelTypes);
+                gate.Close();
+            }
+            return res.FirstOrDefault();
+        }
+
+        public async static Task<T> LoadRelationshipsAsync(T result, SqlConnection gate, params Type[] innerModelTypes)
+        {
+            return (await LoadRelationshipsAsync(new List<T>() { result }, gate, innerModelTypes)).FirstOrDefault();
+        }
+
         protected IEnumerable<PropertyInfo> FilterProperties(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             List<PropertyInfo> resultProperties = new List<PropertyInfo>();
@@ -950,7 +1212,7 @@ namespace MagnaDB
         public event MagnaEventHandler DeleteFailed = delegate { };
         public event MagnaEventHandler BeforeDelete = delegate { };
 
-        public bool Insert()
+        public virtual bool Insert()
         {
             BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
 
@@ -987,7 +1249,7 @@ namespace MagnaDB
             }
         }
 
-        public bool Insert(SqlConnection connection)
+        public virtual bool Insert(SqlConnection connection)
         {
             BeforeInsert(this, new MagnaEventArgs(0, connection));
 
@@ -1024,7 +1286,7 @@ namespace MagnaDB
             }
         }
 
-        public bool Insert(SqlTransaction transaction)
+        public virtual bool Insert(SqlTransaction transaction)
         {
             BeforeInsert(this, new MagnaEventArgs(0, transaction));
 
@@ -1061,7 +1323,7 @@ namespace MagnaDB
             }
         }
 
-        public async Task<bool> InsertAsync()
+        public virtual async Task<bool> InsertAsync()
         {
             BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
 
@@ -1098,7 +1360,7 @@ namespace MagnaDB
             }
         }
 
-        public async Task<bool> InsertAsync(SqlConnection connection)
+        public virtual async Task<bool> InsertAsync(SqlConnection connection)
         {
             BeforeInsert(this, new MagnaEventArgs(0, connection));
 
@@ -1135,7 +1397,7 @@ namespace MagnaDB
             }
         }
 
-        public async Task<bool> InsertAsync(SqlTransaction transaction)
+        public virtual async Task<bool> InsertAsync(SqlTransaction transaction)
         {
             BeforeInsert(this, new MagnaEventArgs(0, transaction));
 
@@ -1172,7 +1434,7 @@ namespace MagnaDB
             }
         }
 
-        public bool Update()
+        public virtual bool Update()
         {
             BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
 
@@ -1196,7 +1458,7 @@ namespace MagnaDB
             return result;
         }
 
-        public bool Update(SqlConnection connection)
+        public virtual bool Update(SqlConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
 
@@ -1220,7 +1482,7 @@ namespace MagnaDB
             return result;
         }
 
-        public bool Update(SqlTransaction transaction)
+        public virtual bool Update(SqlTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
 
@@ -1244,7 +1506,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> UpdateAsync()
+        public virtual async Task<bool> UpdateAsync()
         {
             BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
 
@@ -1268,7 +1530,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> UpdateAsync(SqlConnection connection)
+        public virtual async Task<bool> UpdateAsync(SqlConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
 
@@ -1292,7 +1554,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> UpdateAsync(SqlTransaction transaction)
+        public virtual async Task<bool> UpdateAsync(SqlTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
 
@@ -1316,7 +1578,7 @@ namespace MagnaDB
             return result;
         }
 
-        public bool Delete()
+        public virtual bool Delete()
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1331,7 +1593,7 @@ namespace MagnaDB
             return result;
         }
 
-        public bool Delete(SqlConnection connection)
+        public virtual bool Delete(SqlConnection connection)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1346,7 +1608,7 @@ namespace MagnaDB
             return result;
         }
 
-        public bool Delete(SqlTransaction transaction)
+        public virtual bool Delete(SqlTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1361,7 +1623,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> DeleteAsync()
+        public virtual async Task<bool> DeleteAsync()
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1376,7 +1638,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> DeleteAsync(SqlConnection connection)
+        public virtual async Task<bool> DeleteAsync(SqlConnection connection)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1391,7 +1653,7 @@ namespace MagnaDB
             return result;
         }
 
-        public async Task<bool> DeleteAsync(SqlTransaction transaction)
+        public virtual async Task<bool> DeleteAsync(SqlTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary, 1));
@@ -1458,7 +1720,7 @@ namespace MagnaDB
             return keyCompositions;
         }
 
-        public bool IsDuplicated()
+        public virtual bool IsDuplicated()
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
@@ -1479,7 +1741,7 @@ namespace MagnaDB
             return count > 0;
         }
 
-        public bool IsDuplicated(SqlConnection connection)
+        public virtual bool IsDuplicated(SqlConnection connection)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
@@ -1500,7 +1762,7 @@ namespace MagnaDB
             return count > 0;
         }
 
-        public async Task<bool> IsDuplicatedAsync()
+        public virtual async Task<bool> IsDuplicatedAsync()
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
@@ -1521,7 +1783,7 @@ namespace MagnaDB
             return count > 0;
         }
 
-        public async Task<bool> IsDuplicatedAsync(SqlConnection connection)
+        public virtual async Task<bool> IsDuplicatedAsync(SqlConnection connection)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
