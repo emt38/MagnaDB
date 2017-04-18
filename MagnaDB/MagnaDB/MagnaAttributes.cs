@@ -7,42 +7,69 @@ using System.Reflection;
 
 namespace MagnaDB
 {
+    /// <summary>
+    /// A property decorated with this Attribute will be ignored when invoking the Insert() or GroupInsert()
+    /// methods
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class InsertIgnoreAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// A property decorated with this Attribute will be ignored when invoking an Update() method
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class UpdateIgnoreAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// A property decorated with this Attribute will be ignored when invoking Update() and Insert() methods
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class DMLIgnoreAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// A property decorated with this Attribute will be ignored when invoking
+    /// ToIEnumerable(), ToList(), ToDataTable() or Get() methods
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class SelectIgnoreAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// This Attribute is used to specify a property marked as an identity column specification,
+    /// and therefore will be updated when an Insert() Method succeeds, and can also be used as the
+    /// search criteria in Get Methods
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class IdentityAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// When using the ToDataTable method specifies that by default, only columns with this attribute
+    /// will be selected.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class DataDisplayableAttribute : Attribute
     {
         // Presence-Only Attribute
     }
 
+    /// <summary>
+    /// This Attribute identifies what part of a DateTime object should be used in the database,
+    /// by default, the complete date and time is used.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class DateTimeTypeAttribute : Attribute
     {
@@ -53,21 +80,36 @@ namespace MagnaDB
         }
     }
 
+    /// <summary>
+    /// By using this attribute you can specify the name of the column this property is binded
+    /// to within the database.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class ColumnNameAttribute : Attribute
     {
         public string Name { get; private set; }
+
         public ColumnNameAttribute(string column)
         {
             Name = column;
         }
     }
 
+    /// <summary>
+    /// This attribute is used to specify a column belonging to a Duplication Key Dictionary,
+    /// Properties with the same index will be compared as an only key within the table, by
+    /// default, properties are marked to Duplication Index 0. Duplication is evaluated
+    /// using the IsDuplicated() method
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class DuplicationColumnAttribute : Attribute
     {
         public int duplicationIndex { get; private set; }
 
+        /// <summary>
+        /// Verify a possible colu
+        /// </summary>
+        /// <param name="index"></param>
         public DuplicationColumnAttribute(int index = 0)
         {
             duplicationIndex = index;
@@ -85,12 +127,12 @@ namespace MagnaDB
         public string RelationString { get; private set; }
 
         /// <summary>
-        /// Create a relationship between the outer model class and this model property
+        /// Create a relationship between the outer model class and this model property.
         /// {0} is used to refer to the Outer Model Table, {1} is referred to this Property
-        /// Model Table. Columns belonging to the Outer Model must be enclosed between tags
-        /// (<{0}.COLUMN>),
+        /// Model Table. Columns belonging to the Outer Model must be enclosed between tags.
+        /// For a more detailed example watch the SampleRelationship.cs file
         /// </summary>
-        /// <param name="relStr">Example: <{0}.IdFoo> = {1}.Bar</param>
+        /// <param name="relStr">A string specifying the joining condition</param>
         public ForeignRelationAttribute(string relStr)
         {
             RelationString = relStr;

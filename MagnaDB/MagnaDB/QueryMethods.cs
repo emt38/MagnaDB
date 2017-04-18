@@ -31,6 +31,31 @@ namespace MagnaDB
 
                     return c > 0;
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     connection.Close();
@@ -57,6 +82,29 @@ namespace MagnaDB
 
                     return c > 0;
                 }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -82,6 +130,29 @@ namespace MagnaDB
                     int c = command.ExecuteNonQuery();
 
                     return c > 0;
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -111,6 +182,31 @@ namespace MagnaDB
 
                     return c > 0;
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     connection.Close();
@@ -137,6 +233,29 @@ namespace MagnaDB
 
                     return c > 0;
                 }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -162,6 +281,29 @@ namespace MagnaDB
                     int c = await command.ExecuteNonQueryAsync();
 
                     return c > 0;
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -191,6 +333,31 @@ namespace MagnaDB
 
                     return result;
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -215,6 +382,29 @@ namespace MagnaDB
                     object result = command.ExecuteScalar();
 
                     return result;
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -241,6 +431,29 @@ namespace MagnaDB
                     object result = command.ExecuteScalar();
 
                     return result;
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -270,6 +483,31 @@ namespace MagnaDB
 
                     return result;
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     connection.Close();
@@ -296,6 +534,29 @@ namespace MagnaDB
 
                     return result;
                 }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -321,6 +582,29 @@ namespace MagnaDB
                     object result = await command.ExecuteScalarAsync();
 
                     return result;
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -353,6 +637,31 @@ namespace MagnaDB
                         return temp;
                     }
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+                    
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     connection.Close();
@@ -382,6 +691,31 @@ namespace MagnaDB
                         return temp;
                     }
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -410,6 +744,29 @@ namespace MagnaDB
                         temp.Load(reader);
                         return temp;
                     }
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -442,6 +799,31 @@ namespace MagnaDB
                         return temp;
                     }
                 }
+                catch (SqlException ex)
+                {
+                    connection.Close();
+
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     connection.Close();
@@ -471,6 +853,29 @@ namespace MagnaDB
                         return temp;
                     }
                 }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
+                }
                 catch (Exception ex)
                 {
                     throw ex;
@@ -499,6 +904,29 @@ namespace MagnaDB
                         temp.Load(reader);
                         return temp;
                     }
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 208 /* Invalid Table */)
+                    {
+                        string msg = string.Format("The {0} table was not found in the database", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    if (ex.Number == -1 || ex.Number == 2 || ex.Number == 53 /* Server not Found */)
+                        throw new DbConnectionException("The Database Server was not found, please check the Server Configurations or change the connection string to solve this issue.", ex);
+                    if (ex.Number == -2 /* Timeout Expired */)
+                        throw new DbConnectionException("The timeout expired while establishing a connection to the server", ex);
+                    if (ex.Number == 18456)
+                        throw new DbConnectionException("The Login failed for the specified user");
+                    if (ex.Number == 207 /* Invalid Column */)
+                    {
+                        string msg = string.Format("The {0} property was not found in the table", ex.Message.Substring(ex.Message.IndexOf("'")));
+                        msg = msg.Remove(msg.Length - 1);
+                        throw new InvalidModelException(msg, ex);
+                    }
+                    else
+                        throw ex;
                 }
                 catch (Exception ex)
                 {

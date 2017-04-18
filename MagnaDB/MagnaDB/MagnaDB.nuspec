@@ -2,16 +2,17 @@
 <package>
   <metadata>
     <id>MagnaDB</id>
-    <title>MagnaDB Framework</title>
-    <version>0.9.9</version>
+    <title>MagnaDB Framework RC</title>
+    <version>0.9.9.8</version>
     <authors>emt38</authors>
     <owners>emt38</owners>
     <licenseUrl>https://github.com/emt38/MagnaDB/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/emt38/MagnaDB</projectUrl>
+    <iconUrl>http://i66.tinypic.com/28vrmaa.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This Package includes the MagnaDB Framework Library which consists of Object-Oriented Data Manipulation Tools in .NET Framework</description>
     <releaseNotes>This release includes the functional models with data access and events, SqlGenerator and QueryMethod tool classes.</releaseNotes>
-    <summary>Created a BETA Version, which now includes Object Relationships between models. A File has been included to the Package</summary>
+    <summary>Latest Beta version, documentation not complete. New Method LoadRelationships added</summary>
     <copyright>Copyright emt38 2016</copyright>
     <tags>Data emt38 Sql</tags>
   </metadata>
