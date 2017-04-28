@@ -10,31 +10,70 @@ using System.Threading.Tasks;
 
 namespace MagnaDB
 {
+    /// <summary>
+    /// The Different Kinds of Dates
+    /// </summary>
     public enum DateTimeSpecification
     {
+        /// <summary>
+        /// Only the Day, Month and Year will be evaluated
+        /// </summary>
         Date,
+        /// <summary>
+        /// The whole date will beevaluated
+        /// </summary>
         DateAndTime,
+        /// <summary>
+        /// Only the, Hours, Minutes, Seconds and Milliseconds will be evaluated
+        /// </summary>
         Time
     }
 
+    /// <summary>
+    /// Specifies what action to perform when using the FilterProperties Method
+    /// </summary>
     public enum PresenceBehavior
     {
+        /// <summary>
+        /// Includes only the properties that are marked with the specified attributes
+        /// </summary>
         IncludeOnly,
+        /// <summary>
+        /// Excludes the properties that are marked with the specified attributes
+        /// </summary>
         ExcludeAll
     }
 
+    /// <summary>
+    /// A type that handles the keys for the View and Table Models
+    /// </summary>
     public sealed class MagnaKey
     {
+        /// <summary>
+        /// The Key/Value Dictionary of the Column/Cells values
+        /// </summary>
         public IDictionary<string, object> KeyDictionary { get; private set; }
 
+        /// <summary>
+        /// A type that handles the keys for the View and Table Models
+        /// </summary>
+        /// <param name="fieldsValues">The Keys/Values composing the key</param>
         public MagnaKey(IDictionary<string, object> fieldsValues)
         {
             KeyDictionary = fieldsValues;
         }
     }
 
+    /// <summary>
+    /// Includes static help methods for the Model Classes
+    /// </summary>
     public static class ModelExtensions
     {
+        /// <summary>
+        /// Gets the specified Sql Type equivalent of the given Type
+        /// </summary>
+        /// <param name="t">The type to evaluate</param>
+        /// <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
         public static string ToSqlTypeNameString(this Type t)
         {
             if (t == typeof(byte))
@@ -63,22 +102,42 @@ namespace MagnaDB
             return t.Name;
         }
 
-        public static List<T> LoadRelationships<T>(this IList<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        public static T LoadRelationships<T>(this T result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, innerModelTypes);
+        }
+
+        public static T LoadRelationships<T>(this T result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes);
+        }
+
+        public static async Task<T> LoadRelationshipsAsync<T>(this T result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes));
+        }
+
+        public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes));
+        }
+
+        public static List<T> LoadRelationships<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, innerModelTypes).ToList();
         }
 
-        public static List<T> LoadRelationships<T>(this IList<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        public static List<T> LoadRelationships<T>(this List<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes).ToList();
         }
 
-        public static async Task<List<T>> LoadRelationshipsAsync<T>(this IList<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes)).ToList();
         }
 
-        public static async Task<List<T>> LoadRelationshipsAsync<T>(this IList<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes)).ToList();
         }

@@ -73,7 +73,16 @@ namespace MagnaDB
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class DateTimeTypeAttribute : Attribute
     {
+        /// <summary>
+        /// The kind of the date
+        /// </summary>
         public DateTimeSpecification DateKind { get; private set; }
+
+        /// <summary>
+        /// This Attribute identifies what part of a DateTime object should be used in the database,
+        /// by default, the complete date and time is used.
+        /// </summary>
+        /// <param name="dateClass">The kind of the date</param>
         public DateTimeTypeAttribute(DateTimeSpecification dateClass = DateTimeSpecification.DateAndTime)
         {
             DateKind = dateClass;
@@ -87,8 +96,16 @@ namespace MagnaDB
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class ColumnNameAttribute : Attribute
     {
+        /// <summary>
+        /// The name of the column the property is binded to  
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// By using this attribute you can specify the name of the column this property is binded
+        /// to within the database.
+        /// </summary>
+        /// <param name="column"></param>
         public ColumnNameAttribute(string column)
         {
             Name = column;
@@ -99,15 +116,18 @@ namespace MagnaDB
     /// This attribute is used to specify a column belonging to a Duplication Key Dictionary,
     /// Properties with the same index will be compared as an only key within the table, by
     /// default, properties are marked to Duplication Index 0. Duplication is evaluated
-    /// using the IsDuplicated() method
+    /// using the IsDuplicated() method. A property can be used within different Key combinations
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class DuplicationColumnAttribute : Attribute
     {
+        /// <summary>
+        /// The index of the key that the property belongs to
+        /// </summary>
         public int duplicationIndex { get; private set; }
 
         /// <summary>
-        /// Verify a possible colu
+        /// Verify a possible duplication using a key combination
         /// </summary>
         /// <param name="index"></param>
         public DuplicationColumnAttribute(int index = 0)
@@ -118,12 +138,15 @@ namespace MagnaDB
 
     /// <summary>
     /// This class is used to specify Relationships between Models and Inner Properties
-    /// of ViewModel<T> and TableModel<T> types. Entities will be loaded when specified
+    /// of ViewModel and TableModel types. Entities will be loaded when specified
     /// in parameters when using Select Functions (ToIEnumerable, Get, ToList)
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class ForeignRelationAttribute : Attribute
     {
+        /// <summary>
+        /// The string specifying the joining condition of the relationship
+        /// </summary>
         public string RelationString { get; private set; }
 
         /// <summary>
@@ -138,19 +161,28 @@ namespace MagnaDB
             RelationString = relStr;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model">The model that will be used for creating resulting string</param>
+        /// <param name="ownerTable">The enclosing class TableName</param>
+        /// <param name="innerTable">The foreign property class TableName</param>
+        /// <param name="removeTableIdentifiers">This parameter specifies if a TableName should be included in the result string</param>
+        /// <returns></returns>
         public string GetSelectionFormula(object model, string ownerTable, string innerTable, bool removeTableIdentifiers = false)
         {
             Type type = model.GetType();
             PropertyInfo[] propiedades = type.GetProperties();
             string relation = string.Format(RelationString, ownerTable, innerTable);
             string eval;
-
+            object temp;
             foreach (PropertyInfo prop in propiedades)
             {
                 eval = string.Format("<{0}.{1}>", ownerTable, prop.Name);
                 if (relation.Contains(eval))
                 {
-                    relation = relation.Replace(eval, prop.GetValue(model).ToString());
+                    temp = prop.GetValue(model);
+                    relation = relation.Replace(eval, temp != null ? temp.ToString() : "NULL");
                 }
             }
 
