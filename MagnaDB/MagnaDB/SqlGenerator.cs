@@ -182,7 +182,7 @@ namespace MagnaDB
                 }
                 else if (item is DateTime)
                 {
-                    temp.AppendFormat("'{0}',", ((DateTime)item).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("'{0}',", ((DateTime)item).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if (item.IsNumberType())
                 {
@@ -217,7 +217,7 @@ namespace MagnaDB
                 }
                 else if (item is DateTime)
                 {
-                    temp.AppendFormat("'{0}',", ((DateTime)item).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("'{0}',", ((DateTime)item).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if (item.IsNumberType())
                 {
@@ -252,7 +252,7 @@ namespace MagnaDB
                 }
                 else if (item.Value is DateTime)
                 {
-                    temp.AppendFormat("{0}='{1}',", item.Key, ((DateTime)item.Value).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("{0}='{1}',", item.Key, ((DateTime)item.Value).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if (item.Value.IsNumberType())
                 {
@@ -290,7 +290,7 @@ namespace MagnaDB
                 }
                 else if (values.ElementAt(x) is DateTime)
                 {
-                    temp.AppendFormat("{0}='{1}',", fields.ElementAt(x), ((DateTime)values.ElementAt(x)).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("{0}='{1}',", fields.ElementAt(x), ((DateTime)values.ElementAt(x)).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if (values.ElementAt(x).IsNumberType())
                 {
@@ -326,7 +326,7 @@ namespace MagnaDB
                 }
                 else if(item.Value is DateTime)
                 {
-                    temp.AppendFormat("{0}='{1}' AND ", item.Key, ((DateTime)item.Value).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("{0}='{1}' AND ", item.Key, ((DateTime)item.Value).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if(item.Value.IsNumberType())
                 {
@@ -364,7 +364,7 @@ namespace MagnaDB
                 }
                 else if (values.ElementAt(x) is DateTime)
                 {
-                    temp.AppendFormat("{0}='{1}' AND ", fields.ElementAt(x), ((DateTime)values.ElementAt(x)).ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                    temp.AppendFormat("{0}='{1}' AND ", fields.ElementAt(x), ((DateTime)values.ElementAt(x)).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
                 else if (values.ElementAt(x).IsNumberType())
                 {

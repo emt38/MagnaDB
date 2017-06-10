@@ -1156,10 +1156,10 @@ namespace MagnaDB
                             break;
                         default:
                         case DateTimeSpecification.DateAndTime:
-                            values.Add(possibleDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                            values.Add(possibleDate.ToString("yyyy-MM-dd HH:mm:ss"));
                             break;
                         case DateTimeSpecification.Time:
-                            values.Add(possibleDate.ToString("hh:mm:ss.fff"));
+                            values.Add(possibleDate.ToString("HH:mm:ss.fff"));
                             break;
                     }
                     continue;
@@ -1194,10 +1194,10 @@ namespace MagnaDB
                             break;
                         default:
                         case DateTimeSpecification.DateAndTime:
-                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("yyyy-MM-dd HH:mm:ss"));
                             break;
                         case DateTimeSpecification.Time:
-                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("hh:mm:ss.fff"));
+                            dictionary.Add(columnName == null ? property.Name : columnName.Name, possibleDate.ToString("HH:mm:ss.fff"));
                             break;
                     }
                     continue;
@@ -1705,10 +1705,10 @@ namespace MagnaDB
                             break;
                         default:
                         case DateTimeSpecification.DateAndTime:
-                            itera = possibleDate.ToString("yyyy-MM-dd hh:mm:ss");
+                            itera = possibleDate.ToString("yyyy-MM-dd HH:mm:ss");
                             break;
                         case DateTimeSpecification.Time:
-                            itera = possibleDate.ToString("hh:mm:ss.fff");
+                            itera = possibleDate.ToString("HH:mm:ss.fff");
                             break;
                     }
                 }
