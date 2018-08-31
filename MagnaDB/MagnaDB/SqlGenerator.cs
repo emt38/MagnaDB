@@ -384,5 +384,79 @@ namespace MagnaDB
 
             return temp.ToString();
         }
+
+        public static string GenWhereDiffered(IDictionary<string, object> fieldsValues, bool includeWhere = true)
+        {
+            if (fieldsValues.Count <= 0)
+                return string.Empty;
+
+            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE " : string.Empty);
+
+            foreach (KeyValuePair<string, object> item in fieldsValues)
+            {
+                if (item.Value == null)
+                {
+                    temp.AppendFormat("{0} != NULL AND ", item.Key);
+                }
+                else if (item.Value is DateTime)
+                {
+                    temp.AppendFormat("{0} != '{1}' AND ", item.Key, ((DateTime)item.Value).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                }
+                else if (item.Value.IsNumberType())
+                {
+                    temp.AppendFormat("{0} != {1} AND ", item.Key, item.Value.ToString());
+                }
+                else if (item.Value is Enum)
+                {
+                    temp.AppendFormat("{0} != {1} AND ", item.Key, Convert.ToInt64(item.Value));
+                }
+                else
+                {
+                    temp.AppendFormat("{0} != '{1}' AND ", item.Key, item.Value.ToString().Replace("'", "''"));
+                }
+            }
+
+            temp = temp.Remove(temp.Length - 4, 4);
+
+            return temp.ToString();
+        }
+
+        public static string GenWhereDiffered(IEnumerable<string> fields, IEnumerable<object> values, bool includeWhere = true)
+        {
+            if (fields.Count() != values.Count())
+                throw new DisparityException("The number of fields and values must be equal");
+            else if (fields.Count() <= 0)
+                return string.Empty;
+
+            StringBuilder temp = new StringBuilder(includeWhere ? "WHERE " : string.Empty);
+
+            for (int x = 0; x < fields.Count(); x++)
+            {
+                if (values.ElementAt(x) == null)
+                {
+                    temp.AppendFormat("{0} != NULL AND ", fields.ElementAt(x));
+                }
+                else if (values.ElementAt(x) is DateTime)
+                {
+                    temp.AppendFormat("{0} != '{1}' AND ", fields.ElementAt(x), ((DateTime)values.ElementAt(x)).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                }
+                else if (values.ElementAt(x).IsNumberType())
+                {
+                    temp.AppendFormat("{0} != {1} AND ", fields.ElementAt(x), values.ElementAt(x).ToString());
+                }
+                else if (values.ElementAt(x) is Enum)
+                {
+                    temp.AppendFormat("{0} != {1} AND ", fields.ElementAt(x), Convert.ToInt64(values.ElementAt(x)));
+                }
+                else
+                {
+                    temp.AppendFormat("{0} != '{1}' AND ", fields.ElementAt(x), values.ElementAt(x).ToString().Replace("'", "''"));
+                }
+            }
+
+            temp = temp.Remove(temp.Length - 4, 4);
+
+            return temp.ToString();
+        }
     }
 }

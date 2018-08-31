@@ -3,7 +3,7 @@
   <metadata>
     <id>MagnaDB</id>
     <title>MagnaDB Framework RC</title>
-    <version>0.9.9.12</version>
+    <version>0.9.9.17</version>
     <authors>emt38</authors>
     <owners>emt38</owners>
     <licenseUrl>https://github.com/emt38/MagnaDB/blob/master/LICENSE</licenseUrl>
@@ -11,10 +11,10 @@
     <iconUrl>http://i66.tinypic.com/28vrmaa.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This Package includes the MagnaDB Framework Library which consists of Object-Oriented Data Manipulation Tools in .NET Framework</description>
-    <releaseNotes>This release includes the functional models with data access and events, SqlGenerator and QueryMethod tool classes.</releaseNotes>
-    <summary>Minor fixes on dates, discovered some bugs out there :p.</summary>
+    <releaseNotes>Fixed an issue where the IsDuplicated Method would consider the same entity as duplicated. Also fixed the DateTimes being inserted without the AM/PM designator nor using 24h format</releaseNotes>
+    <summary>Solved some issues, added some overloads to Get methods</summary>
     <copyright>Copyright emt38 2016</copyright>
-    <tags>Data emt38 Sql Model Binding</tags>
+    <tags>Data emt38 Sql Model Binding Magna DB NET Microsoft Data Tools</tags>
   </metadata>
   <files>
     <file src="SampleModel.cs" target="content" />

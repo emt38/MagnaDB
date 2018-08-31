@@ -112,6 +112,11 @@ namespace MagnaDB
             return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes);
         }
 
+        public static T LoadRelationships<T>(this T result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, trans, innerModelTypes);
+        }
+
         public static async Task<T> LoadRelationshipsAsync<T>(this T result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes));
@@ -120,6 +125,11 @@ namespace MagnaDB
         public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes));
+        }
+
+        public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, trans, innerModelTypes));
         }
 
         public static List<T> LoadRelationships<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
@@ -132,6 +142,11 @@ namespace MagnaDB
             return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes).ToList();
         }
 
+        public static List<T> LoadRelationships<T>(this List<T> result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return ViewModel<T>.LoadRelationships(result, trans, innerModelTypes).ToList();
+        }
+
         public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes)).ToList();
@@ -142,6 +157,10 @@ namespace MagnaDB
             return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes)).ToList();
         }
 
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        {
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, trans, innerModelTypes)).ToList();
+        }
 
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
         {
