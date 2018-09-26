@@ -17,26 +17,72 @@ namespace MagnaDB
     /// <typeparam name="T">The Model Type that the class will use</typeparam>
     public abstract class ViewModel<T> where T : ViewModel<T>, new()
     {
+        /// <summary>
+        /// This event is raised when the Get method doesn't retrieve an entity from the DB or
+        /// runs into an exception of some sort
+        /// </summary>
         public event MagnaEventHandler GetFailed = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Get method succeeds in retrieving an entity from the DB
+        /// </summary>
         public event MagnaEventHandler GetSucceeded = delegate { };
 
+        /// <summary>
+        /// This event is raised when the ToList, ToIEnumerable, ToDataTable methods (and their derivations)
+        /// don't retrieve an entity from the DB or run into an exception of some sort.
+        /// </summary>
         public event MagnaEventHandler SelectFailed = delegate { };
+
+        /// <summary>
+        /// This event is raised when the ToList or ToIEnumerable, ToDataTable methods (and their derivations)
+        /// properly retrieve an Entity from the DB.
+        /// </summary>
         public event MagnaEventHandler SelectSucceeded = delegate { };
 
+        /// <summary>
+        /// The name of the DB object (can be a Table or View) where this class' entities
+        /// will be retrieved from.
+        /// </summary>
         protected abstract string TableName { get; }
+
+        /// <summary>
+        /// The database connection string containing the necessary information to connect to the DB.
+        /// </summary>
         protected abstract string ConnectionString { get; }
+
+        /// <summary>
+        /// Represents the Primary Key for this entity's instance, composed by
+        /// one or many properties of the class.
+        /// </summary>
         protected abstract MagnaKey Key { get; }
 
+        /// <summary>
+        /// Used to retrieve the MagnaKey object corresponding this instance.
+        /// </summary>
+        /// <returns>Returns the Key Property from this instance</returns>
         public MagnaKey GetKey()
         {
             return Key;
         }
 
+        /// <summary>
+        /// Used to retrieve the DB Object's name corresponding this entity.
+        /// </summary>
+        /// <returns>Returns the TableName property from this object's class</returns>
         public static string GetTableName()
         {
             return new T().TableName;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the FROM clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static DataTable ToDataTable(bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -64,6 +110,15 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement Against</param>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static DataTable ToDataTable(SqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -91,6 +146,15 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement Against</param>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static DataTable ToDataTable(SqlTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -118,6 +182,14 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the FROM clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static async Task<DataTable> ToDataTableAsync(bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -145,6 +217,15 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement Against</param>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static async Task<DataTable> ToDataTableAsync(SqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -172,6 +253,15 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Executes a Select Statement using this class' properties as the desired columns
+        /// using this class' table and brings the results (if any) back inside a DataTable.
+        /// </summary>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement Against</param>
+        /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
         public static async Task<DataTable> ToDataTableAsync(SqlTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -199,32 +289,83 @@ namespace MagnaDB
             return table;
         }
 
+        /// <summary>
+        /// Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+        /// into an IEnumerable containing entities belonging to this class.
+        /// </summary>
+        /// <param name="data">The DataRow array containing the information to be transformed</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="connection">An Open SqlConnection to execute statements against.</param>
+        /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
         public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, SqlConnection connection)
         {
             return Transform(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), connection, innerModelTypes);
         }
 
+        /// <summary>
+        /// Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+        /// into an IEnumerable containing entities belonging to this class.
+        /// </summary>
+        /// <param name="data">The DataRow array containing the information to be transformed</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="connection">An Open SqlConnection to execute statements against.</param>
+        /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
         public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, SqlConnection connection)
         {
             return await TransformAsync(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), connection, innerModelTypes);
         }
 
+        /// <summary>
+        /// Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+        /// into an IEnumerable containing entities belonging to this class.
+        /// </summary>
+        /// <param name="data">The DataRow array containing the information to be transformed</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="trans">An Active SqlTransaction to execute statements against.</param>
+        /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
         public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, SqlTransaction trans)
         {
             return Transform(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), trans, innerModelTypes);
         }
+
+        /// <summary>
+        /// Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+        /// into an IEnumerable containing entities belonging to this class.
+        /// </summary>
+        /// <param name="data">The DataRow array containing the information to be transformed</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="trans">An Active SqlTransaction to execute statements against.</param>
+        /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
 
         public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, SqlTransaction trans)
         {
             return await TransformAsync(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), trans, innerModelTypes);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB
+        /// </summary>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(string extraConditions = "", params object[] values)
         {
             T temp = new T();
             return ToIEnumerable(new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T temp = new T();
@@ -237,30 +378,71 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(connection, new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(connection, innerModelTypes, extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(SqlTransaction trans, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(trans, new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static IEnumerable<T> ToIEnumerable(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(trans, innerModelTypes, extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         protected IEnumerable<T> ToIEnumerableInner(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -287,6 +469,15 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         protected IEnumerable<T> ToIEnumerableInner(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -313,12 +504,26 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB
+        /// </summary>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await ToIEnumerableAsync(new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
@@ -331,18 +536,43 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(connection, new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(connection, innerModelTypes, extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -369,18 +599,43 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlTransaction trans, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(trans, new Type[0], extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(trans, innerModelTypes, extraConditions, values);
         }
 
+        /// <summary>
+        /// Executes a Select statement onto this class' table and retrieves its results from the DB.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
