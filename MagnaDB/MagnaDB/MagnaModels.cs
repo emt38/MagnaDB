@@ -662,6 +662,13 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
@@ -686,7 +693,15 @@ namespace MagnaDB
             }
         }
 
-        public static T Get(SqlConnection gate, long id, params Type[] innerModelTypes)
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
+        public static T Get(SqlConnection connection, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -702,9 +717,17 @@ namespace MagnaDB
 
 
             T reference = new T();
-            return reference.GetInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
+            return reference.GetInner(connection, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlTransaction trans, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
@@ -724,6 +747,13 @@ namespace MagnaDB
             return reference.GetInner(trans, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
@@ -748,7 +778,15 @@ namespace MagnaDB
             }
         }
 
-        public static async Task<T> GetAsync(SqlConnection gate, long id, params Type[] innerModelTypes)
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
+        public static async Task<T> GetAsync(SqlConnection connection, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -764,9 +802,17 @@ namespace MagnaDB
 
 
             T reference = new T();
-            return await reference.GetAsyncInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
+            return await reference.GetAsyncInner(connection, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="id">This entity's identity value.</param>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlTransaction trans, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
@@ -786,6 +832,13 @@ namespace MagnaDB
             return await reference.GetAsyncInner(trans, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -798,18 +851,42 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, key, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, key, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An Open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         protected T GetInner(SqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -831,6 +908,14 @@ namespace MagnaDB
             return reference;
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         protected T GetInner(SqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -852,6 +937,13 @@ namespace MagnaDB
             return reference;
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(T model, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -864,18 +956,41 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlConnection connection, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, model.Key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlTransaction trans, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, model.Key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -888,18 +1003,41 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlConnection connection, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static T Get(SqlTransaction trans, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -912,18 +1050,42 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, key, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, key, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         protected async Task<T> GetAsyncInner(SqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -945,6 +1107,14 @@ namespace MagnaDB
             return reference;
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         protected async Task<T> GetAsyncInner(SqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -966,6 +1136,13 @@ namespace MagnaDB
             return reference;
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(T model, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -978,18 +1155,41 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlConnection connection, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, model.Key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="model">A data entity of this same class</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlTransaction trans, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, model.Key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -1002,73 +1202,193 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlConnection connection, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Retrieve an entity stored in a table row by providing the neccessary key info.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>An entity of this class corresponding the key provided</returns>
         public static async Task<T> GetAsync(SqlTransaction trans, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, key.KeyDictionary, innerModelTypes);
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static List<T> ToList(string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(Type.EmptyTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static List<T> ToList(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(innerModelTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static List<T> ToList(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(connection, Type.EmptyTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a List of the class' type filled with the results found</returns>
         public static List<T> ToList(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(connection, innerModelTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a List of the class' type filled with the results found</returns>
         public static List<T> ToList(SqlTransaction trans, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(trans, Type.EmptyTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a List of the class' type filled with the results found</returns>
         public static List<T> ToList(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(trans, innerModelTypes, extraConditions, values).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(Type.EmptyTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(innerModelTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(SqlConnection connection, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(connection, Type.EmptyTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(SqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(connection, innerModelTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a List of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(SqlTransaction trans, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(trans, Type.EmptyTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
+        /// according to the specified criteria.
+        /// </summary>
+        /// <param name="trans">An Active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+        /// <param name="values">Values to be formatted onto the extraConditions string</param>
+        /// <returns>Returns a List of the class' type filled with the results found</returns>
         public static async Task<List<T>> ToListAsync(SqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(trans, innerModelTypes, extraConditions, values)).ToList();
@@ -1343,7 +1663,7 @@ namespace MagnaDB
                 methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTableAsync" && m.GetParameters().Length == 4);
                 rel = item.Value.Item1.ToString();
                 rel = rel.Substring(0, rel.Length - 3);
-                propertiesTables.Add(item.Key, await (Task<DataTable>) await Task.Run(() => methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] })));
+                propertiesTables.Add(item.Key, await (Task<DataTable>)await Task.Run(() => methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] })));
                 item.Value.Item1.Clear();
             }
 

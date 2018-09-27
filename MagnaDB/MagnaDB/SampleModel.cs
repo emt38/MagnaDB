@@ -89,7 +89,7 @@ namespace MagnaDB
         // Existing Key within the database using the IsDuplicatedMethod
         // You can specify an index parameter in the Constructor to create different
         // key combinations. DEFAULT 0
-        [DuplicationColumn]
+
         public string Brand { get; set; }
 
         public DateTime? MarketReleaseDate { get; set; }
