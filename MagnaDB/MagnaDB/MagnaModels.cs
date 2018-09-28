@@ -12,9 +12,10 @@ using static MagnaDB.SqlGenerator;
 namespace MagnaDB
 {
     /// <summary>
-    /// 
+    /// This class represents an entity model that can only be retrieved from the DB, but can't be inserted,
+    /// updated or deleted.
     /// </summary>
-    /// <typeparam name="T">The Model Type that the class will use</typeparam>
+    /// <typeparam name="T">The inheriting class (used as a reciprocation)</typeparam>
     public abstract class ViewModel<T> where T : ViewModel<T>, new()
     {
         /// <summary>
@@ -2713,16 +2714,55 @@ namespace MagnaDB
         }
     }
 
+    /// <summary>
+    /// This class represents an entity model that can be inserted, updated, deleted, and selected from the DB.
+    /// </summary>
+    /// <typeparam name="T">The inheriting class (used as a reciprocation)</typeparam>
     public abstract class TableModel<T> : ViewModel<T> where T : TableModel<T>, new()
     {
+        /// <summary>
+        /// This event is raised when the Insert method successfully inserts this entity.
+        /// </summary>
         public event MagnaEventHandler InsertSucceeded = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Insert method runs into an exception of some sort.
+        /// </summary>
         public event MagnaEventHandler InsertFailed = delegate { };
+
+        /// <summary>
+        /// This event is raised before the Insert method is executed.
+        /// </summary>
         public event MagnaEventHandler BeforeInsert = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Update method successfully updates this entity.
+        /// </summary>
         public event MagnaEventHandler UpdateSucceeded = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Update method runs into an exception of some sort.
+        /// </summary>
         public event MagnaEventHandler UpdateFailed = delegate { };
+
+        /// <summary>
+        /// This event is raised before the Update method is executed.
+        /// </summary>
         public event MagnaEventHandler BeforeUpdate = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Delete method successfully deletes this entity.
+        /// </summary>
         public event MagnaEventHandler DeleteSucceeded = delegate { };
+
+        /// <summary>
+        /// This event is raised when the Delete method runs into an exception of some sort.
+        /// </summary>
         public event MagnaEventHandler DeleteFailed = delegate { };
+
+        /// <summary>
+        /// This event is raised before the Delete method is executed.
+        /// </summary>
         public event MagnaEventHandler BeforeDelete = delegate { };
 
         public virtual bool Insert()
