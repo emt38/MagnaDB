@@ -1394,6 +1394,13 @@ namespace MagnaDB
             return (await ToIEnumerableAsync(trans, innerModelTypes, extraConditions, values)).ToList();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -1407,7 +1414,15 @@ namespace MagnaDB
             return res;
         }
 
-        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SqlConnection gate, params Type[] innerModelTypes)
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SqlConnection connection, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1450,7 +1465,7 @@ namespace MagnaDB
                 methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTable" && m.GetParameters().Length == 4);
                 rel = item.Value.Item1.ToString();
                 rel = rel.Substring(0, rel.Length - 3);
-                propertiesTables.Add(item.Key, (DataTable)methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] }));
+                propertiesTables.Add(item.Key, (DataTable)methodInvoker.Invoke(null, new object[] { connection, false, rel, new object[0] }));
                 item.Value.Item1.Clear();
             }
 
@@ -1467,7 +1482,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
                                 continue;
@@ -1481,7 +1496,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 p.SetValue(item, fresult);
                                 continue;
                             }
@@ -1494,7 +1509,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
                                 continue;
@@ -1507,6 +1522,14 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SqlTransaction trans, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
@@ -1607,6 +1630,13 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -1620,7 +1650,15 @@ namespace MagnaDB
             return res;
         }
 
-        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SqlConnection gate, params Type[] innerModelTypes)
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SqlConnection connection, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1663,7 +1701,7 @@ namespace MagnaDB
                 methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTableAsync" && m.GetParameters().Length == 4);
                 rel = item.Value.Item1.ToString();
                 rel = rel.Substring(0, rel.Length - 3);
-                propertiesTables.Add(item.Key, await (Task<DataTable>)await Task.Run(() => methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] })));
+                propertiesTables.Add(item.Key, await (Task<DataTable>)await Task.Run(() => methodInvoker.Invoke(null, new object[] { connection, false, rel, new object[0] })));
                 item.Value.Item1.Clear();
             }
 
@@ -1680,7 +1718,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
@@ -1695,7 +1733,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 p.SetValue(item, fresult);
                                 continue;
@@ -1709,7 +1747,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
@@ -1723,6 +1761,14 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SqlTransaction trans, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
@@ -1826,6 +1872,13 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entitiy to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static T LoadRelationships(T result, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -1839,16 +1892,39 @@ namespace MagnaDB
             return res.FirstOrDefault();
         }
 
-        public static T LoadRelationships(T result, SqlConnection gate, params Type[] innerModelTypes)
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="connection">An active SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public static T LoadRelationships(T result, SqlConnection connection, params Type[] innerModelTypes)
         {
-            return LoadRelationships(new List<T>() { result }, gate, innerModelTypes).FirstOrDefault();
+            return LoadRelationships(new List<T>() { result }, connection, innerModelTypes).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static T LoadRelationships(T result, SqlTransaction trans, params Type[] innerModelTypes)
         {
             return LoadRelationships(new List<T>() { result }, trans, innerModelTypes).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A entitiy to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public async static Task<T> LoadRelationshipsAsync(T result, params Type[] innerModelTypes)
         {
             T reference = new T();
@@ -1862,16 +1938,38 @@ namespace MagnaDB
             return res.FirstOrDefault();
         }
 
-        public async static Task<T> LoadRelationshipsAsync(T result, SqlConnection gate, params Type[] innerModelTypes)
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public async static Task<T> LoadRelationshipsAsync(T result, SqlConnection connection, params Type[] innerModelTypes)
         {
-            return (await LoadRelationshipsAsync(new List<T>() { result }, gate, innerModelTypes)).FirstOrDefault();
+            return (await LoadRelationshipsAsync(new List<T>() { result }, connection, innerModelTypes)).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public async static Task<T> LoadRelationshipsAsync(T result, SqlTransaction trans, params Type[] innerModelTypes)
         {
             return (await LoadRelationshipsAsync(new List<T>() { result }, trans, innerModelTypes)).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Get a filtered list of this class' properties.
+        /// </summary>
+        /// <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+        /// <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+        /// <returns>Returns a filtered IEnumerable of PropertyInfo objects</returns>
         protected IEnumerable<PropertyInfo> FilterProperties(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             List<PropertyInfo> resultProperties = new List<PropertyInfo>();
@@ -1911,7 +2009,15 @@ namespace MagnaDB
             return resultProperties;
         }
 
-        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlConnection gate, Type[] innerModelTypes)
+        /// <summary>
+        /// Transform a collection of rows into an IEnumerable of this class.
+        /// </summary>
+        /// <param name="table">A collection of rows to extract the data from</param>
+        /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlConnection connection, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -1993,7 +2099,7 @@ namespace MagnaDB
                 methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTable" && m.GetParameters().Length == 4);
                 rel = item.Value.Item1.ToString();
                 rel = rel.Substring(0, rel.Length - 3);
-                propertiesTables.Add(item.Key, (DataTable)methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] }));
+                propertiesTables.Add(item.Key, (DataTable)methodInvoker.Invoke(null, new object[] { connection, false, rel, new object[0] }));
                 item.Value.Item1.Clear();
             }
 
@@ -2010,7 +2116,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
                                 continue;
@@ -2024,7 +2130,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 p.SetValue(item, fresult);
                                 continue;
                             }
@@ -2037,7 +2143,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate });
+                                fresult = typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerable").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection });
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
                                 continue;
@@ -2050,6 +2156,14 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Transform a collection of rows into an IEnumerable of this class.
+        /// </summary>
+        /// <param name="table">A collection of rows to extract the data from</param>
+        /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
         protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlTransaction trans, Type[] innerModelTypes)
         {
             T itera;
@@ -2189,7 +2303,15 @@ namespace MagnaDB
             return result;
         }
 
-        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlConnection gate, Type[] innerModelTypes)
+        /// <summary>
+        /// Transform a collection of rows into an IEnumerable of this class.
+        /// </summary>
+        /// <param name="table">A collection of rows to extract the data from</param>
+        /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlConnection connection, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -2271,7 +2393,7 @@ namespace MagnaDB
                 methodInvoker = typeof(ViewModel<>).MakeGenericType(item.Value.Item2).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "ToDataTableAsync" && m.GetParameters().Length == 4);
                 rel = item.Value.Item1.ToString();
                 rel = rel.Substring(0, rel.Length - 3);
-                propertiesTables.Add(item.Key, await (Task<DataTable>)await Task.Run(() => methodInvoker.Invoke(null, new object[] { gate, false, rel, new object[0] })));
+                propertiesTables.Add(item.Key, await (Task<DataTable>)await Task.Run(() => methodInvoker.Invoke(null, new object[] { connection, false, rel, new object[0] })));
                 item.Value.Item1.Clear();
             }
 
@@ -2288,7 +2410,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "ToList" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType.GenericTypeArguments[0]);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
@@ -2303,7 +2425,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType.GenericTypeArguments[0]).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 p.SetValue(item, fresult);
                                 continue;
@@ -2317,7 +2439,7 @@ namespace MagnaDB
                             {
                                 innerTable = (string)typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethod("GetTableName", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[0]);
                                 rel = fr.GetSelectionFormula(item, ownerTable, innerTable, true);
-                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, gate }));
+                                fresult = await Task.Run(() => typeof(ViewModel<>).MakeGenericType(p.PropertyType).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.GetParameters().Length == 3 && c.Name == "TableToIEnumerableAsync").Invoke(null, new object[] { propertiesTables[p.Name].Select(rel), innerModelTypes, connection }));
                                 fresult = fresult.GetType().GetProperty("Result").GetValue(fresult);
                                 methodInvoker = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(c => c.Name == "FirstOrDefault" && c.GetParameters().Length == 1).MakeGenericMethod(p.PropertyType);
                                 p.SetValue(item, methodInvoker.Invoke(null, new object[] { fresult }));
@@ -2331,6 +2453,14 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Transform a collection of rows into an IEnumerable of this class.
+        /// </summary>
+        /// <param name="table">A collection of rows to extract the data from</param>
+        /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
         protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SqlTransaction trans, Type[] innerModelTypes)
         {
             T itera;
@@ -2473,6 +2603,12 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Get a filtered IEnumerable of this class' properties' name.
+        /// </summary>
+        /// <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+        /// <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+        /// <returns>Returns a filtered string IEnumerable of this class' properties' name.</returns>
         protected IEnumerable<string> GetFields(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             Type type = GetType();
@@ -2489,6 +2625,12 @@ namespace MagnaDB
             return fields;
         }
 
+        /// <summary>
+        /// Get a filtered IEnumerable of this class' properties' value.
+        /// </summary>
+        /// <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+        /// <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+        /// <returns>Returns a filtered object IEnumerable of this class' properties' value.</returns>
         protected IEnumerable<object> GetValues(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             Type type = GetType();
@@ -2526,6 +2668,12 @@ namespace MagnaDB
             return values;
         }
 
+        /// <summary>
+        /// Get a filtered Dictionary of this class' properties (names/values).
+        /// </summary>
+        /// <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+        /// <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+        /// <returns>Returns a filtered Dictionary of this class' properties (names/values).</returns>
         public IDictionary<string, object> ToDictionary(PresenceBehavior behavior = PresenceBehavior.ExcludeAll, params Type[] targetAttributes)
         {
             Type type = GetType();
