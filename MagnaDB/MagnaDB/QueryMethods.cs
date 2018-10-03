@@ -875,7 +875,7 @@ namespace MagnaDB
         /// Executes a query and returns a scalar result.
         /// </summary>
         /// <param name="query">The query or statement to execute.</param>
-        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
         /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
         /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<DataTable> TableMakeAsync(string query, string connectionString, string tableName = "")

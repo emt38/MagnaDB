@@ -27,7 +27,8 @@ namespace MagnaDB
     }
 
     /// <summary>
-    /// A property decorated with this Attribute will be ignored when invoking Update() and Insert() methods
+    /// A property decorated with this Attribute will be ignored when invoking Insert(), Update(), Delete(), ToIEnumerable(),
+    /// ToList(), ToDataTable() or Get() methods
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class DMLIgnoreAttribute : Attribute

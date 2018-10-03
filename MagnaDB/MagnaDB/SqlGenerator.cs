@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace MagnaDB
 {
+    /// <summary>
+    /// This class includes helper methods used to create SQL statements.
+    /// </summary>
     public static class SqlGenerator
     {
+        /// <summary>
+        /// Create SQL Select statement.
+        /// </summary>
+        /// <param name="tableName">The table to select data from</param>
+        /// <param name="fields">The desired columns to retrieve</param>
+        /// <returns>Returns a string containing the resulting Select statement.</returns>
         public static string GenSelect(string tableName, params string[] fields)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -22,6 +31,12 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create SQL Select statement.
+        /// </summary>
+        /// <param name="tableName">The table to select data from</param>
+        /// <param name="fields">The desired columns to retrieve</param>
+        /// <returns>Returns a string containing the resulting Select statement.</returns>
         public static string GenSelect(string tableName, IEnumerable<string> fields)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -36,6 +51,12 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a SQL Insert statement.
+        /// </summary>
+        /// <param name="tableName">The table to insert data into</param>
+        /// <param name="fieldsValues">A collection of key/value pairs that will be included in the Insert statement</param>
+        /// <returns>Returns a string containing the resulting Insert statement</returns>
         public static string GenInsert(string tableName, IDictionary<string, object> fieldsValues)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -51,6 +72,13 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a SQL Insert statement.
+        /// </summary>
+        /// <param name="tableName">The table to insert data into</param>
+        /// <param name="fields">A collection of strings that will be used as the columns' names in the Insert statement</param>
+        /// <param name="values">A collection of objects that will be used as the columns' values in the Insert statement</param>
+        /// <returns>Returns a string containing the resulting Insert statement</returns>
         public static string GenInsert(string tableName, IEnumerable<string> fields, IEnumerable<object> values)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -69,6 +97,13 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a SQL Update statement.
+        /// </summary>
+        /// <param name="tableName">The table to update data into</param>
+        /// <param name="fieldsValues">A collection of key/value pairs that will be included in the Update statement</param>
+        /// <param name="top">A value indicating the maximum number of columns that may be updated.</param>
+        /// <returns>Returns a string containing the resulting Update statement</returns>
         public static string GenUpdate(string tableName, IDictionary<string, object> fieldsValues, int top = 0)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -84,6 +119,14 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a SQL Update statement.
+        /// </summary>
+        /// <param name="tableName">The table to update data in</param>
+        /// <param name="fields">A collection of strings that will be used as the columns' names in the Update statement</param>
+        /// <param name="values">A collection of objects that will be used as the columns' values in the Update statement</param>
+        /// <param name="top">A value indicating the maximum number of columns that may be updated.</param>
+        /// <returns>Returns a string containing the resulting Update statement</returns>
         public static string GenUpdate(string tableName, IEnumerable<string> fields, IEnumerable<object> values, int top = 0)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -102,6 +145,13 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a Delete statment.
+        /// </summary>
+        /// <param name="tableName">The table to delete data from</param>
+        /// <param name="fieldsValues">A collection of key/value pairs that will be included in the Delete statement</param>
+        /// <param name="top">A value indicating the maximum number of columns that may be deleted.</param>
+        /// <returns>Returns a string containing the resulting Delete statement</returns>
         public static string GenDelete(string tableName, IDictionary<string, object> fieldsValues, int top = 0)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -117,6 +167,14 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a Delete statment.
+        /// </summary>
+        /// <param name="tableName">The table to delete data from</param>
+        /// <param name="fields">A collection of strings that will be used as the columns' names in the Delete statement</param>
+        /// <param name="values">A collection of objects that will be used as the columns' values in the Delete statement</param>
+        /// <param name="top">A value indicating the maximum number of columns that may be deleted.</param>
+        /// <returns>Returns a string containing the resulting Delete statement</returns>
         public static string GenDelete(string tableName, IEnumerable<string> fields, IEnumerable<object> values, int top = 0)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -135,6 +193,11 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Creates a string of comma-separated fields from the provided field array.
+        /// </summary>
+        /// <param name="fields">The fields' names</param>
+        /// <returns>Returns a string containing the field names separated by commas</returns>
         public static string GenFieldsEnumeration(params string[] fields)
         {
             if (fields.Count() <= 0)
@@ -151,6 +214,11 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Creates a string of comma-separated fields from the provided field array.
+        /// </summary>
+        /// <param name="fields">The fields' names</param>
+        /// <returns>Returns a string containing the field names separated by commas</returns>
         public static string GenFieldsEnumeration(IEnumerable<string> fields)
         {
             if (fields.Count() <= 0)
@@ -167,6 +235,11 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Creates a string of comma-separated values from the provided values array.
+        /// </summary>
+        /// <param name="fields">The fields' values</param>
+        /// <returns>Returns a string containing the field names separated by commas</returns>
         public static string GenValuesEnumeration(params object[] fields)
         {
             if (fields.Count() <= 0)
@@ -202,6 +275,11 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Creates a string of comma-separated values from the provided values array.
+        /// </summary>
+        /// <param name="fields">The fields' values</param>
+        /// <returns>Returns a string containing the field names separated by commas</returns>
         public static string GenValuesEnumeration(IEnumerable<object> fields)
         {
             if (fields.Count() <= 0)
@@ -237,6 +315,11 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a string of assignment pairs of column/values.
+        /// </summary>
+        /// <param name="fieldsValues">The key/value pairs to use</param>
+        /// <returns>Returns a string containing the resulting assignment pairs</returns>
         public static string GenSetPairs(IDictionary<string, object> fieldsValues)
         {
             if (fieldsValues.Count <= 0)
@@ -273,6 +356,12 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a string of assignment pairs of column/values.
+        /// </summary>
+        /// <param name="fields">The column names to use</param>
+        /// <param name="values">The values to use</param>
+        /// <returns>Returns a string containing the resulting assignment pairs</returns>
         public static string GenSetPairs(IEnumerable<string> fields, IEnumerable<object> values)
         {
             if (fields.Count() != values.Count())
@@ -311,6 +400,12 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a WHERE clause comparing keys and values as equal.
+        /// </summary>
+        /// <param name="fieldsValues">The key/value pairs to use</param>
+        /// <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+        /// <returns>Returns a string containing the resulting WHERE clause</returns>
         public static string GenWhere(IDictionary<string, object> fieldsValues, bool includeWhere = true)
         {
             if (fieldsValues.Count <= 0)
@@ -347,6 +442,13 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a WHERE clause comparing keys and values as equal.
+        /// </summary>
+        /// <param name="fields">The column names to use</param>
+        /// <param name="values">The values to use</param>
+        /// <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+        /// <returns>Returns a string containing the resulting WHERE clause</returns>
         public static string GenWhere(IEnumerable<string> fields, IEnumerable<object> values, bool includeWhere = true)
         {
             if (fields.Count() != values.Count())
@@ -385,6 +487,12 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a WHERE clause comparing keys and values as unequal.
+        /// </summary>
+        /// <param name="fieldsValues">The key/value pairs to use</param>
+        /// <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+        /// <returns>Returns a string containing the resulting WHERE clause</returns>
         public static string GenWhereDiffered(IDictionary<string, object> fieldsValues, bool includeWhere = true)
         {
             if (fieldsValues.Count <= 0)
@@ -421,6 +529,13 @@ namespace MagnaDB
             return temp.ToString();
         }
 
+        /// <summary>
+        /// Create a WHERE clause comparing keys and values as unequal.
+        /// </summary>
+        /// <param name="fields">The column names to use</param>
+        /// <param name="values">The values to use</param>
+        /// <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+        /// <returns>Returns a string containing the resulting WHERE clause</returns>
         public static string GenWhereDiffered(IEnumerable<string> fields, IEnumerable<object> values, bool includeWhere = true)
         {
             if (fields.Count() != values.Count())
