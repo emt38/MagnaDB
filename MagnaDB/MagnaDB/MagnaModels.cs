@@ -2765,6 +2765,10 @@ namespace MagnaDB
         /// </summary>
         public event MagnaEventHandler BeforeDelete = delegate { };
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual bool Insert()
         {
             BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
@@ -2802,6 +2806,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual bool Insert(SqlConnection connection)
         {
             BeforeInsert(this, new MagnaEventArgs(0, connection));
@@ -2839,6 +2848,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual bool Insert(SqlTransaction transaction)
         {
             BeforeInsert(this, new MagnaEventArgs(0, transaction));
@@ -2876,6 +2890,10 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual async Task<bool> InsertAsync()
         {
             BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
@@ -2913,6 +2931,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual async Task<bool> InsertAsync(SqlConnection connection)
         {
             BeforeInsert(this, new MagnaEventArgs(0, connection));
@@ -2950,6 +2973,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public virtual async Task<bool> InsertAsync(SqlTransaction transaction)
         {
             BeforeInsert(this, new MagnaEventArgs(0, transaction));
@@ -2987,6 +3015,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual bool Update()
         {
             BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
@@ -3011,6 +3044,12 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Update statement against</param>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual bool Update(SqlConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
@@ -3035,6 +3074,12 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Update statement against</param>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual bool Update(SqlTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
@@ -3059,6 +3104,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual async Task<bool> UpdateAsync()
         {
             BeforeUpdate(this, new MagnaEventArgs(0, ConnectionString));
@@ -3083,6 +3133,12 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Update statement against</param>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual async Task<bool> UpdateAsync(SqlConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
@@ -3107,6 +3163,12 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Updates this entity on this class' table using this instance's key property
+        /// by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Update statement against</param>
+        /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
         public virtual async Task<bool> UpdateAsync(SqlTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
@@ -3131,6 +3193,10 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual bool Delete()
         {
             StringBuilder query = new StringBuilder();
@@ -3146,6 +3212,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Delete statement against</param>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual bool Delete(SqlConnection connection)
         {
             StringBuilder query = new StringBuilder();
@@ -3161,6 +3232,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Delete statement against</param>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual bool Delete(SqlTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
@@ -3176,6 +3252,10 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual async Task<bool> DeleteAsync()
         {
             StringBuilder query = new StringBuilder();
@@ -3191,6 +3271,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the Delete statement against</param>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual async Task<bool> DeleteAsync(SqlConnection connection)
         {
             StringBuilder query = new StringBuilder();
@@ -3206,6 +3291,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Deletes this entity from this class' table by using this intance's Key property.
+        /// </summary>
+        /// <param name="transaction">An active SqlTransaction to execute the Delete statement against</param>
+        /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
         public virtual async Task<bool> DeleteAsync(SqlTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
@@ -3221,6 +3311,11 @@ namespace MagnaDB
             return result;
         }
 
+        /// <summary>
+        /// Arranges a Dictionary of this class properties decorated with the DuplicationColumn attribute
+        /// in each of its respective indices.
+        /// </summary>
+        /// <returns>Returns a Dictionary object of Duplication Verification Keys</returns>
         protected Dictionary<int, Dictionary<string, object>> GetDuplicationDictionary()
         {
             Type type = GetType();
@@ -3273,6 +3368,11 @@ namespace MagnaDB
             return keyCompositions;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>
+        /// </summary>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false.</returns>
         public virtual bool IsDuplicated()
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3297,6 +3397,12 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the verification against</param>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
         public virtual bool IsDuplicated(SqlConnection connection)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3321,6 +3427,12 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>.
+        /// </summary>
+        /// <param name="trans">An active SqlTransaction to execute the verification against</param>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
         public virtual bool IsDuplicated(SqlTransaction trans)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3345,6 +3457,11 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>.
+        /// </summary>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
         public virtual async Task<bool> IsDuplicatedAsync()
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3369,6 +3486,12 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the verification against</param>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
         public virtual async Task<bool> IsDuplicatedAsync(SqlConnection connection)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3393,6 +3516,12 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+        /// decorated with the <see cref="DuplicationColumnAttribute"/>.
+        /// </summary>
+        /// <param name="trans">An active SqlTransaction to execute the verification against</param>
+        /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
         public virtual async Task<bool> IsDuplicatedAsync(SqlTransaction trans)
         {
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
@@ -3417,12 +3546,22 @@ namespace MagnaDB
             return count > 0;
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert(IEnumerable<T> tableModels)
         {
             T reference = new T();
             return reference.GroupInsertInner(tableModels);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected bool GroupInsertInner(IEnumerable<T> tableModels)
         {
             if (tableModels.Count() <= 0)
@@ -3442,12 +3581,24 @@ namespace MagnaDB
             return DoQuery(temp.ToString(), ConnectionString);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert(IEnumerable<T> tableModels, SqlConnection connection)
         {
             T reference = new T();
             return reference.GroupInsertInner(tableModels, connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected bool GroupInsertInner(IEnumerable<T> tableModels, SqlConnection connection)
         {
             if (tableModels.Count() <= 0)
@@ -3467,12 +3618,24 @@ namespace MagnaDB
             return DoQuery(temp.ToString(), connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert(IEnumerable<T> tableModels, SqlTransaction transaction)
         {
             T reference = new T();
             return reference.GroupInsertInner(tableModels, transaction);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected bool GroupInsertInner(IEnumerable<T> tableModels, SqlTransaction transaction)
         {
             if (tableModels.Count() <= 0)
@@ -3492,12 +3655,22 @@ namespace MagnaDB
             return DoQuery(temp.ToString(), transaction);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels)
         {
             T reference = new T();
             return await reference.GroupInsertAsyncInner(tableModels);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels)
         {
             if (tableModels.Count() <= 0)
@@ -3517,12 +3690,24 @@ namespace MagnaDB
             return await DoQueryAsync(temp.ToString(), ConnectionString);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SqlConnection connection)
         {
             T reference = new T();
             return await reference.GroupInsertAsyncInner(tableModels, connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SqlConnection connection)
         {
             if (tableModels.Count() <= 0)
@@ -3542,12 +3727,24 @@ namespace MagnaDB
             return await DoQueryAsync(temp.ToString(), connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SqlTransaction transaction)
         {
             T reference = new T();
             return await reference.GroupInsertAsyncInner(tableModels, transaction);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SqlTransaction transaction)
         {
             if (tableModels.Count() <= 0)
@@ -3567,6 +3764,10 @@ namespace MagnaDB
             return await DoQueryAsync(temp.ToString(), transaction);
         }
 
+        /// <summary>
+        /// (beta) Uses this class' properties to create this class' table in the DB.
+        /// </summary>
+        /// <returns>Returns a boolean value indicati</returns>
         public static bool CreateTable()
         {
             T reference = new T();

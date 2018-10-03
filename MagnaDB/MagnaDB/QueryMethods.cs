@@ -8,8 +8,17 @@ using System.Data;
 
 namespace MagnaDB
 {
+    /// <summary>
+    /// This class includes query and statement execution methods.
+    /// </summary>
     public static class QueryMethods
     {
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static bool DoQuery(string query, string connectionString)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -64,6 +73,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the statement against.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static bool DoQuery(string query, SqlConnection connection)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -112,6 +127,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the statement against.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static bool DoQuery(string query, SqlTransaction transaction)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -161,6 +182,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static async Task<bool> DoQueryAsync(string query, string connectionString)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -215,6 +242,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the statement against.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static async Task<bool> DoQueryAsync(string query, SqlConnection connection)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -263,6 +296,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a statement onto a database.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the statement against.</param>
+        /// <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
         public static async Task<bool> DoQueryAsync(string query, SqlTransaction transaction)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -312,6 +351,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static object DoScalar(string query, string connectionString)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -365,6 +410,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static object DoScalar(string query, SqlConnection connection)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -413,6 +464,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the query against.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static object DoScalar(string query, SqlTransaction transaction)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -462,6 +519,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<object> DoScalarAsync(string query, string connectionString)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -516,6 +579,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<object> DoScalarAsync(string query, SqlConnection connection)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -564,6 +633,12 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the query against.</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<object> DoScalarAsync(string query, SqlTransaction transaction)
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -613,6 +688,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connectionString">The Connection String to use.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static DataTable TableMake(string query, string connectionString, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -670,6 +752,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static DataTable TableMake(string query, SqlConnection connection, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -723,6 +812,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the query against.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static DataTable TableMake(string query, SqlTransaction transaction, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -775,6 +871,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<DataTable> TableMakeAsync(string query, string connectionString, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -832,6 +935,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="connection">An open SqlConnection to execute the query against.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<DataTable> TableMakeAsync(string query, SqlConnection connection, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)
@@ -883,6 +993,13 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Executes a query and returns a scalar result.
+        /// </summary>
+        /// <param name="query">The query or statement to execute.</param>
+        /// <param name="transaction">An active SqlTransaction to execute the query against.</param>
+        /// <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+        /// <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
         public static async Task<DataTable> TableMakeAsync(string query, SqlTransaction transaction, string tableName = "")
         {
             for (int x = 0; x < (query.Length - 1); x++)

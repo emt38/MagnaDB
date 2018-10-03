@@ -102,99 +102,243 @@ namespace MagnaDB
             return t.Name;
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A entitiy to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static T LoadRelationships<T>(this T result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, innerModelTypes);
         }
 
-        public static T LoadRelationships<T>(this T result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public static T LoadRelationships<T>(this T result, SqlConnection connection, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
-            return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes);
+            return ViewModel<T>.LoadRelationships(result, connection, innerModelTypes);
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static T LoadRelationships<T>(this T result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, trans, innerModelTypes);
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static async Task<T> LoadRelationshipsAsync<T>(this T result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes));
         }
 
-        public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">An entity to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlConnection connection, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
-            return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes));
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, connection, innerModelTypes));
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+        /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
         public static async Task<T> LoadRelationshipsAsync<T>(this T result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, trans, innerModelTypes));
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
         public static List<T> LoadRelationships<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, innerModelTypes).ToList();
         }
 
-        public static List<T> LoadRelationships<T>(this List<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        public static List<T> LoadRelationships<T>(this List<T> result, SqlConnection connection, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
-            return ViewModel<T>.LoadRelationships(result, gate, innerModelTypes).ToList();
+            return ViewModel<T>.LoadRelationships(result, connection, innerModelTypes).ToList();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
         public static List<T> LoadRelationships<T>(this List<T> result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return ViewModel<T>.LoadRelationships(result, trans, innerModelTypes).ToList();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
         public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, innerModelTypes)).ToList();
         }
 
-        public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, SqlConnection gate, params Type[] innerModelTypes) where T : ViewModel<T>, new()
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="connection">An open SqlConnection to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, SqlConnection connection, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
-            return (await ViewModel<T>.LoadRelationshipsAsync(result, gate, innerModelTypes)).ToList();
+            return (await ViewModel<T>.LoadRelationshipsAsync(result, connection, innerModelTypes)).ToList();
         }
 
+        /// <summary>
+        /// Load foreign properties decorated with the <see cref="ForeignRelationAttribute"/> to an entity or
+        /// collection of entities.
+        /// </summary>
+        /// <param name="result">A collection of entities to load foreign properties to</param>
+        /// <param name="trans">An active SqlTransaction to execute the Select statement against</param>
+        /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+        /// (through properties decored with the ForeignRelation Attribute)</param>
+        /// <returns>Returns a List of the class type with the resulting foreign properties</returns>
         public static async Task<List<T>> LoadRelationshipsAsync<T>(this List<T> result, SqlTransaction trans, params Type[] innerModelTypes) where T : ViewModel<T>, new()
         {
             return (await ViewModel<T>.LoadRelationshipsAsync(result, trans, innerModelTypes)).ToList();
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
         {
             return TableModel<T>.GroupInsert(tableModels);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels, SqlConnection connection) where T : TableModel<T>, new()
         {
             return TableModel<T>.GroupInsert(tableModels, connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static bool GroupInsert<T>(this IEnumerable<T> tableModels, SqlTransaction transaction) where T : TableModel<T>, new()
         {
             return TableModel<T>.GroupInsert(tableModels, transaction);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels) where T : TableModel<T>, new()
         {
             return await TableModel<T>.GroupInsertAsync(tableModels);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="connection">An open SqlConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels, SqlConnection connection) where T : TableModel<T>, new()
         {
             return await TableModel<T>.GroupInsertAsync(tableModels, connection);
         }
 
+        /// <summary>
+        /// Executes an Insert of multiple entities into this class' table.
+        /// </summary>
+        /// <param name="tableModels">A collection of entities of this class</param>
+        /// <param name="transaction">An active SqlTransaction to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
         public static async Task<bool> GroupInsertAsync<T>(this IEnumerable<T> tableModels, SqlTransaction transaction) where T : TableModel<T>, new()
         {
             return await TableModel<T>.GroupInsertAsync(tableModels, transaction);
         }
     }
 
+    /// <summary>
+    /// This class includes utility extensions that are used within the framework and can be also used
+    /// in production code.
+    /// </summary>
     public static class MagnaUtils
     {
+        /// <summary>
+        /// Create a new MagnaKey object by providing lambda expressions returning each property belonging to
+        /// this class' key.
+        /// </summary>
+        /// <typeparam name="T">This class (used as reciprocation)</typeparam>
+        /// <param name="value">A ViewModel or derivate instance</param>
+        /// <param name="properties">The properties composing this class' key</param>
+        /// <returns>Returns a new MagnaKey object</returns>
         public static MagnaKey MakeKey<T>(this T value, params Expression<Func<T, object>>[] properties) where T : ViewModel<T>, new()
         {
             Dictionary<string, object> fieldsValues = new Dictionary<string, object>();
@@ -219,6 +363,11 @@ namespace MagnaDB
             return new MagnaKey(fieldsValues);
         }
 
+        /// <summary>
+        /// Verifies if a given object is a numeric type or derivate.
+        /// </summary>
+        /// <param name="number">The object to have verified.</param>
+        /// <returns>Returns true if the given object is a numeric type. Otherwise, false.</returns>
         public static bool IsNumberType(this object number)
         {
             if (number == null)
@@ -228,7 +377,13 @@ namespace MagnaDB
                     number is sbyte || number is ushort || number is uint || number is ulong ||
                     number is float || number is double || number is decimal);
         }
-
+        /// <summary>
+        /// Tries to retrieve a CustomAttribute from an object.
+        /// </summary>
+        /// <typeparam name="T">The CustomAttribute's type</typeparam>
+        /// <param name="property">The property to retrieve the attribute from.</param>
+        /// <param name="attribute">An out variable to assign the attribute (if found) to</param>
+        /// <returns>Returns a boolean value indicating whether the property had the given attribute or not.</returns>
         public static bool TryGetAttribute<T>(this PropertyInfo property, out T attribute) where T : Attribute
         {
             IEnumerable<T> attributes = property.GetCustomAttributes<T>();
@@ -242,6 +397,11 @@ namespace MagnaDB
             return false;
         }
 
+        /// <summary>
+        /// Verifies if a given type is or inherits from ViewModel
+        /// </summary>
+        /// <param name="t">The type to have verified</param>
+        /// <returns>Returns true if the given type is or inherits from ViewModel. Otherwise, false.</returns>
         public static bool IsViewModel(this Type t)
         {
             if (!t.IsClass || t.IsGenericType)
@@ -260,6 +420,11 @@ namespace MagnaDB
 
         }
 
+        /// <summary>
+        /// Verifies if a given type is an IEnumerable (or derivate) of a type that is or inherits from a ViewModel.
+        /// </summary>
+        /// <param name="t">The type to have verified</param>
+        /// <returns>Returns true if the given type an IEnumerable (or derivate) of a type that is or inherits from a ViewModel. Otherwise, false.</returns>
         public static bool IsViewModelEnumerable(this Type t)
         {
             if (!(t.GenericTypeArguments.Length > 0))
@@ -277,6 +442,11 @@ namespace MagnaDB
             }
         }
 
+        /// <summary>
+        /// Verifies if a given type is a List (or derivate) of a type that is or inherits from a ViewModel.
+        /// </summary>
+        /// <param name="t">The type to have verified</param>
+        /// <returns>Returns true if the given type a List (or derivate) of a type that is or inherits from a ViewModel. Otherwise, false.</returns>
         public static bool IsViewModelList(this Type t)
         {
             if (!(t.GenericTypeArguments.Length > 0))
@@ -308,12 +478,22 @@ namespace MagnaDB
     /// </summary>
     public class MagnaEventArgs : EventArgs
     {
+        /// <summary>
+        /// Create a new instance of a MagnaEventArgs class.
+        /// </summary>
+        /// <param name="nrows">The number of rows affected</param>
+        /// <param name="connectionString">The Connection String used to perform the operation</param>
         public MagnaEventArgs(int nrows, string connectionString)
         {
             RowsAffected = nrows;
             ConnectionString = connectionString;
         }
 
+        /// <summary>
+        /// Create a new instance of a MagnaEventArgs class.
+        /// </summary>
+        /// <param name="nrows">The number of rows affected</param>
+        /// <param name="connection">The SqlConnection used to perform the operation</param>
         public MagnaEventArgs(int nrows, SqlConnection connection)
         {
             RowsAffected = nrows;
@@ -321,6 +501,11 @@ namespace MagnaDB
             ConnectionString = connection.ConnectionString;
         }
 
+        /// <summary>
+        /// Create a new instance of a MagnaEventArgs class.
+        /// </summary>
+        /// <param name="nrows">The number of rows affected</param>
+        /// <param name="transaction">The SqlTransaction used to perform the operation</param>
         public MagnaEventArgs(int nrows, SqlTransaction transaction)
         {
             RowsAffected = nrows;
