@@ -77,6 +77,58 @@ namespace MagnaDB
         }
 
         /// <summary>
+        /// Creates a new SqlConnection object by using this class' connection string. This SqlConnection
+        /// must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
+        /// </summary>
+        /// <returns>Returns a SqlConnection object in an open state</returns>
+        public static SqlConnection CreateOpenConnection()
+        {
+            SqlConnection connection = new SqlConnection(new T().ConnectionString);
+            connection.Open();
+            return connection;
+        }
+
+        /// <summary>
+        /// Creates a new SqlConnection object by using this class' connection string. This SqlConnection
+        /// must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
+        /// </summary>
+        /// <returns>Returns a SqlConnection object in an open state</returns>
+        public static async Task<SqlConnection> CreateOpenConnectionAsync()
+        {
+            SqlConnection connection = new SqlConnection(new T().ConnectionString);
+            await connection.OpenAsync();
+            return connection;
+        }
+
+        /// <summary>
+        /// Creates a SqlTransaction object by using a SqlConnection using this class' connection string.
+        /// This SqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+        /// unnecessary memory use or DB locks. 
+        /// </summary>
+        /// <returns>Returns a Transaction object in an active state</returns>
+        public static SqlTransaction CreateActiveTransaction()
+        {
+            SqlConnection connection = new SqlConnection(new T().ConnectionString);
+            connection.Open();
+            SqlTransaction trans = connection.BeginTransaction();
+            return trans;
+        }
+
+        /// <summary>
+        /// Creates a SqlTransaction object by using a SqlConnection using this class' connection string.
+        /// This SqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+        /// unnecessary memory use or DB locks. 
+        /// </summary>
+        /// <returns>Returns a Transaction object in an active state</returns>
+        public static async Task<SqlTransaction> CreateActiveTransactionAsync()
+        {
+            SqlConnection connection = new SqlConnection(new T().ConnectionString);
+            await connection.OpenAsync();
+            SqlTransaction trans = connection.BeginTransaction();
+            return trans;
+        }
+
+        /// <summary>
         /// Executes a Select Statement using this class' properties as the desired columns
         /// using this class' table and brings the results (if any) back inside a DataTable.
         /// </summary>
