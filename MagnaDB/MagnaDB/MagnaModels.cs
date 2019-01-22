@@ -3934,8 +3934,8 @@ namespace MagnaDB
 
             try
             {
-                bool result = DoQuery(temp.ToString(), reference.ConnectionString);
-                return result;
+                DoQuery(temp.ToString(), reference.ConnectionString);
+                return true;
             }
             catch (Exception ex)
             {
@@ -3984,8 +3984,8 @@ namespace MagnaDB
 
             try
             {
-                bool result = DoQuery(temp.ToString(), connection);
-                return result;
+                DoQuery(temp.ToString(), connection);
+                return true;
             }
             catch (Exception ex)
             {
@@ -4034,8 +4034,8 @@ namespace MagnaDB
 
             try
             {
-                bool result = DoQuery(temp.ToString(), trans);
-                return result;
+                DoQuery(temp.ToString(), trans);
+                return true;
             }
             catch (Exception ex)
             {
