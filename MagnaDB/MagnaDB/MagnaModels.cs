@@ -3911,7 +3911,7 @@ namespace MagnaDB
             
             temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
 
-            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
@@ -3961,7 +3961,7 @@ namespace MagnaDB
 
             temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
 
-            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
@@ -4011,7 +4011,7 @@ namespace MagnaDB
 
             temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
 
-            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
