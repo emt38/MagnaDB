@@ -20,7 +20,7 @@ namespace MagnaDB
         /// </summary>
         Date,
         /// <summary>
-        /// The whole date will beevaluated
+        /// The whole date will be evaluated
         /// </summary>
         DateAndTime,
         /// <summary>

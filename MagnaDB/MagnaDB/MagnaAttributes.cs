@@ -37,6 +37,15 @@ namespace MagnaDB
     }
 
     /// <summary>
+    /// A property decorated with this Attribute will be ignored when creating a table using the CreateTable() method
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class DDLIgnoreAttribute : Attribute
+    {
+        // Presence-Only Attribute
+    }
+
+    /// <summary>
     /// A property decorated with this Attribute will be ignored when invoking
     /// ToIEnumerable(), ToList(), ToDataTable() or Get() methods
     /// </summary>

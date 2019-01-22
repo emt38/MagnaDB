@@ -3424,9 +3424,14 @@ namespace MagnaDB
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>
         /// </summary>
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false.</returns>
-        public virtual bool IsDuplicated()
+        public virtual bool IsDuplicated(int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3435,10 +3440,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3454,9 +3467,14 @@ namespace MagnaDB
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
         /// <param name="connection">An open SqlConnection to execute the verification against</param>
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual bool IsDuplicated(SqlConnection connection)
+        public virtual bool IsDuplicated(SqlConnection connection, int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3465,10 +3483,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3483,10 +3509,15 @@ namespace MagnaDB
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
-        /// <param name="trans">An active SqlTransaction to execute the verification against</param>
+        /// <param name="trans">An active SqlTransaction to execute the verification against</param>        
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual bool IsDuplicated(SqlTransaction trans)
+        public virtual bool IsDuplicated(SqlTransaction trans, int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3495,10 +3526,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3513,9 +3552,14 @@ namespace MagnaDB
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual async Task<bool> IsDuplicatedAsync()
+        public virtual async Task<bool> IsDuplicatedAsync(int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3524,10 +3568,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3542,10 +3594,15 @@ namespace MagnaDB
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <param name="connection">An open SqlConnection to execute the verification against</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual async Task<bool> IsDuplicatedAsync(SqlConnection connection)
+        public virtual async Task<bool> IsDuplicatedAsync(SqlConnection connection, int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3554,10 +3611,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3572,10 +3637,15 @@ namespace MagnaDB
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
+        /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+        /// -1 if all duplication indexes will be evaluated</param>
         /// <param name="trans">An active SqlTransaction to execute the verification against</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual async Task<bool> IsDuplicatedAsync(SqlTransaction trans)
+        public virtual async Task<bool> IsDuplicatedAsync(SqlTransaction trans, int duplicationIndex = -1)
         {
+            if (duplicationIndex < -1)
+                return false;
+
             Dictionary<int, Dictionary<string, object>> llaves = GetDuplicationDictionary();
 
             if (llaves.Count <= 0)
@@ -3584,10 +3654,18 @@ namespace MagnaDB
             StringBuilder temp = new StringBuilder();
             temp.AppendFormat("SELECT COUNT(*) FROM {0} WHERE (", TableName);
 
-            foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+            if (duplicationIndex == -1)
             {
-                temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                foreach (KeyValuePair<int, Dictionary<string, object>> item in llaves)
+                {
+                    temp.AppendFormat("({0}) OR", GenWhere(item.Value, false));
+                }
             }
+            else
+            {
+                temp.AppendFormat("({0}) OR", GenWhere(llaves[duplicationIndex], false));
+            }
+
             temp.Remove(temp.Length - 3, 3);
             temp.Append(") ");
 
@@ -3817,9 +3895,9 @@ namespace MagnaDB
         }
 
         /// <summary>
-        /// (beta) Uses this class' properties to create this class' table in the DB.
+        /// Uses this class' properties to create a mapped table for this class in the DB.
         /// </summary>
-        /// <returns>Returns a boolean value indicati</returns>
+        /// <returns>Returns true if the table was successfully created.</returns>
         public static bool CreateTable()
         {
             T reference = new T();
@@ -3827,18 +3905,31 @@ namespace MagnaDB
             Type tipo = reference.GetType();
             IdentityAttribute identidad;
             ColumnNameAttribute columnName;
+            DateTimeTypeAttribute dateAttribute;
 
+            MagnaKey key = reference.GetKey();
+            
             temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
 
-            foreach (PropertyInfo property in tipo.GetProperties())
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
             {
-                property.TryGetAttribute(out identidad);
+                bool isIdentity = property.TryGetAttribute(out identidad);
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
+                dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
 
-                temp.AppendFormat(" {0} {1} {2}, ", columnName?.Name ?? property.Name, property.PropertyType.ToSqlTypeNameString(), (property.PropertyType == typeof(Nullable<>) || property.PropertyType.IsClass) ? "NULL" : "NOT NULL");
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSqlTypeNameString(), (property.PropertyType == typeof(Nullable<>) || property.PropertyType.IsClass) ? "NULL" : "NOT NULL", isIdentity ? " IDENTITY(1,1)" : "");
             }
-
+            
             temp = temp.Remove(temp.Length - 2, 2);
+
+            StringBuilder keySB = new StringBuilder();
+            foreach (var item in key.KeyDictionary)
+            {
+                keySB.AppendFormat("{0},", item.Key);
+            }
+            keySB = keySB.Remove(keySB.Length - 1, 1);
+
+            temp.AppendFormat("\n{0}\n", keySB.ToString());
             temp.Append(" )");
 
             try
