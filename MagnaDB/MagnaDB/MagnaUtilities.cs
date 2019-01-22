@@ -70,12 +70,31 @@ namespace MagnaDB
     public static class ModelExtensions
     {
         /// <summary>
+        /// Determines whether the given type is a Nullable type or not
+        /// </summary>
+        /// <param name="t">The type to evaluate</param>
+        /// <returns>Returns true if the given type is a Nullable definition. Otherwise, false.</returns>
+        public static bool IsNullable(this Type t)
+        {
+            return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        /// <summary>
         /// Gets the specified Sql Type equivalent of the given Type
         /// </summary>
         /// <param name="t">The type to evaluate</param>
         /// <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
         public static string ToSqlTypeNameString(this Type t)
         {
+            if (t.IsNullable())
+            {
+                return ToSqlTypeNameString(Nullable.GetUnderlyingType(t));
+            }
+            if (t.IsEnum)
+            {
+                return ToSqlTypeNameString(Enum.GetUnderlyingType(t));
+            }
+
             if (t == typeof(byte))
                 return "TINYINT";
             if (t == typeof(double))

@@ -2099,7 +2099,7 @@ namespace MagnaDB
                     if (value is DBNull)
                         value = null;
 
-                    if (p.PropertyType == typeof(Nullable<>))
+                    if (p.PropertyType.IsNullable())
                     {
                         possibleEnum = Nullable.GetUnderlyingType(p.PropertyType);
 
@@ -2246,7 +2246,7 @@ namespace MagnaDB
                     if (value is DBNull)
                         value = null;
 
-                    if (p.PropertyType == typeof(Nullable<>))
+                    if (p.PropertyType.IsNullable())
                     {
                         possibleEnum = Nullable.GetUnderlyingType(p.PropertyType);
 
@@ -2393,7 +2393,7 @@ namespace MagnaDB
                     if (value is DBNull)
                         value = null;
 
-                    if (p.PropertyType == typeof(Nullable<>))
+                    if (p.PropertyType.IsNullable())
                     {
                         possibleEnum = Nullable.GetUnderlyingType(p.PropertyType);
 
@@ -2543,7 +2543,7 @@ namespace MagnaDB
                     if (value is DBNull)
                         value = null;
 
-                    if (p.PropertyType == typeof(Nullable<>))
+                    if (p.PropertyType.IsNullable())
                     {
                         possibleEnum = Nullable.GetUnderlyingType(p.PropertyType);
 
@@ -3917,7 +3917,7 @@ namespace MagnaDB
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
                 dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
 
-                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSqlTypeNameString(), (property.PropertyType == typeof(Nullable<>) || property.PropertyType.IsClass) ? "NULL" : "NOT NULL", isIdentity ? " IDENTITY(1,1)" : "");
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "NULL" : "NOT NULL", isIdentity ? " IDENTITY(1,1)" : "");
             }
             
             temp = temp.Remove(temp.Length - 2, 2);
@@ -3929,12 +3929,112 @@ namespace MagnaDB
             }
             keySB = keySB.Remove(keySB.Length - 1, 1);
 
-            temp.AppendFormat("\n{0}\n", keySB.ToString());
+            temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
             temp.Append(" )");
 
             try
             {
                 bool result = DoQuery(temp.ToString(), reference.ConnectionString);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Uses this class' properties to create a mapped table for this class in the DB.
+        /// </summary>
+        /// <param name="connection">An open SqlConnection to execute the CREATE TABLE statement against</param>
+        /// <returns>Returns true if the table was successfully created.</returns>
+        public static bool CreateTable(SqlConnection connection)
+        {
+            T reference = new T();
+            StringBuilder temp = new StringBuilder();
+            Type tipo = reference.GetType();
+            IdentityAttribute identidad;
+            ColumnNameAttribute columnName;
+            DateTimeTypeAttribute dateAttribute;
+
+            MagnaKey key = reference.GetKey();
+
+            temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
+
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
+            {
+                bool isIdentity = property.TryGetAttribute(out identidad);
+                columnName = property.GetCustomAttribute<ColumnNameAttribute>();
+                dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
+
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "NULL" : "NOT NULL", isIdentity ? " IDENTITY(1,1)" : "");
+            }
+
+            temp = temp.Remove(temp.Length - 2, 2);
+
+            StringBuilder keySB = new StringBuilder();
+            foreach (var item in key.KeyDictionary)
+            {
+                keySB.AppendFormat("{0},", item.Key);
+            }
+            keySB = keySB.Remove(keySB.Length - 1, 1);
+
+            temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+            temp.Append(" )");
+
+            try
+            {
+                bool result = DoQuery(temp.ToString(), connection);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Uses this class' properties to create a mapped table for this class in the DB.
+        /// </summary>
+        /// <param name="trans">An active SqlTransaction to execute the CREATE TABLE statement against</param>
+        /// <returns>Returns true if the table was successfully created.</returns>
+        public static bool CreateTable(SqlTransaction trans)
+        {
+            T reference = new T();
+            StringBuilder temp = new StringBuilder();
+            Type tipo = reference.GetType();
+            IdentityAttribute identidad;
+            ColumnNameAttribute columnName;
+            DateTimeTypeAttribute dateAttribute;
+
+            MagnaKey key = reference.GetKey();
+
+            temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
+
+            foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignKeyConstraint)))
+            {
+                bool isIdentity = property.TryGetAttribute(out identidad);
+                columnName = property.GetCustomAttribute<ColumnNameAttribute>();
+                dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
+
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "NULL" : "NOT NULL", isIdentity ? " IDENTITY(1,1)" : "");
+            }
+
+            temp = temp.Remove(temp.Length - 2, 2);
+
+            StringBuilder keySB = new StringBuilder();
+            foreach (var item in key.KeyDictionary)
+            {
+                keySB.AppendFormat("{0},", item.Key);
+            }
+            keySB = keySB.Remove(keySB.Length - 1, 1);
+
+            temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+            temp.Append(" )");
+
+            try
+            {
+                bool result = DoQuery(temp.ToString(), trans);
                 return result;
             }
             catch (Exception ex)

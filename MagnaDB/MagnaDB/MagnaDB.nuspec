@@ -3,7 +3,7 @@
   <metadata>
     <id>MagnaDB</id>
     <title>MagnaDB Framework</title>
-    <version>1.0</version>
+    <version>1.1.1</version>
     <authors>emt38</authors>
     <owners>emt38</owners>
     <licenseUrl>https://github.com/emt38/MagnaDB/blob/master/LICENSE</licenseUrl>
@@ -11,8 +11,8 @@
     <iconUrl>http://i66.tinypic.com/28vrmaa.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This Package includes the MagnaDB Framework Library which consists of Object-Oriented Data Manipulation Tools in .NET Framework</description>
-    <releaseNotes>Added full documentation</releaseNotes>
-    <summary>Documentation can now be read by using the class explorer or hovering over elements</summary>
+    <releaseNotes>Fixed bugs with CreateTable() and added overloads</releaseNotes>
+    <summary>Now it's possible to evaluate separate indexes when using the IsDuplicated() method, and also improved table creation when using the CreateTable() method support primary keys and identity specifications</summary>
     <copyright>Copyright emt38 2016</copyright>
     <tags>Data emt38 Sql Model Binding Magna DB NET Microsoft Data Tools</tags>
   </metadata>
