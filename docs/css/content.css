@@ -1,0 +1,17 @@
+.body-content {
+    margin-top: 80px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.bevel {
+    background-color: #FFF;
+    border-bottom-style:solid;
+    border-bottom-width: 8px;
+    border-bottom-color: #EAEAEA;
+    border-radius: 12px;
+}
+
+.bevel-content {
+    padding: 20px;
+}
