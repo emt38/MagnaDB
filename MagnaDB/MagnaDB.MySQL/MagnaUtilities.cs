@@ -285,7 +285,7 @@ namespace MagnaDB.MySQL
             if (t == typeof(ushort))
                 return "smallint unsigned";
             if (t == typeof(string))
-                return "nvarchar(256)";
+                return "varchar(256)";
             if (t == typeof(bool))
                 return "boolean";
             if (t == typeof(char))
@@ -302,6 +302,48 @@ namespace MagnaDB.MySQL
                 return "int unsigned";
             if (t == typeof(decimal))
                 return "decimal";
+
+            return t.Name;
+        }
+
+        /// <summary>
+        /// Gets the specified SQLite Type equivalent of the given Type
+        /// </summary>
+        /// <param name="t">The type to evaluate</param>
+        /// <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
+        public static string ToSQLiteTypeNameString(this Type t)
+        {
+            if (t.IsNullable())
+            {
+                return ToSQLiteTypeNameString(Nullable.GetUnderlyingType(t));
+            }
+            if (t.IsEnum)
+            {
+                return ToSQLiteTypeNameString(Enum.GetUnderlyingType(t));
+            }
+
+            if (t == typeof(byte))
+                return "INTEGER";
+            if (t == typeof(double))
+                return "REAL";
+            if (t == typeof(long))
+                return "INTEGER";
+            if (t == typeof(short))
+                return "INTEGER";
+            if (t == typeof(string))
+                return "TEXT";
+            if (t == typeof(bool))
+                return "INTEGER";
+            if (t == typeof(char))
+                return "TEXT";
+            if (t == typeof(DateTimeOffset))
+                return "TEXT";
+            if (t == typeof(byte[]))
+                return "BLOB";
+            if (t == typeof(float))
+                return "REAL";
+            if (t == typeof(int))
+                return "INTEGER";
 
             return t.Name;
         }

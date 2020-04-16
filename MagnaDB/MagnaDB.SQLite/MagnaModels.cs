@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using static MagnaDB.MySQL.QueryMethods;
-using static MagnaDB.MySQL.SqlGenerator;
-using MySql.Data.MySqlClient;
+using System.Data.SQLite;
+using static MagnaDB.SQLite.QueryMethods;
+using static MagnaDB.SQLite.SqlGenerator;
 
-namespace MagnaDB.MySQL
+namespace MagnaDB.SQLite
 {
     /// <summary>
     /// This class represents an entity model that can only be retrieved from the DB, but can't be inserted,
@@ -77,54 +77,55 @@ namespace MagnaDB.MySQL
         }
 
         /// <summary>
-        /// Creates a new MySqlConnection object by using this class' connection string. This MySqlConnection
+        /// Creates a new SQLiteConnection object by using this class' connection string. This SQLiteConnection
         /// must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
         /// </summary>
-        /// <returns>Returns a MySqlConnection object in an open state</returns>
-        public static MySqlConnection CreateOpenConnection()
+        /// <returns>Returns a SQLiteConnection object in an open state</returns>
+        public static SQLiteConnection CreateOpenConnection()
         {
-            MySqlConnection connection = new MySqlConnection(new T().ConnectionString);
+            SQLiteConnection connection = new SQLiteConnection(new T().ConnectionString);
             connection.Open();
             return connection;
         }
 
         /// <summary>
-        /// Creates a new MySqlConnection object by using this class' connection string. This MySqlConnection
+        /// Creates a new SQLiteConnection object by using this class' connection string. This SQLiteConnection
         /// must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
         /// </summary>
-        /// <returns>Returns a MySqlConnection object in an open state</returns>
-        public static async Task<MySqlConnection> CreateOpenConnectionAsync()
+        /// <returns>Returns a SQLiteConnection object in an open state</returns>
+        public static async Task<SQLiteConnection> CreateOpenConnectionAsync()
         {
-            MySqlConnection connection = new MySqlConnection(new T().ConnectionString);
+            SQLiteConnection connection = new SQLiteConnection(new T().ConnectionString);
             await connection.OpenAsync();
+
             return connection;
         }
 
         /// <summary>
-        /// Creates a MySqlTransaction object by using a MySqlConnection using this class' connection string.
-        /// This MySqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+        /// Creates a SQLiteTransaction object by using a SQLiteConnection using this class' connection string.
+        /// This SQLiteTransaction must be correctly commited/rolled back and disposed after use to prevent
         /// unnecessary memory use or DB locks. 
         /// </summary>
         /// <returns>Returns a Transaction object in an active state</returns>
-        public static MySqlTransaction CreateActiveTransaction()
+        public static SQLiteTransaction CreateActiveTransaction()
         {
-            MySqlConnection connection = new MySqlConnection(new T().ConnectionString);
+            SQLiteConnection connection = new SQLiteConnection(new T().ConnectionString);
             connection.Open();
-            MySqlTransaction trans = connection.BeginTransaction();
+            SQLiteTransaction trans = connection.BeginTransaction();
             return trans;
         }
 
         /// <summary>
-        /// Creates a MySqlTransaction object by using a MySqlConnection using this class' connection string.
-        /// This MySqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+        /// Creates a SQLiteTransaction object by using a SQLiteConnection using this class' connection string.
+        /// This SQLiteTransaction must be correctly commited/rolled back and disposed after use to prevent
         /// unnecessary memory use or DB locks. 
         /// </summary>
         /// <returns>Returns a Transaction object in an active state</returns>
-        public static async Task<MySqlTransaction> CreateActiveTransactionAsync()
+        public static async Task<SQLiteTransaction> CreateActiveTransactionAsync()
         {
-            MySqlConnection connection = new MySqlConnection(new T().ConnectionString);
+            SQLiteConnection connection = new SQLiteConnection(new T().ConnectionString);
             await connection.OpenAsync();
-            MySqlTransaction trans = connection.BeginTransaction();
+            SQLiteTransaction trans = connection.BeginTransaction();
             return trans;
         }
 
@@ -167,12 +168,12 @@ namespace MagnaDB.MySQL
         /// Executes a Select Statement using this class' properties as the desired columns
         /// using this class' table and brings the results (if any) back inside a DataTable.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement Against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement Against</param>
         /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
-        public static DataTable ToDataTable(MySqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
+        public static DataTable ToDataTable(SQLiteConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
 
@@ -203,12 +204,12 @@ namespace MagnaDB.MySQL
         /// Executes a Select Statement using this class' properties as the desired columns
         /// using this class' table and brings the results (if any) back inside a DataTable.
         /// </summary>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement Against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement Against</param>
         /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
-        public static DataTable ToDataTable(MySqlTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
+        public static DataTable ToDataTable(SQLiteTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
 
@@ -274,12 +275,12 @@ namespace MagnaDB.MySQL
         /// Executes a Select Statement using this class' properties as the desired columns
         /// using this class' table and brings the results (if any) back inside a DataTable.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement Against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement Against</param>
         /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
-        public static async Task<DataTable> ToDataTableAsync(MySqlConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
+        public static async Task<DataTable> ToDataTableAsync(SQLiteConnection connection, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
 
@@ -310,12 +311,12 @@ namespace MagnaDB.MySQL
         /// Executes a Select Statement using this class' properties as the desired columns
         /// using this class' table and brings the results (if any) back inside a DataTable.
         /// </summary>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement Against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement Against</param>
         /// <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
-        public static async Task<DataTable> ToDataTableAsync(MySqlTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
+        public static async Task<DataTable> ToDataTableAsync(SQLiteTransaction trans, bool displayableOnly = true, string extraConditions = "", params object[] values)
         {
             T reference = new T();
 
@@ -349,9 +350,9 @@ namespace MagnaDB.MySQL
         /// <param name="data">The DataRow array containing the information to be transformed</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="connection">An Open MySqlConnection to execute statements against.</param>
+        /// <param name="connection">An Open SQLiteConnection to execute statements against.</param>
         /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
-        public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, MySqlConnection connection)
+        public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, SQLiteConnection connection)
         {
             return Transform(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), connection, innerModelTypes);
         }
@@ -363,9 +364,9 @@ namespace MagnaDB.MySQL
         /// <param name="data">The DataRow array containing the information to be transformed</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="connection">An Open MySqlConnection to execute statements against.</param>
+        /// <param name="connection">An Open SQLiteConnection to execute statements against.</param>
         /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
-        public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, MySqlConnection connection)
+        public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, SQLiteConnection connection)
         {
             return await TransformAsync(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), connection, innerModelTypes);
         }
@@ -377,9 +378,9 @@ namespace MagnaDB.MySQL
         /// <param name="data">The DataRow array containing the information to be transformed</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="trans">An Active MySqlTransaction to execute statements against.</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute statements against.</param>
         /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
-        public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, MySqlTransaction trans)
+        public static IEnumerable<T> TableToIEnumerable(DataRow[] data, Type[] innerModelTypes, SQLiteTransaction trans)
         {
             return Transform(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), trans, innerModelTypes);
         }
@@ -391,10 +392,10 @@ namespace MagnaDB.MySQL
         /// <param name="data">The DataRow array containing the information to be transformed</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="trans">An Active MySqlTransaction to execute statements against.</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute statements against.</param>
         /// <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
 
-        public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, MySqlTransaction trans)
+        public static async Task<IEnumerable<T>> TableToIEnumerableAsync(DataRow[] data, Type[] innerModelTypes, SQLiteTransaction trans)
         {
             return await TransformAsync(data, new T().FilterProperties(PresenceBehavior.ExcludeAll, typeof(SelectIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(ForeignRelationAttribute)), trans, innerModelTypes);
         }
@@ -422,7 +423,7 @@ namespace MagnaDB.MySQL
         public static IEnumerable<T> ToIEnumerable(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T temp = new T();
-            using (MySqlConnection gate = new MySqlConnection(temp.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(temp.ConnectionString))
             {
                 gate.Open();
                 IEnumerable<T> res = temp.ToIEnumerableInner(gate, innerModelTypes, extraConditions, values);
@@ -434,11 +435,11 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static IEnumerable<T> ToIEnumerable(MySqlConnection connection, string extraConditions = "", params object[] values)
+        public static IEnumerable<T> ToIEnumerable(SQLiteConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(connection, new Type[0], extraConditions, values);
@@ -449,11 +450,11 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static IEnumerable<T> ToIEnumerable(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static IEnumerable<T> ToIEnumerable(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(connection, innerModelTypes, extraConditions, values);
@@ -462,11 +463,11 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static IEnumerable<T> ToIEnumerable(MySqlTransaction trans, string extraConditions = "", params object[] values)
+        public static IEnumerable<T> ToIEnumerable(SQLiteTransaction trans, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(trans, new Type[0], extraConditions, values);
@@ -475,13 +476,13 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static IEnumerable<T> ToIEnumerable(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static IEnumerable<T> ToIEnumerable(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return reference.ToIEnumerableInner(trans, innerModelTypes, extraConditions, values);
@@ -492,11 +493,11 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        protected IEnumerable<T> ToIEnumerableInner(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        protected IEnumerable<T> ToIEnumerableInner(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
@@ -525,13 +526,13 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        protected IEnumerable<T> ToIEnumerableInner(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        protected IEnumerable<T> ToIEnumerableInner(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
@@ -580,7 +581,7 @@ namespace MagnaDB.MySQL
         public static async Task<IEnumerable<T>> ToIEnumerableAsync(Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 IEnumerable<T> res = await reference.ToIEnumerableAsyncInner(gate, innerModelTypes, extraConditions, values);
@@ -592,11 +593,11 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync(MySqlConnection connection, string extraConditions = "", params object[] values)
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(SQLiteConnection connection, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(connection, new Type[0], extraConditions, values);
@@ -605,13 +606,13 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(connection, innerModelTypes, extraConditions, values);
@@ -622,11 +623,11 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
@@ -655,11 +656,11 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync(MySqlTransaction trans, string extraConditions = "", params object[] values)
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(SQLiteTransaction trans, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(trans, new Type[0], extraConditions, values);
@@ -668,13 +669,13 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<IEnumerable<T>> ToIEnumerableAsync(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static async Task<IEnumerable<T>> ToIEnumerableAsync(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             T reference = new T();
             return await reference.ToIEnumerableAsyncInner(trans, innerModelTypes, extraConditions, values);
@@ -683,13 +684,13 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Executes a Select statement onto this class' table and retrieves its results from the DB.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        protected async Task<IEnumerable<T>> ToIEnumerableAsyncInner(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
@@ -737,7 +738,7 @@ namespace MagnaDB.MySQL
             }
 
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.Open();
                 T res = reference.GetInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
@@ -750,11 +751,11 @@ namespace MagnaDB.MySQL
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
         /// <param name="id">This entity's identity value.</param>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlConnection connection, long id, params Type[] innerModelTypes)
+        public static T Get(SQLiteConnection connection, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -777,11 +778,11 @@ namespace MagnaDB.MySQL
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
         /// <param name="id">This entity's identity value.</param>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlTransaction trans, long id, params Type[] innerModelTypes)
+        public static T Get(SQLiteTransaction trans, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -822,7 +823,7 @@ namespace MagnaDB.MySQL
             }
 
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 T res = await reference.GetAsyncInner(gate, new Dictionary<string, object>() { { idColumn, id } }, innerModelTypes);
@@ -835,11 +836,11 @@ namespace MagnaDB.MySQL
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
         /// <param name="id">This entity's identity value.</param>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlConnection connection, long id, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteConnection connection, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -862,11 +863,11 @@ namespace MagnaDB.MySQL
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
         /// <param name="id">This entity's identity value.</param>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlTransaction trans, long id, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteTransaction trans, long id, params Type[] innerModelTypes)
         {
             Type t = typeof(T);
             IdentityAttribute identityField;
@@ -895,7 +896,7 @@ namespace MagnaDB.MySQL
         public static T Get(IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.Open();
                 T res = reference.GetInner(gate, key, innerModelTypes);
@@ -907,12 +908,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
+        public static T Get(SQLiteConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, key, innerModelTypes);
@@ -921,12 +922,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
+        public static T Get(SQLiteTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, key, innerModelTypes);
@@ -935,12 +936,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An Open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        protected T GetInner(MySqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
+        protected T GetInner(SQLiteConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
 
@@ -964,12 +965,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        protected T GetInner(MySqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
+        protected T GetInner(SQLiteTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
 
@@ -1000,7 +1001,7 @@ namespace MagnaDB.MySQL
         public static T Get(T model, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.Open();
                 T res = reference.GetInner(gate, model.Key.KeyDictionary, innerModelTypes);
@@ -1012,12 +1013,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="model">A data entity of this same class</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlConnection connection, T model, params Type[] innerModelTypes)
+        public static T Get(SQLiteConnection connection, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, model.Key.KeyDictionary, innerModelTypes);
@@ -1026,12 +1027,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="model">A data entity of this same class</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlTransaction trans, T model, params Type[] innerModelTypes)
+        public static T Get(SQLiteTransaction trans, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, model.Key.KeyDictionary, innerModelTypes);
@@ -1047,7 +1048,7 @@ namespace MagnaDB.MySQL
         public static T Get(MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.Open();
                 T res = reference.GetInner(gate, key.KeyDictionary, innerModelTypes);
@@ -1059,12 +1060,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlConnection connection, MagnaKey key, params Type[] innerModelTypes)
+        public static T Get(SQLiteConnection connection, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(connection, key.KeyDictionary, innerModelTypes);
@@ -1073,12 +1074,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static T Get(MySqlTransaction trans, MagnaKey key, params Type[] innerModelTypes)
+        public static T Get(SQLiteTransaction trans, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return reference.GetInner(trans, key.KeyDictionary, innerModelTypes);
@@ -1094,7 +1095,7 @@ namespace MagnaDB.MySQL
         public static async Task<T> GetAsync(IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 T res = await reference.GetAsyncInner(gate, key, innerModelTypes);
@@ -1106,12 +1107,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, key, innerModelTypes);
@@ -1120,12 +1121,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, key, innerModelTypes);
@@ -1134,12 +1135,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        protected async Task<T> GetAsyncInner(MySqlConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
+        protected async Task<T> GetAsyncInner(SQLiteConnection connection, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
 
@@ -1163,12 +1164,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        protected async Task<T> GetAsyncInner(MySqlTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
+        protected async Task<T> GetAsyncInner(SQLiteTransaction trans, IDictionary<string, object> key, params Type[] innerModelTypes)
         {
             T reference = new T();
 
@@ -1199,7 +1200,7 @@ namespace MagnaDB.MySQL
         public static async Task<T> GetAsync(T model, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 T res = await reference.GetAsyncInner(gate, model.Key.KeyDictionary, innerModelTypes);
@@ -1211,12 +1212,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="model">A data entity of this same class</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlConnection connection, T model, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteConnection connection, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, model.Key.KeyDictionary, innerModelTypes);
@@ -1225,12 +1226,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="model">A data entity of this same class</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlTransaction trans, T model, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteTransaction trans, T model, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, model.Key.KeyDictionary, innerModelTypes);
@@ -1246,7 +1247,7 @@ namespace MagnaDB.MySQL
         public static async Task<T> GetAsync(MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 T res = await reference.GetAsyncInner(gate, key.KeyDictionary, innerModelTypes);
@@ -1258,12 +1259,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlConnection connection, MagnaKey key, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteConnection connection, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(connection, key.KeyDictionary, innerModelTypes);
@@ -1272,12 +1273,12 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Retrieve an entity stored in a table row by providing the neccessary key info.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <returns>An entity of this class corresponding the key provided</returns>
-        public static async Task<T> GetAsync(MySqlTransaction trans, MagnaKey key, params Type[] innerModelTypes)
+        public static async Task<T> GetAsync(SQLiteTransaction trans, MagnaKey key, params Type[] innerModelTypes)
         {
             T reference = new T();
             return await reference.GetAsyncInner(trans, key.KeyDictionary, innerModelTypes);
@@ -1313,11 +1314,11 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static List<T> ToList(MySqlConnection connection, string extraConditions = "", params object[] values)
+        public static List<T> ToList(SQLiteConnection connection, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(connection, Type.EmptyTypes, extraConditions, values).ToList();
         }
@@ -1326,13 +1327,13 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a List of the class' type filled with the results found</returns>
-        public static List<T> ToList(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static List<T> ToList(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(connection, innerModelTypes, extraConditions, values).ToList();
         }
@@ -1341,11 +1342,11 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a List of the class' type filled with the results found</returns>
-        public static List<T> ToList(MySqlTransaction trans, string extraConditions = "", params object[] values)
+        public static List<T> ToList(SQLiteTransaction trans, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(trans, Type.EmptyTypes, extraConditions, values).ToList();
         }
@@ -1354,13 +1355,13 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a List of the class' type filled with the results found</returns>
-        public static List<T> ToList(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static List<T> ToList(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return ToIEnumerable(trans, innerModelTypes, extraConditions, values).ToList();
         }
@@ -1395,11 +1396,11 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<List<T>> ToListAsync(MySqlConnection connection, string extraConditions = "", params object[] values)
+        public static async Task<List<T>> ToListAsync(SQLiteConnection connection, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(connection, Type.EmptyTypes, extraConditions, values)).ToList();
         }
@@ -1408,13 +1409,13 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
-        public static async Task<List<T>> ToListAsync(MySqlConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static async Task<List<T>> ToListAsync(SQLiteConnection connection, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(connection, innerModelTypes, extraConditions, values)).ToList();
         }
@@ -1423,11 +1424,11 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a List of the class' type filled with the results found</returns>
-        public static async Task<List<T>> ToListAsync(MySqlTransaction trans, string extraConditions = "", params object[] values)
+        public static async Task<List<T>> ToListAsync(SQLiteTransaction trans, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(trans, Type.EmptyTypes, extraConditions, values)).ToList();
         }
@@ -1436,13 +1437,13 @@ namespace MagnaDB.MySQL
         /// Executes a Sql statement onto this class' table and obtains a List of entities of this class
         /// according to the specified criteria.
         /// </summary>
-        /// <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An Active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
         /// (through properties decored with the ForeignRelation Attribute)</param>
         /// <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
         /// <param name="values">Values to be formatted onto the extraConditions string</param>
         /// <returns>Returns a List of the class' type filled with the results found</returns>
-        public static async Task<List<T>> ToListAsync(MySqlTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
+        public static async Task<List<T>> ToListAsync(SQLiteTransaction trans, Type[] innerModelTypes, string extraConditions = "", params object[] values)
         {
             return (await ToIEnumerableAsync(trans, innerModelTypes, extraConditions, values)).ToList();
         }
@@ -1458,7 +1459,7 @@ namespace MagnaDB.MySQL
         {
             T reference = new T();
             IEnumerable<T> res;
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.Open();
                 res = LoadRelationships(result, gate, innerModelTypes);
@@ -1472,10 +1473,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">A collection of entities to load foreign properties to</param>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, MySqlConnection connection, params Type[] innerModelTypes)
+        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SQLiteConnection connection, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1580,10 +1581,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">A collection of entities to load foreign properties to</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, MySqlTransaction trans, params Type[] innerModelTypes)
+        public static IEnumerable<T> LoadRelationships(IEnumerable<T> result, SQLiteTransaction trans, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1694,7 +1695,7 @@ namespace MagnaDB.MySQL
         {
             T reference = new T();
             IEnumerable<T> res;
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 res = await LoadRelationshipsAsync(result, gate, innerModelTypes);
@@ -1708,10 +1709,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">A collection of entities to load foreign properties to</param>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, MySqlConnection connection, params Type[] innerModelTypes)
+        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SQLiteConnection connection, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1819,10 +1820,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">A collection of entities to load foreign properties to</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, MySqlTransaction trans, params Type[] innerModelTypes)
+        public async static Task<IEnumerable<T>> LoadRelationshipsAsync(IEnumerable<T> result, SQLiteTransaction trans, params Type[] innerModelTypes)
         {
             ForeignRelationAttribute fr;
             MethodInfo methodInvoker;
@@ -1936,7 +1937,7 @@ namespace MagnaDB.MySQL
         {
             T reference = new T();
             IEnumerable<T> res;
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 gate.OpenAsync();
                 res = LoadRelationships(new List<T>() { result }, gate, innerModelTypes);
@@ -1950,10 +1951,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">An entity to load foreign properties to</param>
-        /// <param name="connection">An active MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An active SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public static T LoadRelationships(T result, MySqlConnection connection, params Type[] innerModelTypes)
+        public static T LoadRelationships(T result, SQLiteConnection connection, params Type[] innerModelTypes)
         {
             return LoadRelationships(new List<T>() { result }, connection, innerModelTypes).FirstOrDefault();
         }
@@ -1963,10 +1964,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">An entity to load foreign properties to</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public static T LoadRelationships(T result, MySqlTransaction trans, params Type[] innerModelTypes)
+        public static T LoadRelationships(T result, SQLiteTransaction trans, params Type[] innerModelTypes)
         {
             return LoadRelationships(new List<T>() { result }, trans, innerModelTypes).FirstOrDefault();
         }
@@ -1982,7 +1983,7 @@ namespace MagnaDB.MySQL
         {
             T reference = new T();
             IEnumerable<T> res;
-            using (MySqlConnection gate = new MySqlConnection(reference.ConnectionString))
+            using (SQLiteConnection gate = new SQLiteConnection(reference.ConnectionString))
             {
                 await gate.OpenAsync();
                 res = await LoadRelationshipsAsync(new List<T>() { result }, gate, innerModelTypes);
@@ -1996,10 +1997,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">An entity to load foreign properties to</param>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public async static Task<T> LoadRelationshipsAsync(T result, MySqlConnection connection, params Type[] innerModelTypes)
+        public async static Task<T> LoadRelationshipsAsync(T result, SQLiteConnection connection, params Type[] innerModelTypes)
         {
             return (await LoadRelationshipsAsync(new List<T>() { result }, connection, innerModelTypes)).FirstOrDefault();
         }
@@ -2009,10 +2010,10 @@ namespace MagnaDB.MySQL
         /// collection of entities.
         /// </summary>
         /// <param name="result">A collection of entities to load foreign properties to</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
-        public async static Task<T> LoadRelationshipsAsync(T result, MySqlTransaction trans, params Type[] innerModelTypes)
+        public async static Task<T> LoadRelationshipsAsync(T result, SQLiteTransaction trans, params Type[] innerModelTypes)
         {
             return (await LoadRelationshipsAsync(new List<T>() { result }, trans, innerModelTypes)).FirstOrDefault();
         }
@@ -2067,10 +2068,10 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="table">A collection of rows to extract the data from</param>
         /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
-        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, MySqlConnection connection, Type[] innerModelTypes)
+        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SQLiteConnection connection, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -2214,10 +2215,10 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="table">A collection of rows to extract the data from</param>
         /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
-        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, MySqlTransaction trans, Type[] innerModelTypes)
+        protected static IEnumerable<T> Transform(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SQLiteTransaction trans, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -2361,10 +2362,10 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="table">A collection of rows to extract the data from</param>
         /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
-        /// <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
-        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, MySqlConnection connection, Type[] innerModelTypes)
+        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SQLiteConnection connection, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -2511,10 +2512,10 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="table">A collection of rows to extract the data from</param>
         /// <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
-        /// <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the Select statement against</param>
         /// <param name="innerModelTypes">Class types of the forign properties you want to load</param>
         /// <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
-        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, MySqlTransaction trans, Type[] innerModelTypes)
+        protected static async Task<IEnumerable<T>> TransformAsync(IEnumerable<DataRow> table, IEnumerable<PropertyInfo> properties, SQLiteTransaction trans, Type[] innerModelTypes)
         {
             T itera;
             Type possibleEnum;
@@ -2827,27 +2828,66 @@ namespace MagnaDB.MySQL
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
 
             PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
-            if (identityProperty != null)
+            using (SQLiteConnection connection = CreateOpenConnection())
             {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = DoScalar(query.ToString(), ConnectionString);
-                if (result != null)
+                bool querySuccessful = DoQuery(query.ToString(), connection);
+
+                if (querySuccessful)
                 {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    if (identityProperty != null)
+                    {
+                        object result = DoScalar($"SELECT last_insert_rowid() FROM {TableName}", connection);
+                        if (result != null)
+                        {
+                            querySuccessful = true;
+                            identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                        }
+                    }
+
+                    InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+                    connection.Close();
+                    return true;
+                }
+                else
+                {
+                    InsertFailed(this, new MagnaEventArgs(0, ConnectionString));
+                    connection.Close();
+                    return false;
                 }
             }
-            else
-            {
-                querySuccessful = DoQuery(query.ToString(), ConnectionString);
-            }
+        }
+
+        /// <summary>
+        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+        /// </summary>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
+        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        public virtual bool Insert(SQLiteConnection connection)
+        {
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
+
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
+
+            bool querySuccessful = DoQuery(query.ToString(), connection);
 
             if (querySuccessful)
             {
+                if (identityProperty != null)
+                {
+                    object result = DoScalar($"SELECT last_insert_rowid() FROM {TableName}", connection);
+                    if (result != null)
+                    {
+                        querySuccessful = true;
+                        identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    }
+                }
+
                 InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
                 return true;
             }
@@ -2861,77 +2901,31 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public virtual bool Insert(MySqlConnection connection)
+        public virtual bool Insert(SQLiteTransaction transaction)
         {
-            BeforeInsert(this, new MagnaEventArgs(0, connection));
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
-            if (identityProperty != null)
-            {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = DoScalar(query.ToString(), connection);
-                if (result != null)
-                {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
-                }
-            }
-            else
-            {
-                querySuccessful = DoQuery(query.ToString(), connection);
-            }
+            bool querySuccessful = DoQuery(query.ToString(), transaction);
 
             if (querySuccessful)
             {
-                InsertSucceeded(this, new MagnaEventArgs(1, connection));
-                return true;
-            }
-            else
-            {
-                InsertFailed(this, new MagnaEventArgs(0, connection));
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
-        /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
-        /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public virtual bool Insert(MySqlTransaction transaction)
-        {
-            BeforeInsert(this, new MagnaEventArgs(0, transaction));
-
-            StringBuilder query = new StringBuilder();
-            query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
-
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
-
-            if (identityProperty != null)
-            {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = DoScalar(query.ToString(), transaction);
-                if (result != null)
+                if (identityProperty != null)
                 {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    object result = DoScalar($"SELECT last_insert_rowid() FROM {TableName}", transaction);
+                    if (result != null)
+                    {
+                        querySuccessful = true;
+                        identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    }
                 }
-            }
-            else
-            {
-                querySuccessful = DoQuery(query.ToString(), transaction);
-            }
 
-            if (querySuccessful)
-            {
                 InsertSucceeded(this, new MagnaEventArgs(1, transaction));
                 return true;
             }
@@ -2952,69 +2946,66 @@ namespace MagnaDB.MySQL
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
-            if (identityProperty != null)
+            using (SQLiteConnection connection = CreateOpenConnection())
             {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = await DoScalarAsync(query.ToString(), ConnectionString);
-                if (result != null)
+                bool querySuccessful = await DoQueryAsync(query.ToString(), connection);
+
+                if (querySuccessful)
                 {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
-                }
-            }
-            else
-            {
-                querySuccessful = await DoQueryAsync(query.ToString(), ConnectionString);
-            }
+                    if (identityProperty != null)
+                    {
+                        object result = await DoScalarAsync($"SELECT last_insert_rowid() FROM {TableName}", connection);
+                        if (result != null)
+                        {
+                            querySuccessful = true;
+                            identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                        }
+                    }
 
-            if (querySuccessful)
-            {
-                InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
-                return true;
-            }
-            else
-            {
-                InsertFailed(this, new MagnaEventArgs(0, ConnectionString));
-                return false;
+                    InsertSucceeded(this, new MagnaEventArgs(1, ConnectionString));
+                    connection.Close();
+                    return true;
+                }
+                else
+                {
+                    InsertFailed(this, new MagnaEventArgs(0, ConnectionString));
+                    connection.Close();
+                    return false;
+                }
             }
         }
 
         /// <summary>
         /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public virtual async Task<bool> InsertAsync(MySqlConnection connection)
+        public virtual async Task<bool> InsertAsync(SQLiteConnection connection)
         {
-            BeforeInsert(this, new MagnaEventArgs(0, connection));
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
-            if (identityProperty != null)
-            {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = await DoScalarAsync(query.ToString(), connection);
-                if (result != null)
-                {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
-                }
-            }
-            else
-            {
-                querySuccessful = await DoQueryAsync(query.ToString(), connection);
-            }
+            bool querySuccessful = await DoQueryAsync(query.ToString(), connection);
 
             if (querySuccessful)
             {
+                if (identityProperty != null)
+                {
+                    object result = await DoScalarAsync($"SELECT last_insert_rowid() FROM {TableName}", connection);
+                    if (result != null)
+                    {
+                        querySuccessful = true;
+                        identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    }
+                }
+
                 InsertSucceeded(this, new MagnaEventArgs(1, connection));
                 return true;
             }
@@ -3028,35 +3019,31 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public virtual async Task<bool> InsertAsync(MySqlTransaction transaction)
+        public virtual async Task<bool> InsertAsync(SQLiteTransaction transaction)
         {
-            BeforeInsert(this, new MagnaEventArgs(0, transaction));
+            BeforeInsert(this, new MagnaEventArgs(0, ConnectionString));
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(GenInsert(TableName, ToDictionary(PresenceBehavior.ExcludeAll, typeof(InsertIgnoreAttribute), typeof(DMLIgnoreAttribute), typeof(IdentityAttribute), typeof(ForeignRelationAttribute))));
-            bool querySuccessful = false;
 
-            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute))?.FirstOrDefault();
+            PropertyInfo identityProperty = FilterProperties(PresenceBehavior.IncludeOnly, typeof(IdentityAttribute)).FirstOrDefault();
 
-            if (identityProperty != null)
-            {
-                query.Append("; SELECT LAST_INSERT_ID();");
-                object result = await DoScalarAsync(query.ToString(), transaction);
-                if (result != null)
-                {
-                    querySuccessful = true;
-                    identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
-                }
-            }
-            else
-            {
-                querySuccessful = await DoQueryAsync(query.ToString(), transaction);
-            }
+            bool querySuccessful = await DoQueryAsync(query.ToString(), transaction);
 
             if (querySuccessful)
             {
+                if (identityProperty != null)
+                {
+                    object result = await DoScalarAsync($"SELECT last_insert_rowid() FROM {TableName}", transaction);
+                    if (result != null)
+                    {
+                        querySuccessful = true;
+                        identityProperty.SetValue(this, Convert.ChangeType(result, identityProperty.PropertyType));
+                    }
+                }
+
                 InsertSucceeded(this, new MagnaEventArgs(1, transaction));
                 return true;
             }
@@ -3100,9 +3087,9 @@ namespace MagnaDB.MySQL
         /// Updates this entity on this class' table using this instance's key property
         /// by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Update statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Update statement against</param>
         /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
-        public virtual bool Update(MySqlConnection connection)
+        public virtual bool Update(SQLiteConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
 
@@ -3130,9 +3117,9 @@ namespace MagnaDB.MySQL
         /// Updates this entity on this class' table using this instance's key property
         /// by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Update statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Update statement against</param>
         /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
-        public virtual bool Update(MySqlTransaction transaction)
+        public virtual bool Update(SQLiteTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
 
@@ -3189,9 +3176,9 @@ namespace MagnaDB.MySQL
         /// Updates this entity on this class' table using this instance's key property
         /// by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Update statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Update statement against</param>
         /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
-        public virtual async Task<bool> UpdateAsync(MySqlConnection connection)
+        public virtual async Task<bool> UpdateAsync(SQLiteConnection connection)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, connection));
 
@@ -3219,9 +3206,9 @@ namespace MagnaDB.MySQL
         /// Updates this entity on this class' table using this instance's key property
         /// by mapping this instances properties to columns in the table.
         /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Update statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Update statement against</param>
         /// <returns>Returns a boolean value indicating whether the update was successful or not</returns>
-        public virtual async Task<bool> UpdateAsync(MySqlTransaction transaction)
+        public virtual async Task<bool> UpdateAsync(SQLiteTransaction transaction)
         {
             BeforeUpdate(this, new MagnaEventArgs(0, transaction));
 
@@ -3267,9 +3254,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Deletes this entity from this class' table by using this intance's Key property.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Delete statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Delete statement against</param>
         /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
-        public virtual bool Delete(MySqlConnection connection)
+        public virtual bool Delete(SQLiteConnection connection)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary));
@@ -3287,9 +3274,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Deletes this entity from this class' table by using this intance's Key property.
         /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Delete statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Delete statement against</param>
         /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
-        public virtual bool Delete(MySqlTransaction transaction)
+        public virtual bool Delete(SQLiteTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary));
@@ -3326,9 +3313,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Deletes this entity from this class' table by using this intance's Key property.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the Delete statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Delete statement against</param>
         /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
-        public virtual async Task<bool> DeleteAsync(MySqlConnection connection)
+        public virtual async Task<bool> DeleteAsync(SQLiteConnection connection)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary));
@@ -3346,9 +3333,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Deletes this entity from this class' table by using this intance's Key property.
         /// </summary>
-        /// <param name="transaction">An active MySqlTransaction to execute the Delete statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Delete statement against</param>
         /// <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
-        public virtual async Task<bool> DeleteAsync(MySqlTransaction transaction)
+        public virtual async Task<bool> DeleteAsync(SQLiteTransaction transaction)
         {
             StringBuilder query = new StringBuilder();
             query.Append(GenDelete(TableName, Key.KeyDictionary));
@@ -3466,11 +3453,11 @@ namespace MagnaDB.MySQL
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the verification against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the verification against</param>
         /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
         /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual bool IsDuplicated(MySqlConnection connection, int duplicationIndex = -1)
+        public virtual bool IsDuplicated(SQLiteConnection connection, int duplicationIndex = -1)
         {
             if (duplicationIndex < -1)
                 return false;
@@ -3509,11 +3496,11 @@ namespace MagnaDB.MySQL
         /// Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
         /// decorated with the <see cref="DuplicationColumnAttribute"/>.
         /// </summary>
-        /// <param name="trans">An active MySqlTransaction to execute the verification against</param>        
+        /// <param name="trans">An active SQLiteTransaction to execute the verification against</param>        
         /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
         /// -1 if all duplication indexes will be evaluated</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual bool IsDuplicated(MySqlTransaction trans, int duplicationIndex = -1)
+        public virtual bool IsDuplicated(SQLiteTransaction trans, int duplicationIndex = -1)
         {
             if (duplicationIndex < -1)
                 return false;
@@ -3596,9 +3583,9 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
         /// -1 if all duplication indexes will be evaluated</param>
-        /// <param name="connection">An open MySqlConnection to execute the verification against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the verification against</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual async Task<bool> IsDuplicatedAsync(MySqlConnection connection, int duplicationIndex = -1)
+        public virtual async Task<bool> IsDuplicatedAsync(SQLiteConnection connection, int duplicationIndex = -1)
         {
             if (duplicationIndex < -1)
                 return false;
@@ -3639,9 +3626,9 @@ namespace MagnaDB.MySQL
         /// </summary>
         /// <param name="duplicationIndex">Specifies the duplication Index to have verified. 
         /// -1 if all duplication indexes will be evaluated</param>
-        /// <param name="trans">An active MySqlTransaction to execute the verification against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the verification against</param>
         /// <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
-        public virtual async Task<bool> IsDuplicatedAsync(MySqlTransaction trans, int duplicationIndex = -1)
+        public virtual async Task<bool> IsDuplicatedAsync(SQLiteTransaction trans, int duplicationIndex = -1)
         {
             if (duplicationIndex < -1)
                 return false;
@@ -3715,9 +3702,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public static bool GroupInsert(IEnumerable<T> tableModels, MySqlConnection connection)
+        public static bool GroupInsert(IEnumerable<T> tableModels, SQLiteConnection connection)
         {
             T reference = new T();
             return reference.GroupInsertInner(tableModels, connection);
@@ -3727,9 +3714,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        protected bool GroupInsertInner(IEnumerable<T> tableModels, MySqlConnection connection)
+        protected bool GroupInsertInner(IEnumerable<T> tableModels, SQLiteConnection connection)
         {
             if (tableModels.Count() <= 0)
                 return false;
@@ -3752,9 +3739,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public static bool GroupInsert(IEnumerable<T> tableModels, MySqlTransaction transaction)
+        public static bool GroupInsert(IEnumerable<T> tableModels, SQLiteTransaction transaction)
         {
             T reference = new T();
             return reference.GroupInsertInner(tableModels, transaction);
@@ -3764,9 +3751,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        protected bool GroupInsertInner(IEnumerable<T> tableModels, MySqlTransaction transaction)
+        protected bool GroupInsertInner(IEnumerable<T> tableModels, SQLiteTransaction transaction)
         {
             if (tableModels.Count() <= 0)
                 return false;
@@ -3824,9 +3811,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, MySqlConnection connection)
+        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SQLiteConnection connection)
         {
             T reference = new T();
             return await reference.GroupInsertAsyncInner(tableModels, connection);
@@ -3836,9 +3823,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, MySqlConnection connection)
+        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SQLiteConnection connection)
         {
             if (tableModels.Count() <= 0)
                 return false;
@@ -3861,9 +3848,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, MySqlTransaction transaction)
+        public static async Task<bool> GroupInsertAsync(IEnumerable<T> tableModels, SQLiteTransaction transaction)
         {
             T reference = new T();
             return await reference.GroupInsertAsyncInner(tableModels, transaction);
@@ -3873,9 +3860,9 @@ namespace MagnaDB.MySQL
         /// Executes an Insert of multiple entities into this class' table.
         /// </summary>
         /// <param name="tableModels">A collection of entities of this class</param>
-        /// <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+        /// <param name="transaction">An active SQLiteTransaction to execute the Insert statement against</param>
         /// <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
-        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, MySqlTransaction transaction)
+        protected async Task<bool> GroupInsertAsyncInner(IEnumerable<T> tableModels, SQLiteTransaction transaction)
         {
             if (tableModels.Count() <= 0)
                 return false;
@@ -3906,30 +3893,39 @@ namespace MagnaDB.MySQL
             IdentityAttribute identidad;
             ColumnNameAttribute columnName;
             DateTimeTypeAttribute dateAttribute;
+            bool hasIdentityColumn = false;
 
             MagnaKey key = reference.GetKey();
-            
+
             temp.AppendFormat("CREATE TABLE {0} (", reference.TableName);
 
             foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
+                if (isIdentity)
+                    hasIdentityColumn = true;
+
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
                 dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
 
-                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : dateAttribute.DateKind == DateTimeSpecification.Time ? "time" : "datetime" : property.PropertyType.ToMySqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " AUTO_INCREMENT" : "");
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSQLiteTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " PRIMARY KEY" : "");
             }
-            
+
             temp = temp.Remove(temp.Length - 2, 2);
 
             StringBuilder keySB = new StringBuilder();
-            foreach (var item in key.KeyDictionary)
-            {
-                keySB.AppendFormat("{0},", item.Key);
-            }
-            keySB = keySB.Remove(keySB.Length - 1, 1);
 
-            temp.AppendFormat(", PRIMARY KEY ({0})\n", keySB.ToString());
+            if (!hasIdentityColumn)
+            {
+                foreach (var item in key.KeyDictionary)
+                {
+                    keySB.AppendFormat("{0},", item.Key);
+                }
+                keySB = keySB.Remove(keySB.Length - 1, 1);
+
+                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+            }
+
             temp.Append(" )");
 
             try
@@ -3946,9 +3942,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Uses this class' properties to create a mapped table for this class in the DB.
         /// </summary>
-        /// <param name="connection">An open MySqlConnection to execute the CREATE TABLE statement against</param>
+        /// <param name="connection">An open SQLiteConnection to execute the CREATE TABLE statement against</param>
         /// <returns>Returns true if the table was successfully created.</returns>
-        public static bool CreateTable(MySqlConnection connection)
+        public static bool CreateTable(SQLiteConnection connection)
         {
             T reference = new T();
             StringBuilder temp = new StringBuilder();
@@ -3956,6 +3952,7 @@ namespace MagnaDB.MySQL
             IdentityAttribute identidad;
             ColumnNameAttribute columnName;
             DateTimeTypeAttribute dateAttribute;
+            bool hasIdentityColumn = false;
 
             MagnaKey key = reference.GetKey();
 
@@ -3964,22 +3961,30 @@ namespace MagnaDB.MySQL
             foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
+                if (isIdentity)
+                    hasIdentityColumn = true;
+
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
                 dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
 
-                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : dateAttribute.DateKind == DateTimeSpecification.Time ? "time" : "datetime" : property.PropertyType.ToMySqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " AUTO_INCREMENT" : "");
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSQLiteTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " PRIMARY KEY" : "");
             }
 
             temp = temp.Remove(temp.Length - 2, 2);
 
             StringBuilder keySB = new StringBuilder();
-            foreach (var item in key.KeyDictionary)
-            {
-                keySB.AppendFormat("{0},", item.Key);
-            }
-            keySB = keySB.Remove(keySB.Length - 1, 1);
 
-            temp.AppendFormat(", PRIMARY KEY ({0})\n", keySB.ToString());
+            if (!hasIdentityColumn)
+            {
+                foreach (var item in key.KeyDictionary)
+                {
+                    keySB.AppendFormat("{0},", item.Key);
+                }
+                keySB = keySB.Remove(keySB.Length - 1, 1);
+
+                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+            }
+
             temp.Append(" )");
 
             try
@@ -3996,9 +4001,9 @@ namespace MagnaDB.MySQL
         /// <summary>
         /// Uses this class' properties to create a mapped table for this class in the DB.
         /// </summary>
-        /// <param name="trans">An active MySqlTransaction to execute the CREATE TABLE statement against</param>
+        /// <param name="trans">An active SQLiteTransaction to execute the CREATE TABLE statement against</param>
         /// <returns>Returns true if the table was successfully created.</returns>
-        public static bool CreateTable(MySqlTransaction trans)
+        public static bool CreateTable(SQLiteTransaction trans)
         {
             T reference = new T();
             StringBuilder temp = new StringBuilder();
@@ -4006,6 +4011,7 @@ namespace MagnaDB.MySQL
             IdentityAttribute identidad;
             ColumnNameAttribute columnName;
             DateTimeTypeAttribute dateAttribute;
+            bool hasIdentityColumn = false;
 
             MagnaKey key = reference.GetKey();
 
@@ -4014,22 +4020,30 @@ namespace MagnaDB.MySQL
             foreach (PropertyInfo property in reference.FilterProperties(PresenceBehavior.ExcludeAll, typeof(DMLIgnoreAttribute), typeof(DDLIgnoreAttribute), typeof(ForeignRelationAttribute)))
             {
                 bool isIdentity = property.TryGetAttribute(out identidad);
+                if (isIdentity)
+                    hasIdentityColumn = true;
+
                 columnName = property.GetCustomAttribute<ColumnNameAttribute>();
                 dateAttribute = property.GetCustomAttribute<DateTimeTypeAttribute>();
 
-                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : dateAttribute.DateKind == DateTimeSpecification.Time ? "time" : "datetime" : property.PropertyType.ToMySqlTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " AUTO_INCREMENT" : "");
+                temp.AppendFormat(" {0} {1} {2} {3}, ", columnName?.Name ?? property.Name, dateAttribute != null ? dateAttribute.DateKind == DateTimeSpecification.Date ? "date" : "datetime" : property.PropertyType.ToSQLiteTypeNameString(), (property.PropertyType.IsNullable() || property.PropertyType.IsClass) ? "" : "NOT NULL", isIdentity ? " PRIMARY KEY" : "");
             }
 
             temp = temp.Remove(temp.Length - 2, 2);
 
             StringBuilder keySB = new StringBuilder();
-            foreach (var item in key.KeyDictionary)
-            {
-                keySB.AppendFormat("{0},", item.Key);
-            }
-            keySB = keySB.Remove(keySB.Length - 1, 1);
 
-            temp.AppendFormat(", PRIMARY KEY ({0})\n", keySB.ToString());
+            if (!hasIdentityColumn)
+            {
+                foreach (var item in key.KeyDictionary)
+                {
+                    keySB.AppendFormat("{0},", item.Key);
+                }
+                keySB = keySB.Remove(keySB.Length - 1, 1);
+
+                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+            }
+
             temp.Append(" )");
 
             try

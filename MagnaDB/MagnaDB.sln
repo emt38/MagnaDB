@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagnaDB", "MagnaDB\MagnaDB.csproj", "{FA524449-8F49-4A38-BCDC-1D632BB8DCD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagnaDB.MySQL", "MagnaDB.MySQL\MagnaDB.MySQL.csproj", "{FAEA76C0-4389-4CD3-A16D-010C5740CBE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagnaDB.SqlServer", "MagnaDB.SqlServer\MagnaDB.SqlServer.csproj", "{C0E26A10-3850-4EE8-99D9-460C7FDBAE07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagnaDB.SQLite", "MagnaDB.SQLite\MagnaDB.SQLite.csproj", "{1B1219B4-EB1A-4072-B278-897228D6491E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,8 +29,15 @@ Global
 		{C0E26A10-3850-4EE8-99D9-460C7FDBAE07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0E26A10-3850-4EE8-99D9-460C7FDBAE07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0E26A10-3850-4EE8-99D9-460C7FDBAE07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B1219B4-EB1A-4072-B278-897228D6491E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B1219B4-EB1A-4072-B278-897228D6491E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B1219B4-EB1A-4072-B278-897228D6491E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B1219B4-EB1A-4072-B278-897228D6491E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E977589B-44A7-4038-86AE-FCF377961A5C}
 	EndGlobalSection
 EndGlobal

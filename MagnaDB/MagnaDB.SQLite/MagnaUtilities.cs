@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Data.SQLite;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MagnaDB.SqlServer
+namespace MagnaDB.SQLite
 {
     /// <summary>
     /// The Different Kinds of Dates
@@ -379,7 +379,7 @@ namespace MagnaDB.SqlServer
         /// </summary>
         /// <param name="nrows">The number of rows affected</param>
         /// <param name="connection">The SqlConnection used to perform the operation</param>
-        public MagnaEventArgs(int nrows, SqlConnection connection)
+        public MagnaEventArgs(int nrows, SQLiteConnection connection)
         {
             RowsAffected = nrows;
             CurrentConnection = connection;
@@ -391,7 +391,7 @@ namespace MagnaDB.SqlServer
         /// </summary>
         /// <param name="nrows">The number of rows affected</param>
         /// <param name="transaction">The SqlTransaction used to perform the operation</param>
-        public MagnaEventArgs(int nrows, SqlTransaction transaction)
+        public MagnaEventArgs(int nrows, SQLiteTransaction transaction)
         {
             RowsAffected = nrows;
             CurrentTransaction = transaction;
@@ -412,11 +412,11 @@ namespace MagnaDB.SqlServer
         /// <summary>
         /// If the operation was executed with an exposed connection retrieves the used connection
         /// </summary>
-        public SqlConnection CurrentConnection { get; private set; }
+        public SQLiteConnection CurrentConnection { get; private set; }
 
         /// <summary>
         /// If the operation is executed against a trasaction retrieves the transaction in use
         /// </summary>
-        public SqlTransaction CurrentTransaction { get; private set; }
+        public SQLiteTransaction CurrentTransaction { get; private set; }
     }
 }
