@@ -242,3 +242,9 @@ ModelManifest.xml
 .fake/
 /TestingMagna
 /AdeeMembers
+MagnaDB/MagnaIcon.png
+MagnaDB/MagnaDB/MagnaDB.nuspec
+MagnaDB/MagnaDB.MySQL/MagnaDB.MySQL.nuspec
+MagnaDB/MagnaDB.SQLite/MagnaDB.SQLite.nuspec
+MagnaDB/MagnaDB.SqlServer/MagnaDB.SqlServer.nuspec
+MagnaDB/MagnaDB/MagnaDB.nuspec

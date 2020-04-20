@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/content.css" />
+        <title>MagnaDB.NET</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
@@ -95,12 +96,124 @@
                   <h2>2. Getting Started</h2>
                   <p>
                     In order to get started we first need to install MagnaDB to one of our
-                    projects.
+                    projects.<br />
+                    <br>
+                    For the present example let's create a new Console Application Project
+                    for .NET Framework. Let's name it <span class="text-info">TestMagnaDB</span>
+                    (or whatever you wish to name it. It's up to you).<br />
+                    <br />
+                    If you're using Visual Studio, or Visual Studio Code (with the NuGet
+                    Package Manager extension) you just need to execute the following command
+                    in the NuGet Package Manager Console.
+                    <br>
+                    <div class="bg-dark p-2">
+                      <code class="text-light">
+                        PM> Install-Package MagnaDB.SQLite
+                      </code>
+                    </div>
+                    <br />
+                    This command will download the latest version of MagnaDB for SQLite (note: MagnaDB
+                    is available for SQL Server and MySQL; if you have any of these DB engines available
+                    you're free to try MagnaDB in any of them. <a href="#dbengines"> learn more</a>).<br />
+                    <br />
+                    <span class="text-info">Please make sure your project's target framework is &GreaterEqual; .NET Framework 4.5</span>
                   </p>
                 </section>
                 <section id="table-model">
                   <h2>3. Table Models</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    After you have successfully installed MagnaDB to your project, the next step is to create
+                    some <strong>models.</strong><br />
+                    We'll start with a Table Model.<br />
+                    <br />
+                    A TableModel is a class that resembles a Table definition in a database,
+                    and objects from this class are mapped to a row from this table in the database
+                    through their properties.<br>
+                    <br />
+                    Let's create a <span class="text-primary">Cat</span> model (you
+                    can do this by creating a new Class file in your project; name it <i>Cat</i>); it will have
+                    the following properties: Id, Name, Race, DateOfBirth.<br />
+                    <br>
+                    It would look something like this:
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+<span class="text-primary">using</span> MagnaDB.SQLite;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">public class</span> <span class="text-info">Cat</span>
+    {
+        <span class="text-primary">public int</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Race { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                    <br>
+                    The previous example shows a minimally defined model. But, it's not a MagnaDB
+                    Table model. In order to make it a table model, Cat must inherit the
+                    MagnaDB.TableModel&LeftAngleBracket;T&RightAngleBracket; abstract class and
+                    define the following abstract properties implementation:
+                    <b>ConnectionString, TableName, Key.</b><br />
+                    <br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+<span class="text-primary">using</span> MagnaDB.SQLite;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">public class</span> <span class="text-info">Cat</span> : <span class="text-info">TableModel<span class="text-light">&lt;</span>Cat<span class="text-light">&gt;</span></span>
+    {
+        <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=testmagna.db;New=True;Version=3;"</span>;
+        <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Cats"</span>;
+        <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">cat</span> => <span class="text-info">cat</span>.Id);
+
+        [<span class="text-info">Identity</span>]
+        <span class="text-primary">public int</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Race { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                    <br />
+                    <ul>
+                      <li>
+                        <b>TableModel&lt;T&gt;:</b> this class must be inherited when creating a table model
+                        and contains all methods and functions concerning them. The implementing class
+                        must be specified as the type parameter when defining the inheritance (as seen in
+                        the example above).
+                      </li>
+                      <li>
+                        <b>ConnectionString:</b> this propery must return a string containing the properties
+                        connection string (formats may vary from one DB Engine to another, please see the
+                        <a href="#dbengines"> DB Engines</a>) for more information.
+                      </li>
+                      <li>
+                        <b>TableName:</b> this propery must return a string containing the name of the
+                        database table which this class will be mapped to.
+                      </li>
+                      <li>
+                        <b>Key:</b> this propery must return a MagnaKey object containg a Key/Value
+                        combination of the properties that compose the primary key for the class/table
+                        (the use of the extension method <span class="text-primary">MakeKey</span>()
+                        is preferred, and should provide an easier way to specify all columns composing
+                        the primary key).
+                      </li>
+                      <li>
+                        <b>IdentityAttribute [Identity]:</b> this attribute indicates that the property
+                        it is decorating will be used as an Identity or Auto Increment column. <a href="#attributes">Learn more</a>
+                    </ul>
+                  </p>
                 </section>
                 <section id="view-model">
                   <h2>4. View Models</h2>
