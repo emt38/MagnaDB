@@ -11,10 +11,10 @@
     <PackageIcon>MagnaIcon.png</PackageIcon>
     <PackageProjectUrl>https://emt38.github.io/MagnaDB</PackageProjectUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageReleaseNotes>Now targeting .NET Standard</PackageReleaseNotes>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
+    <PackageReleaseNotes>Fixed CreateTable() bug, which made the CreateTable() Method crash when the table wasn't specifying an Auto Increment primary key</PackageReleaseNotes>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
