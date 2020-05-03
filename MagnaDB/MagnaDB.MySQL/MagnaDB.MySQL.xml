@@ -1,0 +1,2165 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MagnaDB.MySQL</name>
+    </assembly>
+    <members>
+        <member name="T:MagnaDB.MySQL.InsertIgnoreAttribute">
+            <summary>
+            A property decorated with this Attribute will be ignored when invoking the Insert() or GroupInsert()
+            methods
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.UpdateIgnoreAttribute">
+            <summary>
+            A property decorated with this Attribute will be ignored when invoking an Update() method
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.DMLIgnoreAttribute">
+            <summary>
+            A property decorated with this Attribute will be ignored when invoking Insert(), Update(), Delete(), ToIEnumerable(),
+            ToList(), ToDataTable() or Get() methods
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.DDLIgnoreAttribute">
+            <summary>
+            A property decorated with this Attribute will be ignored when creating a table using the CreateTable() method
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.SelectIgnoreAttribute">
+            <summary>
+            A property decorated with this Attribute will be ignored when invoking
+            ToIEnumerable(), ToList(), ToDataTable() or Get() methods
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.IdentityAttribute">
+            <summary>
+            This Attribute is used to specify a property marked as an identity column specification,
+            and therefore will be updated when an Insert() Method succeeds, and can also be used as the
+            search criteria in Get Methods
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.DataDisplayableAttribute">
+            <summary>
+            When using the ToDataTable method specifies that by default, only columns with this attribute
+            will be selected.
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.DateTimeTypeAttribute">
+            <summary>
+            This Attribute identifies what part of a DateTime object should be used in the database,
+            by default, the complete date and time is used.
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.DateTimeTypeAttribute.DateKind">
+            <summary>
+            The kind of the date
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.DateTimeTypeAttribute.#ctor(MagnaDB.MySQL.DateTimeSpecification)">
+            <summary>
+            This Attribute identifies what part of a DateTime object should be used in the database,
+            by default, the complete date and time is used.
+            </summary>
+            <param name="dateClass">The kind of the date</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.ColumnNameAttribute">
+            <summary>
+            By using this attribute you can specify the name of the column this property is binded
+            to within the database.
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.ColumnNameAttribute.Name">
+            <summary>
+            The name of the column the property is binded to  
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.ColumnNameAttribute.#ctor(System.String)">
+            <summary>
+            By using this attribute you can specify the name of the column this property is binded
+            to within the database.
+            </summary>
+            <param name="column"></param>
+        </member>
+        <member name="T:MagnaDB.MySQL.DuplicationColumnAttribute">
+            <summary>
+            This attribute is used to specify a column belonging to a Duplication Key Dictionary,
+            Properties with the same index will be compared as an only key within the table, by
+            default, properties are marked to Duplication Index 0. Duplication is evaluated
+            using the IsDuplicated() method. A property can be used within different Key combinations
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.DuplicationColumnAttribute.duplicationIndex">
+            <summary>
+            The index of the key that the property belongs to
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.DuplicationColumnAttribute.#ctor(System.Int32)">
+            <summary>
+            Verify a possible duplication using a key combination
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="T:MagnaDB.MySQL.ForeignRelationAttribute">
+            <summary>
+            This class is used to specify Relationships between Models and Inner Properties
+            of ViewModel and TableModel types. Entities will be loaded when specified
+            in parameters when using Select Functions (ToIEnumerable, Get, ToList)
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.ForeignRelationAttribute.RelationString">
+            <summary>
+            The string specifying the joining condition of the relationship
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.ForeignRelationAttribute.#ctor(System.String)">
+            <summary>
+            Create a relationship between the outer model class and this model property.
+            {0} is used to refer to the Outer Model Table, {1} is referred to this Property
+            Model Table. Columns belonging to the Outer Model must be enclosed between tags.
+            For a more detailed example watch the SampleRelationship.cs file
+            </summary>
+            <param name="relStr">A string specifying the joining condition</param>
+        </member>
+        <member name="M:MagnaDB.MySQL.ForeignRelationAttribute.GetSelectionFormula(System.Object,System.String,System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="model">The model that will be used for creating resulting string</param>
+            <param name="ownerTable">The enclosing class TableName</param>
+            <param name="innerTable">The foreign property class TableName</param>
+            <param name="removeTableIdentifiers">This parameter specifies if a TableName should be included in the result string</param>
+            <returns></returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.DisparityException">
+            <summary>
+            This exception is raised when a SqlGenerator method is being called with differences
+            between the keys and the values in the parameters
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.DisparityException.#ctor(System.String)">
+            <summary>
+            This exception is raised when a SqlGenerator method is being called with differences
+            between the keys and the values in the parameters 
+            </summary>
+            <param name="message">This exception's message</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.InvalidTableException">
+            <summary>
+            Raised when a Table (or other queryable database object) doesn't exist this exception is raised
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.InvalidTableException.#ctor(System.String,System.Exception)">
+            <summary>
+            Raised when a Table (or other queryable database object) doesn't exist this exception is raised
+            </summary>
+            <param name="message">This exception's message</param>
+            <param name="ex">The InnerException that was raised</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.InvalidKeyException">
+            <summary>
+            Raised when a Key Object contains nulls or invalid values
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.InvalidKeyException.#ctor(System.String,System.Exception)">
+            <summary>
+            Raised when a Key Object contains nulls or invalid values
+            </summary>
+            <param name="message">This exception's message</param>
+            <param name="ex">The InnerException that was raised</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.InvalidModelException">
+            <summary>
+            Raised when the existing model does not correctly matchup with the database object.
+            Check for all the existing columns in the table within the database.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.InvalidModelException.#ctor(System.String,System.Exception)">
+            <summary>
+            Raised when the existing model does not correctly matchup with the database object.
+            Check for all the existing columns in the table within the database.
+            </summary>
+            <param name="message">This exception's message</param>
+            <param name="ex">The InnerException that was raised</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.DbConnectionException">
+            <summary>
+            Raised when an error occurs while connecting to the Database or Database Server
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.DbConnectionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Raised when the existing model does not correctly matchup with the database object.
+            Check for all the existing columns in the table within the database.
+            </summary>
+            <param name="message">This exception's message</param>
+            <param name="ex">The InnerException that was raised</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.ViewModel`1">
+            <summary>
+            This class represents an entity model that can only be retrieved from the DB, but can't be inserted,
+            updated or deleted.
+            </summary>
+            <typeparam name="T">The inheriting class (used as a reciprocation)</typeparam>
+        </member>
+        <member name="E:MagnaDB.MySQL.ViewModel`1.GetFailed">
+            <summary>
+            This event is raised when the Get method doesn't retrieve an entity from the DB or
+            runs into an exception of some sort
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.ViewModel`1.GetSucceeded">
+            <summary>
+            This event is raised when the Get method succeeds in retrieving an entity from the DB
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.ViewModel`1.SelectFailed">
+            <summary>
+            This event is raised when the ToList, ToIEnumerable, ToDataTable methods (and their derivations)
+            don't retrieve an entity from the DB or run into an exception of some sort.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.ViewModel`1.SelectSucceeded">
+            <summary>
+            This event is raised when the ToList or ToIEnumerable, ToDataTable methods (and their derivations)
+            properly retrieve an Entity from the DB.
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.ViewModel`1.TableName">
+            <summary>
+            The name of the DB object (can be a Table or View) where this class' entities
+            will be retrieved from.
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.ViewModel`1.ConnectionString">
+            <summary>
+            The database connection string containing the necessary information to connect to the DB.
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.ViewModel`1.Key">
+            <summary>
+            Represents the Primary Key for this entity's instance, composed by
+            one or many properties of the class.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetKey">
+            <summary>
+            Used to retrieve the MagnaKey object corresponding this instance.
+            </summary>
+            <returns>Returns the Key Property from this instance</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetTableName">
+            <summary>
+            Used to retrieve the DB Object's name corresponding this entity.
+            </summary>
+            <returns>Returns the TableName property from this object's class</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.CreateOpenConnection">
+            <summary>
+            Creates a new MySqlConnection object by using this class' connection string. This MySqlConnection
+            must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
+            </summary>
+            <returns>Returns a MySqlConnection object in an open state</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.CreateOpenConnectionAsync">
+            <summary>
+            Creates a new MySqlConnection object by using this class' connection string. This MySqlConnection
+            must be correctly closed/disposed after use to prevent unnecessary memory use or DB locks. 
+            </summary>
+            <returns>Returns a MySqlConnection object in an open state</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.CreateActiveTransaction">
+            <summary>
+            Creates a MySqlTransaction object by using a MySqlConnection using this class' connection string.
+            This MySqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+            unnecessary memory use or DB locks. 
+            </summary>
+            <returns>Returns a Transaction object in an active state</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.CreateActiveTransactionAsync">
+            <summary>
+            Creates a MySqlTransaction object by using a MySqlConnection using this class' connection string.
+            This MySqlTransaction must be correctly commited/rolled back and disposed after use to prevent
+            unnecessary memory use or DB locks. 
+            </summary>
+            <returns>Returns a Transaction object in an active state</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTable(System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the FROM clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTable(MySql.Data.MySqlClient.MySqlConnection,System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement Against</param>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTable(MySql.Data.MySqlClient.MySqlTransaction,System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="trans">An active MySqlTransaction to execute the Select statement Against</param>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTableAsync(System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the FROM clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTableAsync(MySql.Data.MySqlClient.MySqlConnection,System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement Against</param>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDataTableAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Boolean,System.String,System.Object[])">
+            <summary>
+            Executes a Select Statement using this class' properties as the desired columns
+            using this class' table and brings the results (if any) back inside a DataTable.
+            </summary>
+            <param name="trans">An active MySqlTransaction to execute the Select statement Against</param>
+            <param name="displayableOnly">If true, only properties decorated with the DataDisplayable Attribute will be included in the select Statement</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a DataTable Continaing the Results obtained from the Select's execution</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TableToIEnumerable(System.Data.DataRow[],System.Type[],MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+            into an IEnumerable containing entities belonging to this class.
+            </summary>
+            <param name="data">The DataRow array containing the information to be transformed</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="connection">An Open MySqlConnection to execute statements against.</param>
+            <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TableToIEnumerableAsync(System.Data.DataRow[],System.Type[],MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+            into an IEnumerable containing entities belonging to this class.
+            </summary>
+            <param name="data">The DataRow array containing the information to be transformed</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="connection">An Open MySqlConnection to execute statements against.</param>
+            <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TableToIEnumerable(System.Data.DataRow[],System.Type[],MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+            into an IEnumerable containing entities belonging to this class.
+            </summary>
+            <param name="data">The DataRow array containing the information to be transformed</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="trans">An Active MySqlTransaction to execute statements against.</param>
+            <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TableToIEnumerableAsync(System.Data.DataRow[],System.Type[],MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Transforms a DataRow array's data (which can be obtained by accessing a DataTable's Rows Property)
+            into an IEnumerable containing entities belonging to this class.
+            </summary>
+            <param name="data">The DataRow array containing the information to be transformed</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="trans">An Active MySqlTransaction to execute statements against.</param>
+            <returns>Returns an IEnumerable of this class containing the resulting entities of the Transformation.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB
+            </summary>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(MySql.Data.MySqlClient.MySqlConnection,System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(MySql.Data.MySqlClient.MySqlTransaction,System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerable(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableInner(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableInner(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB
+            </summary>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(MySql.Data.MySqlClient.MySqlConnection,System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsyncInner(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(MySql.Data.MySqlClient.MySqlTransaction,System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToIEnumerableAsyncInner(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Select statement onto this class' table and retrieves its results from the DB.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlConnection,System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlTransaction,System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlConnection,System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Int64,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="id">This entity's identity value.</param>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlConnection,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlTransaction,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetInner(MySql.Data.MySqlClient.MySqlConnection,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An Open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetInner(MySql.Data.MySqlClient.MySqlTransaction,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlConnection,`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlTransaction,`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlConnection,MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Get(MySql.Data.MySqlClient.MySqlTransaction,MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlConnection,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsyncInner(MySql.Data.MySqlClient.MySqlConnection,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsyncInner(MySql.Data.MySqlClient.MySqlTransaction,System.Collections.Generic.IDictionary{System.String,System.Object},System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A dictionary containing key/value pairs that will be used to retrieve the first coincidence from the Select statement</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlConnection,`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlTransaction,`0,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="model">A data entity of this same class</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlConnection,MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetAsync(MySql.Data.MySqlClient.MySqlTransaction,MagnaDB.MySQL.MagnaKey,System.Type[])">
+            <summary>
+            Retrieve an entity stored in a table row by providing the neccessary key info.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="key">A MagnaKey object containing the key/value pairs representing an entity</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>An entity of this class corresponding the key provided</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(MySql.Data.MySqlClient.MySqlConnection,System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a List of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(MySql.Data.MySqlClient.MySqlTransaction,System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a List of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToList(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a List of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(MySql.Data.MySqlClient.MySqlConnection,System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(MySql.Data.MySqlClient.MySqlConnection,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns an IEnumerable of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(MySql.Data.MySqlClient.MySqlTransaction,System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a List of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToListAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Type[],System.String,System.Object[])">
+            <summary>
+            Executes a Sql statement onto this class' table and obtains a List of entities of this class
+            according to the specified criteria.
+            </summary>
+            <param name="trans">An Active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <param name="extraConditions">A format string in which SQL clauses may be added; these succeeding the From clause</param>
+            <param name="values">Values to be formatted onto the extraConditions string</param>
+            <returns>Returns a List of the class' type filled with the results found</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(System.Collections.Generic.IEnumerable{`0},System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(System.Collections.Generic.IEnumerable{`0},System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(`0,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entitiy to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(`0,MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="connection">An active MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationships(`0,MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(`0,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A entitiy to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(`0,MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.LoadRelationshipsAsync(`0,MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.FilterProperties(MagnaDB.MySQL.PresenceBehavior,System.Type[])">
+            <summary>
+            Get a filtered list of this class' properties.
+            </summary>
+            <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+            <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+            <returns>Returns a filtered IEnumerable of PropertyInfo objects</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Transform(System.Collections.Generic.IEnumerable{System.Data.DataRow},System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Transform a collection of rows into an IEnumerable of this class.
+            </summary>
+            <param name="table">A collection of rows to extract the data from</param>
+            <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.Transform(System.Collections.Generic.IEnumerable{System.Data.DataRow},System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Transform a collection of rows into an IEnumerable of this class.
+            </summary>
+            <param name="table">A collection of rows to extract the data from</param>
+            <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TransformAsync(System.Collections.Generic.IEnumerable{System.Data.DataRow},System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Transform a collection of rows into an IEnumerable of this class.
+            </summary>
+            <param name="table">A collection of rows to extract the data from</param>
+            <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.TransformAsync(System.Collections.Generic.IEnumerable{System.Data.DataRow},System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Transform a collection of rows into an IEnumerable of this class.
+            </summary>
+            <param name="table">A collection of rows to extract the data from</param>
+            <param name="properties">Properties that will be mapped to and assigned from the rows data</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class' type resulting from the transformation</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetFields(MagnaDB.MySQL.PresenceBehavior,System.Type[])">
+            <summary>
+            Get a filtered IEnumerable of this class' properties' name.
+            </summary>
+            <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+            <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+            <returns>Returns a filtered string IEnumerable of this class' properties' name.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.GetValues(MagnaDB.MySQL.PresenceBehavior,System.Type[])">
+            <summary>
+            Get a filtered IEnumerable of this class' properties' value.
+            </summary>
+            <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+            <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+            <returns>Returns a filtered object IEnumerable of this class' properties' value.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ViewModel`1.ToDictionary(MagnaDB.MySQL.PresenceBehavior,System.Type[])">
+            <summary>
+            Get a filtered Dictionary of this class' properties (names/values).
+            </summary>
+            <param name="behavior">Determines the action to do with the specified (if any) attributes</param>
+            <param name="targetAttributes">Attributes that will be taken into account in the filtering</param>
+            <returns>Returns a filtered Dictionary of this class' properties (names/values).</returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.TableModel`1">
+            <summary>
+            This class represents an entity model that can be inserted, updated, deleted, and selected from the DB.
+            </summary>
+            <typeparam name="T">The inheriting class (used as a reciprocation)</typeparam>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.InsertSucceeded">
+            <summary>
+            This event is raised when the Insert method successfully inserts this entity.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.InsertFailed">
+            <summary>
+            This event is raised when the Insert method runs into an exception of some sort.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.BeforeInsert">
+            <summary>
+            This event is raised before the Insert method is executed.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.UpdateSucceeded">
+            <summary>
+            This event is raised when the Update method successfully updates this entity.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.UpdateFailed">
+            <summary>
+            This event is raised when the Update method runs into an exception of some sort.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.BeforeUpdate">
+            <summary>
+            This event is raised before the Update method is executed.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.DeleteSucceeded">
+            <summary>
+            This event is raised when the Delete method successfully deletes this entity.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.DeleteFailed">
+            <summary>
+            This event is raised when the Delete method runs into an exception of some sort.
+            </summary>
+        </member>
+        <member name="E:MagnaDB.MySQL.TableModel`1.BeforeDelete">
+            <summary>
+            This event is raised before the Delete method is executed.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Insert">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Insert(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Insert(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.InsertAsync">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.InsertAsync(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.InsertAsync(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Inserts this entity onto this class' table by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Update">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Update(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Update statement against</param>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Update(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Update statement against</param>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.UpdateAsync">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.UpdateAsync(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Update statement against</param>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.UpdateAsync(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Updates this entity on this class' table using this instance's key property
+            by mapping this instances properties to columns in the table.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Update statement against</param>
+            <returns>Returns a boolean value indicating whether the update was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Delete">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Delete(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Delete statement against</param>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.Delete(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Delete statement against</param>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.DeleteAsync">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.DeleteAsync(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the Delete statement against</param>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.DeleteAsync(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Deletes this entity from this class' table by using this intance's Key property.
+            </summary>
+            <param name="transaction">An active MySqlTransaction to execute the Delete statement against</param>
+            <returns>Returns a boolean value indicating whether the deletion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GetDuplicationDictionary">
+            <summary>
+            Arranges a Dictionary of this class properties decorated with the DuplicationColumn attribute
+            in each of its respective indices.
+            </summary>
+            <returns>Returns a Dictionary object of Duplication Verification Keys</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicated(System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>
+            </summary>
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicated(MySql.Data.MySqlClient.MySqlConnection,System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the verification against</param>
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicated(MySql.Data.MySqlClient.MySqlTransaction,System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>.
+            </summary>
+            <param name="trans">An active MySqlTransaction to execute the verification against</param>        
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicatedAsync(System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>.
+            </summary>
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicatedAsync(MySql.Data.MySqlClient.MySqlConnection,System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>.
+            </summary>
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <param name="connection">An open MySqlConnection to execute the verification against</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.IsDuplicatedAsync(MySql.Data.MySqlClient.MySqlTransaction,System.Int32)">
+            <summary>
+            Verifies if the present instance is duplicated or not on this class' table by using this instace's properties
+            decorated with the <see cref="T:MagnaDB.MySQL.DuplicationColumnAttribute"/>.
+            </summary>
+            <param name="duplicationIndex">Specifies the duplication Index to have verified. 
+            -1 if all duplication indexes will be evaluated</param>
+            <param name="trans">An active MySqlTransaction to execute the verification against</param>
+            <returns>Returns true if this instance is duplicated. Otherwise, false</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsert(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertInner(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsert(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertInner(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsert(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertInner(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsync(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsyncInner(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsync(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsyncInner(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsync(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.GroupInsertAsyncInner(System.Collections.Generic.IEnumerable{`0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.CreateTable">
+            <summary>
+            Uses this class' properties to create a mapped table for this class in the DB.
+            </summary>
+            <returns>Returns true if the table was successfully created.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.CreateTable(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Uses this class' properties to create a mapped table for this class in the DB.
+            </summary>
+            <param name="connection">An open MySqlConnection to execute the CREATE TABLE statement against</param>
+            <returns>Returns true if the table was successfully created.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.TableModel`1.CreateTable(MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Uses this class' properties to create a mapped table for this class in the DB.
+            </summary>
+            <param name="trans">An active MySqlTransaction to execute the CREATE TABLE statement against</param>
+            <returns>Returns true if the table was successfully created.</returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.DateTimeSpecification">
+            <summary>
+            The Different Kinds of Dates
+            </summary>
+        </member>
+        <member name="F:MagnaDB.MySQL.DateTimeSpecification.Date">
+            <summary>
+            Only the Day, Month and Year will be evaluated
+            </summary>
+        </member>
+        <member name="F:MagnaDB.MySQL.DateTimeSpecification.DateAndTime">
+            <summary>
+            The whole date will be evaluated
+            </summary>
+        </member>
+        <member name="F:MagnaDB.MySQL.DateTimeSpecification.Time">
+            <summary>
+            Only the, Hours, Minutes, Seconds and Milliseconds will be evaluated
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.PresenceBehavior">
+            <summary>
+            Specifies what action to perform when using the FilterProperties Method
+            </summary>
+        </member>
+        <member name="F:MagnaDB.MySQL.PresenceBehavior.IncludeOnly">
+            <summary>
+            Includes only the properties that are marked with the specified attributes
+            </summary>
+        </member>
+        <member name="F:MagnaDB.MySQL.PresenceBehavior.ExcludeAll">
+            <summary>
+            Excludes the properties that are marked with the specified attributes
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.MagnaKey">
+            <summary>
+            A type that handles the keys for the View and Table Models
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.MagnaKey.KeyDictionary">
+            <summary>
+            The Key/Value Dictionary of the Column/Cells values
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaKey.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            A type that handles the keys for the View and Table Models
+            </summary>
+            <param name="fieldsValues">The Keys/Values composing the key</param>
+        </member>
+        <member name="T:MagnaDB.MySQL.MagnaUtils">
+            <summary>
+            This class includes utility extensions that are used within the framework and can be also used
+            in production code.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.MakeKey``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}}[])">
+            <summary>
+            Create a new MagnaKey object by providing lambda expressions returning each property belonging to
+            this class' key.
+            </summary>
+            <typeparam name="T">This class (used as reciprocation)</typeparam>
+            <param name="value">A ViewModel or derivate instance</param>
+            <param name="properties">The properties composing this class' key</param>
+            <returns>Returns a new MagnaKey object</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.IsNumberType(System.Object)">
+            <summary>
+            Verifies if a given object is a numeric type or derivate.
+            </summary>
+            <param name="number">The object to have verified.</param>
+            <returns>Returns true if the given object is a numeric type. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.TryGetAttribute``1(System.Reflection.PropertyInfo,``0@)">
+            <summary>
+            Tries to retrieve a CustomAttribute from an object.
+            </summary>
+            <typeparam name="T">The CustomAttribute's type</typeparam>
+            <param name="property">The property to retrieve the attribute from.</param>
+            <param name="attribute">An out variable to assign the attribute (if found) to</param>
+            <returns>Returns a boolean value indicating whether the property had the given attribute or not.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.IsViewModel(System.Type)">
+            <summary>
+            Verifies if a given type is or inherits from ViewModel
+            </summary>
+            <param name="t">The type to have verified</param>
+            <returns>Returns true if the given type is or inherits from ViewModel. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.IsViewModelEnumerable(System.Type)">
+            <summary>
+            Verifies if a given type is an IEnumerable (or derivate) of a type that is or inherits from a ViewModel.
+            </summary>
+            <param name="t">The type to have verified</param>
+            <returns>Returns true if the given type an IEnumerable (or derivate) of a type that is or inherits from a ViewModel. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.IsViewModelList(System.Type)">
+            <summary>
+            Verifies if a given type is a List (or derivate) of a type that is or inherits from a ViewModel.
+            </summary>
+            <param name="t">The type to have verified</param>
+            <returns>Returns true if the given type a List (or derivate) of a type that is or inherits from a ViewModel. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.IsNullable(System.Type)">
+            <summary>
+            Determines whether the given type is a Nullable type or not
+            </summary>
+            <param name="t">The type to evaluate</param>
+            <returns>Returns true if the given type is a Nullable definition. Otherwise, false.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.ToSqlTypeNameString(System.Type)">
+            <summary>
+            Gets the specified Sql Type equivalent of the given Type
+            </summary>
+            <param name="t">The type to evaluate</param>
+            <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.ToMySqlTypeNameString(System.Type)">
+            <summary>
+            Gets the specified MySql Type equivalent of the given Type
+            </summary>
+            <param name="t">The type to evaluate</param>
+            <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaUtils.ToSQLiteTypeNameString(System.Type)">
+            <summary>
+            Gets the specified SQLite Type equivalent of the given Type
+            </summary>
+            <param name="t">The type to evaluate</param>
+            <returns>Returns the name of the Sql Type equivalent to the CLR type given</returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.MagnaEventHandler">
+             <summary>
+             Representa un Evento para Objetos Magnanteractive
+             </summary>
+             <param name="sender">La instancia que dispara el evento</param>
+             <param name="e">Información acerca del evento</param>
+            
+        </member>
+        <member name="T:MagnaDB.MySQL.MagnaEventArgs">
+            <summary>
+            This class contains info about the Magna event context
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaEventArgs.#ctor(System.Int32,System.String)">
+            <summary>
+            Create a new instance of a MagnaEventArgs class.
+            </summary>
+            <param name="nrows">The number of rows affected</param>
+            <param name="connectionString">The Connection String used to perform the operation</param>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaEventArgs.#ctor(System.Int32,MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Create a new instance of a MagnaEventArgs class.
+            </summary>
+            <param name="nrows">The number of rows affected</param>
+            <param name="connection">The MySqlConnection used to perform the operation</param>
+        </member>
+        <member name="M:MagnaDB.MySQL.MagnaEventArgs.#ctor(System.Int32,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Create a new instance of a MagnaEventArgs class.
+            </summary>
+            <param name="nrows">The number of rows affected</param>
+            <param name="transaction">The MySqlTransaction used to perform the operation</param>
+        </member>
+        <member name="P:MagnaDB.MySQL.MagnaEventArgs.RowsAffected">
+            <summary>
+            Represents the number of Rows affected by the executed operation
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.MagnaEventArgs.ConnectionString">
+            <summary>
+            The Connection String of the Operation
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.MagnaEventArgs.CurrentConnection">
+            <summary>
+            If the operation was executed with an exposed connection retrieves the used connection
+            </summary>
+        </member>
+        <member name="P:MagnaDB.MySQL.MagnaEventArgs.CurrentTransaction">
+            <summary>
+            If the operation is executed against a trasaction retrieves the transaction in use
+            </summary>
+        </member>
+        <member name="T:MagnaDB.MySQL.ModelExtensions">
+            <summary>
+            Includes static help methods for the Model Classes
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(``0,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A entitiy to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(``0,MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(``0,MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(``0,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(``0,MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">An entity to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(``0,MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Class types of the forign properties you want to load</param>
+            <returns>Returns an IEnumerable of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(System.Collections.Generic.List{``0},System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(System.Collections.Generic.List{``0},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationships``1(System.Collections.Generic.List{``0},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(System.Collections.Generic.List{``0},System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(System.Collections.Generic.List{``0},MySql.Data.MySqlClient.MySqlConnection,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="connection">An open MySqlConnection to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.LoadRelationshipsAsync``1(System.Collections.Generic.List{``0},MySql.Data.MySqlClient.MySqlTransaction,System.Type[])">
+            <summary>
+            Load foreign properties decorated with the <see cref="T:MagnaDB.MySQL.ForeignRelationAttribute"/> to an entity or
+            collection of entities.
+            </summary>
+            <param name="result">A collection of entities to load foreign properties to</param>
+            <param name="trans">An active MySqlTransaction to execute the Select statement against</param>
+            <param name="innerModelTypes">Foreign Key entities types you want to have retrieved
+            (through properties decored with the ForeignRelation Attribute)</param>
+            <returns>Returns a List of the class type with the resulting foreign properties</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsert``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsert``1(System.Collections.Generic.IEnumerable{``0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsert``1(System.Collections.Generic.IEnumerable{``0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsertAsync``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsertAsync``1(System.Collections.Generic.IEnumerable{``0},MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="connection">An open MySqlConnection to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.ModelExtensions.GroupInsertAsync``1(System.Collections.Generic.IEnumerable{``0},MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes an Insert of multiple entities into this class' table.
+            </summary>
+            <param name="tableModels">A collection of entities of this class</param>
+            <param name="transaction">An active MySqlTransaction to execute the Insert statement against</param>
+            <returns>Returns a boolean value indicating whether the insertion was successful or not</returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.QueryMethods">
+            <summary>
+            This class includes query and statement execution methods.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQuery(System.String,System.String)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQuery(System.String,MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the statement against.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQuery(System.String,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the statement against.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQueryAsync(System.String,System.String)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQueryAsync(System.String,MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the statement against.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoQueryAsync(System.String,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes a statement onto a database.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the statement against.</param>
+            <returns>Returns a boolean value indicating whether the executed statement affected or not at least one row.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalar(System.String,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalar(System.String,MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the query against.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalar(System.String,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the query against.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalarAsync(System.String,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalarAsync(System.String,MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the query against.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.DoScalarAsync(System.String,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the query against.</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMake(System.String,System.String,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMake(System.String,MySql.Data.MySqlClient.MySqlConnection,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the query against.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMake(System.String,MySql.Data.MySqlClient.MySqlTransaction,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the query against.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMakeAsync(System.String,System.String,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connectionString">The Connection String to use.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMakeAsync(System.String,MySql.Data.MySqlClient.MySqlConnection,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="connection">An open MySqlConnection to execute the query against.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.QueryMethods.TableMakeAsync(System.String,MySql.Data.MySqlClient.MySqlTransaction,System.String)">
+            <summary>
+            Executes a query and returns a scalar result.
+            </summary>
+            <param name="query">The query or statement to execute.</param>
+            <param name="transaction">An active MySqlTransaction to execute the query against.</param>
+            <param name="tableName">A name (optional) to assign to the Name property of the resulting DataTable object</param>
+            <returns>Returns an object with the obtained result (if any) or null if no result is obtained.</returns>
+        </member>
+        <member name="T:MagnaDB.MySQL.SqlGenerator">
+            <summary>
+            This class includes helper methods used to create SQL statements.
+            </summary>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenSelect(System.String,System.String[])">
+            <summary>
+            Create SQL Select statement.
+            </summary>
+            <param name="tableName">The table to select data from</param>
+            <param name="fields">The desired columns to retrieve</param>
+            <returns>Returns a string containing the resulting Select statement.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenSelect(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Create SQL Select statement.
+            </summary>
+            <param name="tableName">The table to select data from</param>
+            <param name="fields">The desired columns to retrieve</param>
+            <returns>Returns a string containing the resulting Select statement.</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenInsert(System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Create a SQL Insert statement.
+            </summary>
+            <param name="tableName">The table to insert data into</param>
+            <param name="fieldsValues">A collection of key/value pairs that will be included in the Insert statement</param>
+            <returns>Returns a string containing the resulting Insert statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenInsert(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Create a SQL Insert statement.
+            </summary>
+            <param name="tableName">The table to insert data into</param>
+            <param name="fields">A collection of strings that will be used as the columns' names in the Insert statement</param>
+            <param name="values">A collection of objects that will be used as the columns' values in the Insert statement</param>
+            <returns>Returns a string containing the resulting Insert statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenUpdate(System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Int32)">
+            <summary>
+            Create a SQL Update statement.
+            </summary>
+            <param name="tableName">The table to update data into</param>
+            <param name="fieldsValues">A collection of key/value pairs that will be included in the Update statement</param>
+            <param name="top">A value indicating the maximum number of columns that may be updated.</param>
+            <returns>Returns a string containing the resulting Update statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenUpdate(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object},System.Int32)">
+            <summary>
+            Create a SQL Update statement.
+            </summary>
+            <param name="tableName">The table to update data in</param>
+            <param name="fields">A collection of strings that will be used as the columns' names in the Update statement</param>
+            <param name="values">A collection of objects that will be used as the columns' values in the Update statement</param>
+            <param name="top">A value indicating the maximum number of columns that may be updated.</param>
+            <returns>Returns a string containing the resulting Update statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenDelete(System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Int32)">
+            <summary>
+            Create a Delete statment.
+            </summary>
+            <param name="tableName">The table to delete data from</param>
+            <param name="fieldsValues">A collection of key/value pairs that will be included in the Delete statement</param>
+            <param name="top">A value indicating the maximum number of columns that may be deleted.</param>
+            <returns>Returns a string containing the resulting Delete statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenDelete(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object},System.Int32)">
+            <summary>
+            Create a Delete statment.
+            </summary>
+            <param name="tableName">The table to delete data from</param>
+            <param name="fields">A collection of strings that will be used as the columns' names in the Delete statement</param>
+            <param name="values">A collection of objects that will be used as the columns' values in the Delete statement</param>
+            <param name="top">A value indicating the maximum number of columns that may be deleted.</param>
+            <returns>Returns a string containing the resulting Delete statement</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenFieldsEnumeration(System.String[])">
+            <summary>
+            Creates a string of comma-separated fields from the provided field array.
+            </summary>
+            <param name="fields">The fields' names</param>
+            <returns>Returns a string containing the field names separated by commas</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenFieldsEnumeration(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a string of comma-separated fields from the provided field array.
+            </summary>
+            <param name="fields">The fields' names</param>
+            <returns>Returns a string containing the field names separated by commas</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenValuesEnumeration(System.Object[])">
+            <summary>
+            Creates a string of comma-separated values from the provided values array.
+            </summary>
+            <param name="fields">The fields' values</param>
+            <returns>Returns a string containing the field names separated by commas</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenValuesEnumeration(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Creates a string of comma-separated values from the provided values array.
+            </summary>
+            <param name="fields">The fields' values</param>
+            <returns>Returns a string containing the field names separated by commas</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenSetPairs(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Create a string of assignment pairs of column/values.
+            </summary>
+            <param name="fieldsValues">The key/value pairs to use</param>
+            <returns>Returns a string containing the resulting assignment pairs</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenSetPairs(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Create a string of assignment pairs of column/values.
+            </summary>
+            <param name="fields">The column names to use</param>
+            <param name="values">The values to use</param>
+            <returns>Returns a string containing the resulting assignment pairs</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenWhere(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean)">
+            <summary>
+            Create a WHERE clause comparing keys and values as equal.
+            </summary>
+            <param name="fieldsValues">The key/value pairs to use</param>
+            <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+            <returns>Returns a string containing the resulting WHERE clause</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenWhere(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+            <summary>
+            Create a WHERE clause comparing keys and values as equal.
+            </summary>
+            <param name="fields">The column names to use</param>
+            <param name="values">The values to use</param>
+            <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+            <returns>Returns a string containing the resulting WHERE clause</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenWhereDiffered(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean)">
+            <summary>
+            Create a WHERE clause comparing keys and values as unequal.
+            </summary>
+            <param name="fieldsValues">The key/value pairs to use</param>
+            <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+            <returns>Returns a string containing the resulting WHERE clause</returns>
+        </member>
+        <member name="M:MagnaDB.MySQL.SqlGenerator.GenWhereDiffered(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+            <summary>
+            Create a WHERE clause comparing keys and values as unequal.
+            </summary>
+            <param name="fields">The column names to use</param>
+            <param name="values">The values to use</param>
+            <param name="includeWhere">Indicates whether the WHERE should be added or not to the resulting clause.</param>
+            <returns>Returns a string containing the resulting WHERE clause</returns>
+        </member>
+    </members>
+</doc>

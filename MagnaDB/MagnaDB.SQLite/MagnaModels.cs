@@ -3923,7 +3923,7 @@ namespace MagnaDB.SQLite
                 }
                 keySB = keySB.Remove(keySB.Length - 1, 1);
 
-                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+                temp.AppendFormat(",\nPRIMARY KEY ({0})\n", keySB.ToString());
             }
 
             temp.Append(" )");
@@ -3982,7 +3982,7 @@ namespace MagnaDB.SQLite
                 }
                 keySB = keySB.Remove(keySB.Length - 1, 1);
 
-                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+                temp.AppendFormat(",\nPRIMARY KEY ({0})\n", keySB.ToString());
             }
 
             temp.Append(" )");
@@ -4041,7 +4041,7 @@ namespace MagnaDB.SQLite
                 }
                 keySB = keySB.Remove(keySB.Length - 1, 1);
 
-                temp.AppendFormat("\nPRIMARY KEY ({0})\n", keySB.ToString());
+                temp.AppendFormat(",\nPRIMARY KEY ({0})\n", keySB.ToString());
             }
 
             temp.Append(" )");
