@@ -32,6 +32,16 @@
                   <a class="nav-link" href="download.html">Download</a>
                 </li>
               </ul>
+              <ul class="navbar-nav ml-md-auto">
+                <a class="nav-item nav-link dropdown-toggle" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Latest Versions
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SQLite">SQLite v1.0.3</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.MySQL">MySQL v1.0.2</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SqlServer">SQL Server v1.0.2</a>
+                </div>
+              </ul>
             </div>
           </nav>
           <div class="container body-content">
@@ -257,7 +267,7 @@
             milo.Insert();
 
             <span class="text-olive">// After a TableModel object is successfully inserted to the database</span>
-            <span class="text-olive">// it will have its Identity marked property (if any) automatically updated</span>
+            <span class="text-olive">// it will have its Identity decorated property (if any) automatically updated</span>
             <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}, the {1} cat's Id is {2}"</span>, milo.Name, milo.Breed, milo.Id);
 
             <span class="text-olive">// Turns out Milo's not a Persian, but an American Shorthair</span>
@@ -267,7 +277,7 @@
 
             <span class="text-olive">// If we want to retrieve Milo's information from the database</span>
             <span class="text-olive">// we can do so by using the Get() static method, and providing Milo's Id</span>
-            <span class="text-olive">// as an argument. This works for classes with Identity marked properties.</span>
+            <span class="text-olive">// as an argument. This works for classes with Identity decorated properties.</span>
             <span class="text-info">Cat</span> miloFromTheDB = <span class="text-info">Cat</span>.Get(milo.Id);
 
             <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"This kitten's name is {0}"</span>, miloFromTheDB.Name);
@@ -364,7 +374,225 @@
                 </section>
                 <section id="methods">
                   <h2>5. Methods</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    <h3><b>1. TableModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
+                    This class must be inherited by model classes and have its type parameter specified
+                    as the implementing class in order to work properly 
+                    (<a href="#table-model">see section 3.</a>).<br />
+                    <h3>Methods</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Method
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            CreateTable()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Uses this class' properties to create a table in the database specified
+                            by the class' connection string or the argument-provided connection/transaction.<br />
+                            Returns true if the table is sucessfully created. Otherwise, false.<br />
+                            Will throw an Exception if the table already exists, or the connection to the database
+                            fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Delete() <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Deletes the database row with a matching key to the invoking object.<br />
+                            Returns true if the matching table row is deleted. Otherwise, false.<br />
+                            This Methods triggers the <a href="#events">BeforeDelete</a> before executing
+                            the DELETE command.<br />
+                            This Methods triggers the <a href="#events">DeleteSucceeded</a> when a database
+                            row is successfully deleted.<br />
+                            Will throw an exception if the database connection fails or if the provided Key
+                            property is not valid.
+                        </tr>
+                        <tr>
+                          <td>
+                            GroupInsert()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Inserts an IEnumerable&lt;T&gt; collection of entities to the the database
+                            in a single command. This is specially useful when inserting large GroupInsert
+                            of entities.<br />
+                            Returns true if all entities are successfully inserted. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Insert()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Inserts a new row to the class' specified table by mapping the invoking
+                            object's properties to columns in the table.<br />
+                            Returns true if a table row is successfully inserted. Otherwise, false.<br />
+                            This Methods triggers the <a href="#events">BeforeInsert</a> before executing
+                            the INSERT command.<br />
+                            This Methods triggers the <a href="#events">InsertSucceeded</a> when a database
+                            row is successfully inserted.<br />
+                            Will throw an exception if the database connection fails or if the class
+                            definition doesn't correctly match to the table's definition in the database.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            IsDuplicated()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Verifies if the object is a duplicated entry by evaluating properties
+                            decorated with the <a href="#attributes">[DuplicationColumn]</a> attribute.<br />
+                            Returns true if a duplicate is found. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Update()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Updates the database row matching this object's Key property using 
+                            each one of its non-key properties.<br />
+                            Returns true if a database row is successfully updated. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr />
+                    <h3><b>2. ViewModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
+                    This class must be inherited by view model classes and have its type parameter specified
+                    as the implementing class in order to work properly 
+                    (<a href="#view-model">see section 4.</a>).<br />
+                    <h3>Methods</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Method
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            CreateActiveTransaction()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Uses this class' connection string property to create an active transaction
+                            to the database (which needs to be commited/backrolled, and disposed of
+                            after being used).<br />
+                            Returns the newly created transaction<br />
+                            Will throw an exception if the connection to the database fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            CreateOpenConnection()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Uses this class' connection string property to create an open connection
+                            to the database (which needs to be closed/disposed of after being used).<br />
+                            Returns the newly created database connection.<br />
+                            Will throw an exception if the connection to the database fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Delete() <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Deletes the database row with a matching key to the invoking object.<br />
+                            Returns true if the matching table row is deleted. Otherwise, false.<br />
+                            This Methods triggers the <a href="#events">BeforeDelete</a> before executing
+                            the DELETE command.<br />
+                            This Methods triggers the <a href="#events">DeleteSucceeded</a> when a database
+                            row is successfully deleted.<br />
+                            Will throw an exception if the database connection fails or if the provided Key
+                            property is not valid.
+                        </tr>
+                        <tr>
+                          <td>
+                            GroupInsert()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Inserts an IEnumerable&lt;T&gt; collection of entities to the the database
+                            in a single command. This is specially useful when inserting large GroupInsert
+                            of entities.<br />
+                            Returns true if all entities are successfully inserted. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Insert()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Inserts a new row to the class' specified table by mapping the invoking
+                            object's properties to columns in the table.<br />
+                            Returns true if a table row is successfully inserted. Otherwise, false.<br />
+                            This Methods triggers the <a href="#events">BeforeInsert</a> before executing
+                            the INSERT command.<br />
+                            This Methods triggers the <a href="#events">InsertSucceeded</a> when a database
+                            row is successfully inserted.<br />
+                            Will throw an exception if the database connection fails or if the class
+                            definition doesn't correctly match to the table's definition in the database.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            IsDuplicated()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Verifies if the object is a duplicated entry by evaluating properties
+                            decorated with the <a href="#attributes">[DuplicationColumn]</a> attribute.<br />
+                            Returns true if a duplicate is found. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Update()
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Updates the database row matching this object's Key property using 
+                            each one of its non-key properties.<br />
+                            Returns true if a database row is successfully updated. Otherwise, false.<br />
+                            Will throw an exception if the database connection fails.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </p>
                 </section>
                 <section id="attributes">
                   <h2>6. Attributes</h2>
