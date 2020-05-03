@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/content.css" />
+        <link rel="icon" href="resources/favicon.ico" />
         <title>MagnaDB.NET</title>
     </head>
     <body>
@@ -17,6 +18,9 @@
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                   <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="examples.html">Examples</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="about.html">About</a>
@@ -116,7 +120,7 @@
                     is available for SQL Server and MySQL; if you have any of these DB engines available
                     you're free to try MagnaDB in any of them. <a href="#dbengines"> learn more</a>).<br />
                     <br />
-                    <span class="text-info">Please make sure your project's target framework is &GreaterEqual; .NET Framework 4.5</span>
+                    <span class="text-info">Please make sure your project's target framework is &GreaterEqual; .NET Framework 4.6.1</span>
                   </p>
                 </section>
                 <section id="table-model">
@@ -145,9 +149,9 @@
 {
     <span class="text-primary">public class</span> <span class="text-info">Cat</span>
     {
-        <span class="text-primary">public int</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
         <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
-        <span class="text-primary">public string</span> Race { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Breed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
         <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
     }
 }
@@ -176,9 +180,9 @@
         <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">cat</span> => <span class="text-info">cat</span>.Id);
 
         [<span class="text-info">Identity</span>]
-        <span class="text-primary">public int</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
         <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
-        <span class="text-primary">public string</span> Race { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Breed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
         <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
     }
 }
@@ -212,12 +216,151 @@
                       <li>
                         <b>IdentityAttribute [Identity]:</b> this attribute indicates that the property
                         it is decorating will be used as an Identity or Auto Increment column. <a href="#attributes">Learn more</a>
+                      </li>
                     </ul>
+                    <br />
+                    Now that we have correctly defined our model, let's use it in our Main
+                    Function in the <i>Program.cs</i> file.<br />
+                    <br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">class</span> <span class="text-info">Program</span>
+    {
+        <span class="text-primary">static void</span> Main(<span class="text-primary">string</span>[] args)
+        {
+            <span class="text-olive">// First things, first, let's create our Cat Table</span>
+            <span class="text-olive">// If a table already exists in the database, we'll</span>
+            <span class="text-olive">// have an exception thrown, so we'll use try/catch</span>
+            <span class="text-primary">try</span>
+            {
+                <span class="text-info">Cat</span>.CreateTable();
+            }
+            <span class="text-primary">catch</span>
+            {
+                <span class="text-olive">// The table already exists.</span>
+            }
+            
+            <span class="text-olive">// Next, we'll create a new Cat object</span>
+            <span class="text-info">Cat</span> milo = new <span class="text-info">Cat</span>()
+            {
+                Name = <span class="text-brick">"Milo"</span>,
+                Breed = <span class="text-brick">"Persian"</span>,
+                DateOfBirth = <span class="text-primary">new</span> <span class="text-info">DateTime</span>(2019, 11, 7)
+            };
+
+            <span class="text-olive">// Let's insert Milo to the DB</span>
+            milo.Insert();
+
+            <span class="text-olive">// After a TableModel object is successfully inserted to the database</span>
+            <span class="text-olive">// it will have its Identity marked property (if any) automatically updated</span>
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}, the {1} cat's Id is {2}"</span>, milo.Name, milo.Breed, milo.Id);
+
+            <span class="text-olive">// Turns out Milo's not a Persian, but an American Shorthair</span>
+            <span class="text-olive">// We'll fix this and update Milo's breed in the database</span>
+            milo.Breed = <span class="text-brick">"American Shorthair"</span>;
+            milo.Update();
+
+            <span class="text-olive">// If we want to retrieve Milo's information from the database</span>
+            <span class="text-olive">// we can do so by using the Get() static method, and providing Milo's Id</span>
+            <span class="text-olive">// as an argument. This works for classes with Identity marked properties.</span>
+            <span class="text-info">Cat</span> miloFromTheDB = <span class="text-info">Cat</span>.Get(milo.Id);
+
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"This kitten's name is {0}"</span>, miloFromTheDB.Name);
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"It's a(n) {0}"</span>, miloFromTheDB.Breed);
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"It was born on {0:MMM dd yyyy}"</span>, miloFromTheDB.DateOfBirth);
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}Press any key to continue..."</span>, Environment.NewLine);
+            <span class="text-info">Console</span>.ReadKey();
+        }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                    <br />
                   </p>
                 </section>
                 <section id="view-model">
                   <h2>4. View Models</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    MagnaDB View Models are models that are only used to retrieve information from
+                    the database, meaning they are SELECT Only.<br />
+                    <br />
+                    Even though Views are created from existing tables (in engines like SQL Server, 
+                    or MySql), which means they derive from Tables; in MagnaDB, TableModel is a ViewModel's
+                    subclass (which is useful to know), and therefore
+                    all operations done with ViewModel can be done with TableModel. <br />
+                    <br />
+                    <strong>ViewModels DO NOT have to point to a VIEW in order to work.</strong>
+                    <br /> They can perfectly point at a Table, and query one or more of 
+                    its columns with no issues.<br />
+                    <br />
+                    Let's create a new Class file in our project which we previously created (sections 
+                    <a href="#getting-started">2.</a>, <a href="#table-model">3.</a>) which we'll name
+                    <i>CatView.cs</i><br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+<span class="text-primary">using</span> MagnaDB.SQLite;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">public class</span> <span class="text-info">CatView</span> : <span class="text-info">ViewModel<span class="text-light">&lt;</span>CatView<span class="text-light">&gt;</span></span>
+    {
+        <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=testmagna.db;New=True;Version=3;"</span>;
+        <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Cats"</span>;
+        <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">cat</span> => <span class="text-info">cat</span>.Id);
+
+        [<span class="text-info">Identity</span>]
+        <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Breed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                    <br />
+                    The Cats table (which we previously created in <a href="#table-model">section 3.</a>) has
+                    four defined columns, which are <i>Id, Name, Breed, and DateOfBirth</i>; notice that in this
+                    example we did not include the DateOfBirth column (just for demonstrational purposes). <br />
+                    <br />
+                    Let's add some code to our Program class' Main function.<br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            <span class="text-olive">// We'll retrieve all cats from the database using the ToList() static</span>
+            <span class="text-olive">// method in our CatView class; this can also be done by using table</span>
+            <span class="text-olive">// models (like the Cat class we previously created), but we're</span>
+            <span class="text-olive">// using the CatView class just for demonstration.</span>
+            <span class="text-primary">var</span> aLotOfMilos = <span class="text-info">CatView</span>.ToList();
+
+            <span class="text-primary">foreach</span>(<span class="text-primary">var</span> item <span class="text-primary">in</span> aLotOfMilos)
+            {
+                <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"Id: {0}, Name: {1}, Breed: {2}"</span>, item.Id, item.Name, item.Breed);
+            }
+
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}Press any key to continue..."</span>, <span class="text-info">Environment</span>.NewLine);
+            <span class="text-info">Console</span>.ReadKey();
+        }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                    <br />
+                    MagnaDB ViewModels are useful for situations where you wish not to query sensitive
+                    information from a database (such as password hashes or phone numbers) while querying
+                    just the information you need and not all the columns in the table (which will happen
+                    when using a table model, mapped to all the columns in the database table). <br />
+                    <br />
+                  </p>
                 </section>
                 <section id="methods">
                   <h2>5. Methods</h2>
