@@ -37,9 +37,9 @@
                   Latest Versions
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
-                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SQLite">SQLite v1.0.3</a>
-                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.MySQL">MySQL v1.0.2</a>
-                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SqlServer">SQL Server v1.0.2</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SQLite">SQLite: v1.0.3</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.MySQL">MySQL: v1.0.2</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SqlServer">SQL Server: v1.0.2</a>
                 </div>
               </ul>
             </div>
@@ -74,7 +74,7 @@
                         <a class="nav-link" href="#events">7. Events</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#exceptions">8. Exceptions</a>
+                        <a class="nav-link" href="#relations">8. Foreign Relations</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#dbengines">9. DB Engines</a>
@@ -375,7 +375,263 @@
                 <section id="methods">
                   <h2>5. Methods</h2>
                   <p>
-                    <h3><b>1. TableModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
+                    <span class="text-muted">
+                      **DISCLAIMER: The documentation provided for this section contains information
+                      for the different MagnaDB classes, properties, methods, events, that are 
+                      considered to be relevant for its use, and not the whole project.**
+                    </span>
+                    <br />
+                    <h3><b>1. ViewModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
+                    This class must be inherited by view model classes and have its type parameter specified
+                    as the implementing class in order to work properly 
+                    (<a href="#view-model">see section 4.</a>).<br />
+                    <h3>Methods</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Method
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            CreateActiveTransaction()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Uses this class' connection string property to create an active transaction
+                            to the database (which needs to be commited/backrolled, and disposed of
+                            after being used).<br />
+                            Returns the newly created transaction.<br />
+                            Will throw an exception if the connection to the database fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            CreateOpenConnection()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Uses this class' connection string property to create an open connection.
+                            to the database (which needs to be closed/disposed of after being used).<br />
+                            Returns the newly created database connection.<br />
+                            Will throw an exception if the connection to the database fails.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Get()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Finds and retrieves an object in the database 
+                            matching the argument-provided key.<br />
+                            Returns true if a table row is successfully inserted. Otherwise, false.<br />
+                            This Methods triggers the <a href="#events">GetSucceeded</a> event when a matching
+                            result is found.<br />
+                            This Methods triggers the <a href="#events">GetFailed</a> event when a matching
+                            entity is not found.<br />
+                            Will throw an exception if the database connection fails or if the class
+                            definition doesn't correctly match to the table's definition in the database.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GetKey()
+                          </td>
+                          <td>
+                            Returns the object's corresponding Key.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GetTableName()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns this object's class' table name.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GetTableName()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns this object's class' table name.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            LoadRelationships()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Retrieves and assigns for an object or collection all specified foreign
+                            relations <a href="#attributes">see </a> attribute.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            TableToIEnumerable() 
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Maps a DataTable object's columns to a set of objects' properties and
+                            returns an IEnumerable collection with the resulting objects.<br/>
+                            Will throw an exception if the database connection fails.
+                        </tr>
+                        <tr>
+                          <td>
+                            ToDataTable()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Performs a SELECT to the Database selecting this class' properties that
+                            match to columns of the database table. Only columns decorated with the
+                            <a href="#attributes">[DataDisplayable]</a> will be selected by default
+                            (this behavior can vary).<b>SQL Clauses may be included as
+                            arguments.</b><br />
+                            A DataTable object with the results will be returned.<br/>
+                            Will throw an exception if the connection to the database fails, or if
+                            the class' definition doesn't correctly match that of the database table.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            ToIEnumerable()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Performs a SELECT to the Database selecting this class' properties that
+                            match to columns of the database table. <b>SQL Clauses may be included as
+                            arguments.</b><br />
+                            An IEnumerable&lt;T&gt; object with the results will be returned.<br/>
+                            Will throw an exception if the connection to the database fails, or if
+                            the class' definition doesn't correctly match that of the database table.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            ToList()
+                            <span class="badge badge-primary">static</span>
+                            <span class="badge badge-secondary">async</span>
+                          </td>
+                          <td>
+                            Performs a SELECT to the Database selecting this class' properties that
+                            match to columns of the database table. <b>SQL Clauses may be included as
+                            arguments.</b><br />
+                            A List&lt;T&gt; object with the results will be returned.<br/>
+                            Will throw an exception if the connection to the database fails, or if
+                            the class' definition doesn't correctly match that of the database table.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <h3>Properties</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Property
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            ConnectionString
+                          </td>
+                          <td>
+                            This property returns this class' specific connection string.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Key
+                          </td>
+                          <td>
+                            Returns this object's corresponding Key.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            TableName
+                          </td>
+                          <td>
+                            Returns the name of the table this class is mapped to in the database. 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <h3>Events</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Event
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            GetFailed
+                          </td>
+                          <td>
+                            This event is raised when the Get method doesn't retrieve
+                            an entity from the database or runs into an exception of some sort.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GetSucceeded
+                          </td>
+                          <td>
+                            This event is raised when the Get method succeeds in retrieving an entity
+                            from the DB.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            SelectFailed
+                          </td>
+                          <td>
+                            This event is raised when the ToList, ToIEnumerable, ToDataTable methods
+                            don't retrieve an entity from the DB or run into an exception of some sort.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            SelectSucceeded
+                          </td>
+                          <td>
+                            This event is raised when the ToList or ToIEnumerable, ToDataTable methods
+                            properly retrieve an Entity from the DB.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr />
+                    <h3><b>2. TableModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
                     This class must be inherited by model classes and have its type parameter specified
                     as the implementing class in order to work properly 
                     (<a href="#table-model">see section 3.</a>).<br />
@@ -476,11 +732,100 @@
                         </tr>
                       </tbody>
                     </table>
+                    <h3>Events</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Event
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            BeforeDelete
+                          </td>
+                          <td>
+                            This event is raised before the Delete method is executed.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            BeforeInsert
+                          </td>
+                          <td>
+                            This event is raised before the Insert method is executed.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            BeforeUpdate
+                          </td>
+                          <td>
+                            This event is raised before the Update method is executed.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            DeleteFailed
+                          </td>
+                          <td>
+                            This event is raised when the Delete method fails to delete a row in the
+                            database.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            DeleteSucceeded
+                          </td>
+                          <td>
+                            This event is raised when the Delete method successfully deletes this entity.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            InsertFailed
+                          </td>
+                          <td>
+                            This event is raised when the Insert method fails to insert an entity to
+                            a table.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            InsertSucceeded
+                          </td>
+                          <td>
+                            This event is raised when the Insert method successfully inserts this entity.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            UpdateFailed
+                          </td>
+                          <td>
+                            This event is raised when the Update method fails to update a row in the
+                            database table.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            UpdateSucceeded
+                          </td>
+                          <td>
+                            This event is raised when the Update method successfully updates this entity.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                     <hr />
-                    <h3><b>2. ViewModel&lt;T&gt;</b> <span class="badge badge-info">class</span></h3>
-                    This class must be inherited by view model classes and have its type parameter specified
-                    as the implementing class in order to work properly 
-                    (<a href="#view-model">see section 4.</a>).<br />
+                    <h3><b>3. QueryMethods</b> <span class="badge badge-primary">static</span> <span class="badge badge-info">class</span></h3>
+                    This class contains methods that are used to interact with the database through SQL
+                    commands.
                     <h3>Methods</h3>
                     <table class="table table-bordered table-responsive-lg">
                       <thead>
@@ -496,98 +841,146 @@
                       <tbody>
                         <tr>
                           <td>
-                            CreateActiveTransaction()
+                            DoQuery()
                             <span class="badge badge-primary">static</span>
                             <span class="badge badge-secondary">async</span>
                           </td>
                           <td>
-                            Uses this class' connection string property to create an active transaction
-                            to the database (which needs to be commited/backrolled, and disposed of
-                            after being used).<br />
-                            Returns the newly created transaction<br />
-                            Will throw an exception if the connection to the database fails.
+                            Executes a SQL command against the specified database connection.<br />
+                            Returns true if the query is successfully executed. Otherwise, false.<br />
+                            Will throw an exception if the connection to the database fails, or the
+                            provided SQL command is not valid.
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            CreateOpenConnection()
+                            DoScalar()
                             <span class="badge badge-primary">static</span>
                             <span class="badge badge-secondary">async</span>
                           </td>
                           <td>
-                            Uses this class' connection string property to create an open connection
-                            to the database (which needs to be closed/disposed of after being used).<br />
-                            Returns the newly created database connection.<br />
-                            Will throw an exception if the connection to the database fails.
+                            Executes a SQL query against the specified database connection 
+                            and returns a single value.<br />
+                            Will throw an exception if the connection to the database fails, or the
+                            provided SQL query is not valid.
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            Delete() <span class="badge badge-secondary">async</span>
-                          </td>
-                          <td>
-                            Deletes the database row with a matching key to the invoking object.<br />
-                            Returns true if the matching table row is deleted. Otherwise, false.<br />
-                            This Methods triggers the <a href="#events">BeforeDelete</a> before executing
-                            the DELETE command.<br />
-                            This Methods triggers the <a href="#events">DeleteSucceeded</a> when a database
-                            row is successfully deleted.<br />
-                            Will throw an exception if the database connection fails or if the provided Key
-                            property is not valid.
-                        </tr>
-                        <tr>
-                          <td>
-                            GroupInsert()
+                            TableMake()
                             <span class="badge badge-primary">static</span>
                             <span class="badge badge-secondary">async</span>
                           </td>
                           <td>
-                            Inserts an IEnumerable&lt;T&gt; collection of entities to the the database
-                            in a single command. This is specially useful when inserting large GroupInsert
-                            of entities.<br />
-                            Returns true if all entities are successfully inserted. Otherwise, false.<br />
-                            Will throw an exception if the database connection fails.
+                            Executes a SQL query against the specified database connection 
+                            and returns the query results inside a DataTable object.<br />
+                            Will throw an exception if the connection to the database fails, or the
+                            provided SQL query is not valid.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr />
+                    <h3><b>4. SqlGenerator</b> <span class="badge badge-primary">static</span> <span class="badge badge-info">class</span></h3>
+                    This class contains methods that are used to generate SQL queries, commands, clauses, etc.
+                    <h3>Methods</h3>
+                    <table class="table table-bordered table-responsive-lg">
+                      <thead>
+                        <tr>
+                          <th>
+                            Method
+                          </th>
+                          <th>
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            GenDelete()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with a DELETE statement generated from the provided
+                            arguments.
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            Insert()
-                            <span class="badge badge-secondary">async</span>
+                            GenFieldsEnumeration()
+                            <span class="badge badge-primary">static</span>
                           </td>
                           <td>
-                            Inserts a new row to the class' specified table by mapping the invoking
-                            object's properties to columns in the table.<br />
-                            Returns true if a table row is successfully inserted. Otherwise, false.<br />
-                            This Methods triggers the <a href="#events">BeforeInsert</a> before executing
-                            the INSERT command.<br />
-                            This Methods triggers the <a href="#events">InsertSucceeded</a> when a database
-                            row is successfully inserted.<br />
-                            Will throw an exception if the database connection fails or if the class
-                            definition doesn't correctly match to the table's definition in the database.
+                            Returns a string with a list of comma-separated columns/fields.
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            IsDuplicated()
-                            <span class="badge badge-secondary">async</span>
+                            GenInsert()
+                            <span class="badge badge-primary">static</span>
                           </td>
                           <td>
-                            Verifies if the object is a duplicated entry by evaluating properties
-                            decorated with the <a href="#attributes">[DuplicationColumn]</a> attribute.<br />
-                            Returns true if a duplicate is found. Otherwise, false.<br />
-                            Will throw an exception if the database connection fails.
+                            Returns a string with a INSERT statement generated from the 
+                            provided arguments.
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            Update()
-                            <span class="badge badge-secondary">async</span>
+                            GenSelect()
+                            <span class="badge badge-primary">static</span>
                           </td>
                           <td>
-                            Updates the database row matching this object's Key property using 
-                            each one of its non-key properties.<br />
-                            Returns true if a database row is successfully updated. Otherwise, false.<br />
-                            Will throw an exception if the database connection fails.
+                            Returns a string with a SELECT statement generated from the 
+                            provided arguments.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GenSetPairs()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with column/value assignments separated by commas.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GenUpdate()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with an UPDATE statement generated from the 
+                            provided arguments.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GenValuesEnumeration()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with a list of formatted comma-separated values.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GenWhere()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with a WHERE clause that evaluates that the rows' values
+                            are equal to the values provided in each key/value pair.
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            GenWhereDiffered()
+                            <span class="badge badge-primary">static</span>
+                          </td>
+                          <td>
+                            Returns a string with a WHERE clause that evaluates that the rows' values
+                            are not equal to the values provided in each key/value pair.
                           </td>
                         </tr>
                       </tbody>
@@ -602,8 +995,8 @@
                   <h2>7. Events</h2>
                   <div style="height: 900px;"></div>
                 </section>
-                <section id="exceptions">
-                  <h2>8. Exceptions</h2>
+                <section id="relations">
+                  <h2>8. Foreign Relations</h2>
                   <div style="height: 900px;"></div>
                 </section>
                 <section id="dbengines">
