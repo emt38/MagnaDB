@@ -74,7 +74,7 @@
                         <a class="nav-link" href="#events">7. Events</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#relations">8. Foreign Relations</a>
+                        <a class="nav-link" href="#exceptions">8. Exceptions</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#dbengines">9. DB Engines</a>
@@ -989,14 +989,146 @@
                 </section>
                 <section id="attributes">
                   <h2>6. Attributes</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    The following attributes let you manipulate MagnaDB's model's behavior and
+                    implement lots of cool functionalities.<br />
+                    <br />
+                    All attributes target class properties<br />
+                    <br />
+                    We'll be looking at each one of them below.<br />
+                    <h4>1. ColumnNameAttribute</h3>
+                    This attribute lets you specify the name for a database column mapped to a property, 
+                    therefore not using the property's identifier, but the one provided in the attribute.
+                    <br /><br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">ColumnName</span>(<span class="text-brick">"pedigree"</span>)]
+            <span class="text-primary">public string</span> Breed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                      </code>
+                    </div>
+                    <br />
+                    <h4>2. DataDisplayableAttribute</h3>
+                      This attribute lets you mark properties you wish to have included when executing the 
+                      ToDataTable() static method.<br />
+                      <br />
+                      <div class="bg-dark p-2">
+                        <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">DataDisplayable</span>]
+            <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                        </code>
+                      </div>
+                      <br />
+                      <h4>3. DateTimeTypeAttribute</h3>
+                        This attribute lets you specify what part of the date this property's associated
+                        column in the database should work and be evaluated with (Date, Time, Date 
+                        and Time).<br />
+                        <br />
+                        <div class="bg-dark p-2">
+                          <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">DateTimeType</span>(<span class="text-warning">DateTimeSpecification</span>.Date)]
+            <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                          </code>
+                        </div>
+                        <br />
+                        <h4>4. DDLIgnoreAttribute</h3>
+                          Properties decorated with this attribute will not be included in internal
+                          CREATE, or ALTER statements (like in the case of the CreateTable() method).<br />
+                          This attribute is useful when you're using computed columns that need to be
+                          defined from the database, and other scenarios.<br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">DDLIgnore</span>]
+            <span class="text-primary">public decimal</span> StockGrowthRatio { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>5. DMLIgnoreAttribute</h3>
+                          Properties decorated with this attribute will not interact with the database in any
+                          sort of way.<br />
+                          This attribute is useful when you want to include properties in a model that
+                          aren't data-bound, but useful for another functionalities.<br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">DMLIgnore</span>]
+            <span class="text-primary">public</span> <span class="text-info">HttpPostedFileBase</span> UploadedImage { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>6. DuplicationColumnAttribute</h3>
+                          Properties decorated with this attribute will be evaluted when executing
+                          the IsDuplicated() method.<br />
+                          <br />
+                          This method's constructor lets you specify a duplication index that lets you
+                          group different combinations of properties to evaluate for duplication.
+                          DuplicationColumn-decorated properties having the same index will be evaluated
+                          as a composite group (if more than one property is specified)<br />
+                          A property may belong to any possible number of different duplication groups
+                          by decorating the property more than once.<br />
+                          The duplication index will be <i>0</i> by default.<br />
+                          <span class="text-muted">In order to avoid "magic numbers" when using duplication
+                          indexes in your models, the use of integer constants is encouraged.</span><br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            <span class="text-primary">public const int</span> PersonalInfoIndex = <span class="text-cream">1</span>;
+            <span class="text-primary">public const int</span> SocialSecurityIndex = <span class="text-cream">2</span>;
+            <span class="text-primary">public const int</span> PassportIndex = <span class="text-cream">3</span>;
+
+            [<span class="text-info">DuplicationColumn</span>(PersonalInfoIndex)]
+            <span class="text-primary">public string</span> FirstName { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+            [<span class="text-info">DuplicationColumn</span>(PersonalInfoIndex)]
+            <span class="text-primary">public string</span> LastName { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+            [<span class="text-info">DuplicationColumn</span>(PersonalInfoIndex)]
+            <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+            
+            [<span class="text-info">DuplicationColumn</span>(SocialSecurityIndex)]
+            <span class="text-primary">public string</span> SocialSecurityNumber { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+            
+            [<span class="text-info">DuplicationColumn</span>(PassportIndex)]
+            <span class="text-primary">public string</span> PassportNumber { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+            <span class="text-olive">// When invoking the IsDuplicated() method, a parameter for which duplication index</span>
+            <span class="text-olive">// will be evaluated can be provided; if -1 (default if none) is provided as</span>
+            <span class="text-olive">// an argument, all indexed-groups will be evaluated.</span>
+
+            <span class="text-olive">// FirstName, LastName, and DateOfBirth will be evaluated as a group, meaning that</span>
+            <span class="text-olive">// duplicated entities have the same full names and were born on the same day.</span>
+            
+            <span class="text-olive">// Social Security Number will be evaluated individually.</span>
+            <span class="text-olive">// Passport Number will also be evaluated individually.</span>
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                  </p>
                 </section>
                 <section id="events">
                   <h2>7. Events</h2>
                   <div style="height: 900px;"></div>
                 </section>
-                <section id="relations">
-                  <h2>8. Foreign Relations</h2>
+                <section id="exceptions">
+                  <h2>8. Exceptions</h2>
                   <div style="height: 900px;"></div>
                 </section>
                 <section id="dbengines">
