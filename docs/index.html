@@ -283,7 +283,7 @@
             <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"This kitten's name is {0}"</span>, miloFromTheDB.Name);
             <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"It's a(n) {0}"</span>, miloFromTheDB.Breed);
             <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"It was born on {0:MMM dd yyyy}"</span>, miloFromTheDB.DateOfBirth);
-            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}Press any key to continue..."</span>, Environment.NewLine);
+            <span class="text-info">Console</span>.WriteLine(<span class="text-brick">"{0}Press any key to continue..."</span>, <span class="text-info">Environment</span>.NewLine);
             <span class="text-info">Console</span>.ReadKey();
         }
     }
@@ -1072,13 +1072,13 @@
                           </div>
                         <br />
                         <h4>6. DuplicationColumnAttribute</h3>
-                          Properties decorated with this attribute will be evaluted when executing
+                          Properties decorated with this attribute will be evaluated when executing
                           the IsDuplicated() method.<br />
                           <br />
                           This method's constructor lets you specify a duplication index that lets you
                           group different combinations of properties to evaluate for duplication.
                           DuplicationColumn-decorated properties having the same index will be evaluated
-                          as a composite group (if more than one property is specified)<br />
+                          as a group (if more than one property is specified).<br />
                           A property may belong to any possible number of different duplication groups
                           by decorating the property more than once.<br />
                           The duplication index will be <i>0</i> by default.<br />
@@ -1121,11 +1121,251 @@
                             </code>
                           </div>
                         <br />
+                        <h4 id="foreignRelations">7. ForeignRelationAttribute</h3>
+                          When defining relationships between one model and another, we use the
+                          <b>[ForeignRelation]</b> attribute.<br />
+                          <br />
+                          A property decorated with this attribute <b>MUST</b> either be a related table
+                          or view model, or a collection (List&lt;T&gt; or IEnumerable&lt;T&gt;) of
+                          a table or view model.<br />
+                          <br />
+                          A string argument must be provided; this argument defines what properties
+                          define the relationship between the two model classes (whether they're one
+                          to many, viceversa).<br />
+                          <br />
+                          The string format is:
+                          <b class="text-danger">"&lt;{0}.ImplementingClassProperty&gt; = {1}.ForeignClassProperty"</b>
+                          <br />
+                          <br />
+                          Where:
+                          <ul>
+                            <li>
+                              The <i>'&lt;'</i> and <i>'&gt;'</i> signs <b>ARE NOT PLACEHOLDERS</b> and must enclose
+                              the implementing class' property.
+                            </li>
+                            <li>
+                              {0} is a shorthand for the implementing class' table name 
+                              (the tablename can be explicitly specified if so desired).
+                            </li>
+                            <li>
+                              {1} is a shorthand for the foreign class' table name 
+                              (the tablename can be explicitly specified if so desired).
+                            </li>
+                            <li>
+                              The implementing class property and foreign class property must be
+                              of the same type (just as a foreign key relationship in databases would
+                              be defined). However, these properties don't need to be a/part of a primary key
+                              in order to work, nor does the existence of primary/foreign keys in the database
+                              afftect the [ForeignRelation] attribute's behavior.
+                            </li>
+                          </ul>
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+      ...
+      <span class="text-primary">public class</span> <span class="text-info">Cat</span> : <span class="text-info">TableModel<span class="text-light">&lt;</span>Cat<span class="text-light">&gt;</span></span>
+      {
+          <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=testmagna.db;New=True;Version=3;"</span>;
+          <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Cats"</span>;
+          <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">cat</span> => <span class="text-info">cat</span>.Id);
+  
+          [<span class="text-info">Identity</span>]
+          <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+          <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+          <span class="text-primary">public string</span> Breed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+          <span class="text-primary">public</span> <span class="text-info">DateTime</span> DateOfBirth { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+      
+          [<span class="text-info">ForeignRelation</span>(<span class="text-brick">"&lt;{0}.Id&gt; = {1}.PatientId"</span>)]
+          <span class="text-primary">public</span> <span class="text-info">List</span>&lt;<span class="text-info">Checkup</span>&gt; Checkups { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+      }
+
+      <span class="text-primary">public class</span> <span class="text-info">Checkup</span> : <span class="text-info">TableModel<span class="text-light">&lt;</span>Checkup<span class="text-light">&gt;</span></span>
+      {
+          <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=testmagna.db;New=True;Version=3;"</span>;
+          <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Checkups"</span>;
+          <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">cat</span> => <span class="text-info">cat</span>.Id);
+  
+          [<span class="text-info">Identity</span>]
+          <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+          <span class="text-primary">public</span> <span class="text-info">DateTime</span> CheckupDate { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+          <span class="text-primary">public string</span> Prescription { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+          <span class="text-primary">public long</span> PatientId { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+          [<span class="text-info">ForeignRelation</span>(<span class="text-brick">"&lt;{0}.PatientId&gt; = {1}.Id"</span>)]
+          <span class="text-primary">public</span> <span class="text-info">Cat</span> Patient { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+      }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>8. IdentityAttribute</h3>
+                          A property decorated with this attribute will behave as an Identity
+                          specificied column, meaning that its value will be auto-generated for
+                          each row, and that it'll follow a sequence (varies from one DBMS to another).<br />
+                          <br />
+                          When an object with a Identity-decorated property is successfully inserted to
+                          the database (using the Insert() method) it's Identity property will automatically
+                          be updated to the value generated in the database at insertion.<br />
+                          <br />
+                          When invoking the Get() method, if a numeric Id is provided, the class' Identity
+                          property will be used as the search criteria (recommended).<br />
+                          <br />
+                          Properties decorated with this attribute must be of the supported
+                          Identity/AUTO_INCREMENT type specification types for each database engines
+                          (see <a href="#dbengines">section 9.</a>).<br />
+                          <br />
+                          <b class="text-danger">ONLY ONE [Identity] ATTRIBUTE SHOULD EXIST 
+                          WITHIN A CLASS TO AVOID MALFUNCTIONS.</b><br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">Identity</span>]
+            <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>9. InsertIgnoreAttribute</h3>
+                          Properties decorated with this attribute will not be included in commands when
+                          using the Insert() method.<br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">InsertIgnore</span>]
+            <span class="text-primary">public</span> <span class="text-info">DateTime</span> TimeStamp { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>10. SelectIgnoreAttribute</h3>
+                          Properties decorated with this attribute will not be included when invoking
+                          methods that retrieve data from the database (such as Get() and ToList())<br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">SelectIgnore</span>]
+            <span class="text-primary">public string</span> SocialSecurityNumber { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
+                        <h4>11. UpdateIgnoreAttribute</h3>
+                          Properties decorated with this attribute will not be included in commands when
+                          using the Update() method.<br />
+                          <br />
+                          <div class="bg-dark p-2">
+                            <code>
+<pre class="text-light" style="font-size: 14px;">
+            ...
+            [<span class="text-info">UpdateIgnore</span>]
+            <span class="text-primary">public string</span> SongId { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+</pre>
+                            </code>
+                          </div>
+                        <br />
                   </p>
                 </section>
                 <section id="events">
                   <h2>7. Events</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    MagnaDB events provide functionalities similar to database triggers.<br />
+                    <br />
+                    Whether you're trying a only-code approach for your application, or your
+                    database services are limited, and don't provide you with database triggers;
+                    events are a perfect workaround. And, who knows? They might even provide some
+                    extra functionalities.<br />
+                    <br />
+                    The events in MagnaDB are the following:<br />
+                    <br />
+                    For <i>ViewModel&lt;T&gt;</i>
+                    <ul>
+                      <li><b>GetFailed</b></li>
+                      <li><b>GetSucceeded</b></li>
+                      <li><b>SelectFailed</b></li>
+                      <li><b>SelectSucceeded</b></li>
+                    </ul>
+                    <br />
+                    For <i>TableModel&lt;T&gt;</i>
+                    <ul>
+                      <li><b>GetFailed</b> (inherited)</li>
+                      <li><b>GetSucceeded</b> (inherited)</li>
+                      <li><b>SelectFailed</b> (inherited)</li>
+                      <li><b>SelectSucceeded</b> (inherited)</li>
+                      <li><b>BeforeInsert</b></li>
+                      <li><b>InsertFailed</b></li>
+                      <li><b>InsertSucceeded</b></li>
+                      <li><b>BeforeUpdate</b></li>
+                      <li><b>UpdateFailed</b></li>
+                      <li><b>UpdateSucceeded</b></li>
+                      <li><b>BeforeDelete</b></li>
+                      <li><b>DeleteFailed</b></li>
+                      <li><b>DeleteSucceeded</b></li>
+                    </ul>
+                    <br />
+                    Here's a quick example on how to use events in MagnaDB.<br />
+                    <br />
+                    <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+<span class="text-primary">using</span> MagnaDB.SQLite;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">public class</span> <span class="text-info">User</span> : <span class="text-info">TableModel<span class="text-light">&lt;</span>User<span class="text-light">&gt;</span></span>
+    {
+        <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=testmagna.db;New=True;Version=3;"</span>;
+        <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Users"</span>;
+        <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">user</span> => <span class="text-info">user</span>.Id);
+
+        [<span class="text-info">Identity</span>]
+        <span class="text-primary">public long</span> Id { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Name { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Email { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> Username { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> PasswordHash { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public bool</span> EmailIsConfirmed { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+        <span class="text-primary">public</span> User()
+        {
+            BeforeInsert += User_BeforeInsert;
+            InsertSucceeded += User_InsertSucceeded;
+        }
+
+        <span class="text-olive">// The sender parameter receives the invoking object for Insert(),</span>
+        <span class="text-olive">// Update(), and Delete() methods. For methods retrieving data the</span>
+        <span class="text-olive">// object(s) resulting from the queries are received as the sender</span>
+        <span class="text-olive">// parameter instead.</span>
+
+        <span class="text-olive">// The MagnaEventArgs contains properties relating to the database</span>
+        <span class="text-olive">// connection including the transaction (if any), the connection</span>
+        <span class="text-olive">// (if any), and/or the connection string (if any), the triggering </span>
+        <span class="text-olive">// method's command was executed against.</span>
+        <span class="text-primary">public void</span> User_BeforeInsert(<span class="text-primary">object</span> sender, <span class="text-info">MagnaEventArgs</span> e)
+        {
+            PasswordHash = <span class="text-info">AnExistingClassYouMayHave</span>.HashFunctionThatIsSomewhereElse(PasswordHash);
+        }
+
+        <span class="text-olive">// Notice how this event handler is implemented asynchronously</span>
+        <span class="text-olive">// In some contexts this can mean performance optimization for</span>
+        <span class="text-olive">// your application, so don't be afraid to try it.</span>
+        <span class="text-primary">public async void</span> User_InsertSucceeded(<span class="text-primary">object</span> sender, <span class="text-info">MagnaEventArgs</span> e)
+        {
+            <span class="text-primary">await</span> <span class="text-info">AnExistingClassYouMightAlsoHave</span>.SendEmailConfirmationAsync(Id);
+        }
+    }
+}
+</pre>
+                      </code>
+                    </div>
+                  </p>
                 </section>
                 <section id="exceptions">
                   <h2>8. Exceptions</h2>
