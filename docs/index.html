@@ -24,9 +24,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="about.html">About</a>
-                  </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="utilities.html">Utilities</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="download.html">Download</a>
@@ -1369,11 +1366,101 @@
                 </section>
                 <section id="exceptions">
                   <h2>8. Exceptions</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    These are the existing exception types in MagnaDB.
+                  </p>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                          Exception
+                        </th>
+                        <th>
+                          Description
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          DbConnectionException
+                        </td>
+                        <td>
+                          Thrown when an error occurs while connecting to the database or database Server.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          DisparityException
+                        </td>
+                        <td>
+                          This exception is thrown when a SqlGenerator method is being called with
+                          incorrect key/value pairs.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          InvalidModelException
+                        </td>
+                        <td>
+                          Thrown when the existing model does not correctly match with the database table/view.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          InvalidTableException
+                        </td>
+                        <td>
+                          Thrown when a Table (or other queryable database object) 
+                          doesn't exist this exception is raised
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </section>
                 <section id="dbengines">
                   <h2>9. Database Engines</h2>
-                  <div style="height: 900px;"></div>
+                  <p>
+                    MagnaDB is currently available for:<br />
+                    <ul>
+                      <li>SQL Server</li>
+                      <li>MySQL</li>
+                      <li>SQLite</li>
+                    </ul>
+                    <br />
+                    There are minor things that vary from one platform to another.<br />
+                    <br />
+                    <h4>Database Connections in SqlServer</h4>
+                    In order to perform database operations, MagnaDB.SQLite works with the System.Data.SqlClient
+                    package. Connections valid for this package are supported by MagnaDB.SqlServer.<br />
+                    <br />
+                    Methods that perform database operations in MagnaDB.SqlServer receive SqlConnection
+                    (must be open), or SqlTransaction (must be active) as parameters if you wish to perform
+                    multiple operations on a single connection/transaction; just make sure to
+                    commit/rollback/dispose all connection related objects after use.<br />
+                    <br />
+                    <h4>Database Connections in MySQL</h4>
+                    In order to perform database operations, MagnaDB.MySQL works with the MySql.Data
+                    package. Connections valid for this package are supported by MagnaDB.MySQL.<br />
+                    <br />
+                    Methods that perform database operations in MagnaDB.MySql receive MySqlConnection
+                    (must be open), or SqlTransaction (must be active) as parameters if you wish to perform
+                    multiple operations on a single connection/transaction; just make sure to
+                    commit/rollback/dispose all connection related objects after use.<br />
+                    <br />
+                    <h4>Database Connections in SQLite</h4>
+                    In order to perform database operations, MagnaDB.SQLite works with the System.Data.SQLite
+                    package. Connections valid for this package are supported by MagnaDB.SQLite.<br />
+                    <br />
+                    Methods that perform database operations in MagnaDB.SQLite receive SQLiteConnection
+                    (must be open), or SQLiteTransaction (must be active) as parameters if you wish to perform
+                    multiple operations on a single connection/transaction; just make sure to
+                    commit/rollback/dispose all connection related objects after use.<br />
+                    <br />
+                    <h4>Integer support in SQLite</h4>
+                    For SQLite, you could get type affinity errors when working with byte, int, or anything
+                    that's not long (Int64), so beware of how some .NET types may not work with SQLite.<br />
+                  </p>
                 </section>
               </div>
             </div>
