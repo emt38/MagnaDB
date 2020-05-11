@@ -83,7 +83,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-9 col-md-8" style="overflow-y: auto; max-height: 75vh;"  data-spy="scroll" data-target="#contentSpy" data-offset="20">
+              <div class="col-lg-9 col-md-8" style="overflow-y: auto; max-height: 70vh;"  data-spy="scroll" data-target="#contentSpy" data-offset="20">
                 <section id="overview">
                   <h2>1. Overview</h2>
                   <div class="w-100 d-flex" style="height: 220px;">
@@ -1198,6 +1198,16 @@
 </pre>
                             </code>
                           </div>
+                          <br />
+                          <span class="text-danger">
+                            IMPORTANT: When querying MagnaDB models' relations, avoid circular 
+                            relations (Example: A Customer model has a foreign relation to sales
+                            for each one of its purchases, and a Sale has a relation to the customer
+                            who made the purchase. If you queried all sales for a customer,
+                            you SHOULDN'T QUERY the customer for the Sales, because it would cause
+                            an infinite loop on your application).
+                          </span>
+                        <br />
                         <br />
                         <h4>8. IdentityAttribute</h3>
                           A property decorated with this attribute will behave as an Identity
