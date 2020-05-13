@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/content.css" />
+        <link rel="icon" href="resources/favicon.ico" />
+        <title>Defining Data Models - MagnaDB.NET</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+            <a class="navbar-brand" href="index.html">MagnaDB</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="examples.html">Examples <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="download.html">Download</a>
+                </li>
+              </ul>
+              <ul class="navbar-nav ml-md-auto">
+                <a class="nav-item nav-link dropdown-toggle" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Latest Versions
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SQLite">SQLite: v1.0.3</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.MySQL">MySQL: v1.0.2</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SqlServer">SQL Server: v1.0.2</a>
+                </div>
+              </ul>
+            </div>
+        </nav>
+        <div class="container body-content">
+          <div class="ml-auto" style="background-repeat: no-repeat; height: 120px; background-size: contain; background-image: url(resources/MagnaLogo.png);"></div>
+          <h1>Defining Data Models</h1>
+          <p>
+              <a href="examples.html">Back to Examples</a>
+          </p>
+          <hr />
+          <p>
+              When defining MagnaDB Table/View Models there a few things to take into consideration.<br />
+              <br />
+              <h3>Type Compatibility/Affinity</h3>
+                  When working with MagnaDB, you can work with either Code-or-Database First Approaches
+                  on your application. Always make sure to check for type charts for the different types
+                  that are .NET compatible.<br />
+                  <br />
+                  MagnaDB works with .NET CLR types, meaning that SQL specific custom types are not
+                  supported.<br />
+                  <br />
+              <h3>Key Definition</h3>
+                  When defining your model always keep in mind that it needs to have a proper Key
+                  property defined in order to work. The Key doesn't necessarily have to be an Identity
+                  decorated property, it can also be composed of different properties of your model
+                  class.<br />
+                  <br />
+                  The MagnaUtils.MakeKey() extension method is the easiest way to define your key,
+                  so use it to your advantage. We highly encourage you to.<br />
+                  <br />
+              <h3>Enums/Nullable types</h3>
+                  If you wish to have properties that can handle null values, you do so by defining
+                  them with the Nullable&lt;StructType&gt; (adding a <i>?</i> to a struct type does
+                  is a shorthand for this).<br />
+                  <br />
+                  You can also use Enum types for your properties, and the mapped columns of the
+                  database will work using their underlying type (Enum types can also be marked Nullable).
+              <br />
+              Below an example of all these concepts applied.<br />
+              <br />
+              <div class="bg-dark p-2">
+                <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+<span class="text-primary">using</span> MagnaDB.SqlServer;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">public class</span> <span class="text-info">Student</span> : <span class="text-info">TableModel<span class="text-light">&lt;</span>Student<span class="text-light">&gt;</span></span>
+    {
+        <span class="text-primary">protected override string</span> ConnectionString => <span class="text-brick">"Data Source=(local);Initial Catalog=testmagnadb;Integrated Security=True;"</span>;
+        <span class="text-primary">protected override string</span> TableName => <span class="text-brick">"Students"</span>;
+        <span class="text-primary">protected override</span> <span class="text-info">MagnaKey</span> Key => <span class="text-primary">this</span>.<span class="text-cream">MakeKey</span>(<span class="text-info">s</span> => <span class="text-info">s</span>.EnrollmentId);
+        
+        <span class="text-primary">public string</span> EnrollmentId { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+        [<span class="text-info">Identity</span>]
+        <span class="text-primary">public int</span> SystemId { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+        <span class="text-primary">public string</span> FirstName { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public string</span> LastName { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        <span class="text-primary">public</span> <span class="text-info">DateTime</span> EnrollmentDate { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+        
+        <span class="text-olive">// This property can accept null values</span>
+        <span class="text-primary">public</span> <span class="text-info">DateTime</span>? GraduatedOn { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+        <span class="text-olive">// This is a quick example of enum properties</span>
+        <span class="text-primary">public</span> <span class="text-warning">AcademicStatus</span> Status { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+
+        <span class="text-olive">// Let's say that null values represent that the student is not from a foreign country.</span>
+        <span class="text-primary">public</span> <span class="text-warning">MigratoryStatus</span>? MigratorySituation { <span class="text-primary">get</span>; <span class="text-primary">set</span>; }
+    }
+
+    <span class="text-olive">// Since this enum's underlying type is byte, in SQL Server</span>
+    <span class="text-olive">// it's matching type will be tinyint (this varies across DB engines)</span>
+    <span class="text-primary">public enum</span> <span class="text-warning">AcademicStatus</span> : <span class="text-primary">byte</span>
+    {
+        Enrolled,
+        HasScholarship,
+        Graduated,
+    }
+
+    <span class="text-olive">// Enums' underlying type is int by default, so it's matching type</span>
+    <span class="text-olive">// will be int for SQL Server (this varies across DB engines)</span>
+    <span class="text-primary">public enum</span> <span class="text-warning">MigratoryStatus</span>
+    {
+        Resident,
+        Visa
+    }
+}
+</pre>
+                </code>
+              </div>
+          </p>
+          <hr />
+          <footer>
+            <p>© Copyright 2016 - emt38</p>
+          </footer>
+        </div>
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </body>
+</html>
