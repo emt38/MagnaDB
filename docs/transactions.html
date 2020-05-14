@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/content.css" />
+        <link rel="icon" href="resources/favicon.ico" />
+        <title>Working with Transactions - MagnaDB.NET</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+            <a class="navbar-brand" href="index.html">MagnaDB</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="examples.html">Examples <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="download.html">Download</a>
+                </li>
+              </ul>
+              <ul class="navbar-nav ml-md-auto">
+                <a class="nav-item nav-link dropdown-toggle" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Latest Versions
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SQLite">SQLite: v1.0.3</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.MySQL">MySQL: v1.0.2</a>
+                  <a target="_blank" class="dropdown-item" href="https://www.nuget.org/packages/MagnaDB.SqlServer">SQL Server: v1.0.2</a>
+                </div>
+              </ul>
+            </div>
+        </nav>
+        <div class="container body-content">
+          <div class="ml-auto" style="background-repeat: no-repeat; height: 120px; background-size: contain; background-image: url(resources/MagnaLogo.png);"></div>
+          <h1>Working with Transactions</h1>
+          <p>
+              <a href="examples.html">Back to Examples</a>
+          </p>
+          <hr />
+          <p>
+              When using many methods of the ViewModel/TableModel class you'll notice that
+              you can specify a database connection/transaction.<br />
+              <br />
+              When specified, commands will be executed against the given connection/transaction
+              instead of creating a new connection to the database. This is specially useful when
+              having to perform multiple database operations in a section of code, or when it's
+              necessary that ALL the commands are successfully executed.<br />
+              <br />
+              MagnaDB also provides utility methods that let you create connections/transactions using
+              any given model's connection string. This will be shown in the examples below.<br />
+              <br />
+              <span class="text-muted">Connections example</span>
+              <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">class</span> <span class="text-info">Program</span>
+    {
+        <span class="text-primary">static void</span> Main(<span class="text-primary">string</span>[] args)
+        {
+            <span class="text-primary">using</span> (<span class="text-primary">var</span> connection = <span class="text-info">Cat</span>.CreateOpenConnection())
+            {
+                <span class="text-info">Cat</span> missus = <span class="text-primary">new</span> <span class="text-info">Cat</span>() { Name = <span class="text-brick">"Misulindo"</span>, Breed = <span class="text-brick">"Ragdoll"</span> };
+                <span class="text-info">Cat</span> chungus = <span class="text-primary">new</span> <span class="text-info">Cat</span>() { Name = <span class="text-brick">"Hector"</span>, Breed = <span class="text-brick">"Persian"</span> };
+                
+                <span class="text-primary">try</span>
+                {
+                    missus.Insert(connection);
+                    chungus.Insert(connection);
+                }
+                <span class="text-primary">finally</span>
+                {
+                    connection.Close();
+                }
+            }
+        }
+    }
+}
+</pre>
+                      </code>
+               </div>
+               <br />
+              <span class="text-muted">Transactions example</span>
+               <div class="bg-dark p-2">
+                      <code>
+<pre class="text-light" style="font-size: 14px;">
+<span class="text-primary">using</span> System;
+
+<span class="text-primary">namespace</span> TestMagnaDB
+{
+    <span class="text-primary">class</span> <span class="text-info">Program</span>
+    {
+        <span class="text-primary">static void</span> Main(<span class="text-primary">string</span>[] args)
+        {
+            <span class="text-primary">using</span> (<span class="text-primary">var</span> transaction = <span class="text-info">Cat</span>.CreateActiveTransaction())
+            {
+                <span class="text-info">Cat</span> missus = <span class="text-primary">new</span> <span class="text-info">Cat</span>() { Name = <span class="text-brick">"Misulindo"</span>, Breed = <span class="text-brick">"Ragdoll"</span> };
+                <span class="text-info">Cat</span> chungus = <span class="text-primary">new</span> <span class="text-info">Cat</span>() { Name = <span class="text-brick">"Hector"</span>, Breed = <span class="text-brick">"Persian"</span> };
+                
+                <span class="text-primary">try</span>
+                {
+                    missus.Insert(transaction);
+                    chungus.Insert(transaction);
+
+                    <span class="text-olive">Always make sure to commit or rollback your transactions</span>
+                    transaction.Commit();
+                }
+                <span class="text-primary">catch</span>
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
+    }
+}
+</pre>
+                      </code>
+               </div>
+          </p>
+          <hr />
+          <footer>
+            <p>© Copyright 2016 - emt38</p>
+          </footer>
+        </div>
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </body>
+</html>

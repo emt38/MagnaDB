@@ -1129,9 +1129,9 @@
                           or view model, or a collection (List&lt;T&gt; or IEnumerable&lt;T&gt;) of
                           a table or view model.<br />
                           <br />
-                          A string argument must be provided; this argument defines what properties
+                          A string argument must be provided; this argument specifies what properties
                           define the relationship between the two model classes (whether they're one
-                          to many, viceversa).<br />
+                          to many, or viceversa).<br />
                           <br />
                           The string format is:
                           <b class="text-danger">"&lt;{0}.ImplementingClassProperty&gt; = {1}.ForeignClassProperty"</b>
@@ -1156,7 +1156,7 @@
                               of the same type (just as a foreign key relationship in databases would
                               be defined). However, these properties don't need to be a/part of a primary key
                               in order to work, nor does the existence of primary/foreign keys in the database
-                              afftect the [ForeignRelation] attribute's behavior.
+                              affect the [ForeignRelation] attribute's behavior.
                             </li>
                           </ul>
                           <div class="bg-dark p-2">
