@@ -6,23 +6,48 @@
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://emt38.github.io/MagnaDB/about</loc>
+      <loc>https://emt38.github.io/MagnaDB/about.html</loc>
       <lastmod>2020-05-11</lastmod>
       <priority>0.7</priority>
    </url>
    <url>
-      <loc>https://emt38.github.io/MagnaDB/contact</loc>
+      <loc>https://emt38.github.io/MagnaDB/contact.html</loc>
       <lastmod>2020-05-11</lastmod>
       <priority>0.7</priority>
    </url>
    <url>
-      <loc>https://emt38.github.io/MagnaDB/download</loc>
+      <loc>https://emt38.github.io/MagnaDB/download.html</loc>
       <lastmod>2020-05-11</lastmod>
       <priority>0.6</priority>
    </url>
    <url>
-      <loc>https://emt38.github.io/MagnaDB/examples</loc>
+      <loc>https://emt38.github.io/MagnaDB/examples.html</loc>
       <lastmod>2020-05-11</lastmod>
       <priority>0.6</priority>
+   </url>
+   <url>
+      <loc>https://emt38.github.io/MagnaDB/duplication.html</loc>
+      <lastmod>2020-05-11</lastmod>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://emt38.github.io/MagnaDB/definingmodels.html</loc>
+      <lastmod>2020-05-11</lastmod>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://emt38.github.io/MagnaDB/filteringordering.html</loc>
+      <lastmod>2020-05-11</lastmod>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://emt38.github.io/MagnaDB/relations.html</loc>
+      <lastmod>2020-05-11</lastmod>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://emt38.github.io/MagnaDB/transactions.html</loc>
+      <lastmod>2020-05-11</lastmod>
+      <priority>0.5</priority>
    </url>
 </urlset> 

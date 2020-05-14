@@ -2,6 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <meta name="description" content="MagnaDB Framework for .NET (SQL Server, MySQL, SQLite)">
+        <meta name="keywords" content="ORM, NET, Data, Database, DB, C#, Visual, Studio, Nuget, Magna, MagnaDB">
+        <meta name="author" content="emt38">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/content.css" />
@@ -48,7 +51,7 @@
             <h1>MagnaDB Framework for <span class="badge badge-info">.NET</span></h1>
             <div class="row">
               <div class="col-lg-3 col-md-4">
-                <h4>Table of Contents</h4>
+                <h4 id="duplicationattribute">Table of Contents</h4>
                 <div id="contentSpy" class="bevel bg-light">
                   <div class="bevel-content">
                     <ul class="nav nav-pills flex-column">
@@ -96,7 +99,10 @@
                     and lets you code peacefully.
                     <br />
                     This framework packs Code-First capabilities, as well as Database-First easy
-                    integration. It'll go with you, the path you decide to take.<br />
+                    integration. It'll go with you, the path you decide to take. No need for
+                    complicated migrations, nor strict database access/modification; you do
+                    you; just make sure your models and tables match and everything will be
+                    just fine.<br />
                     <br />
                     You're on the No-SQL train? <b>This is for you.</b><br />
                     You still love SQL like the first time? <b>This is for you.</b><br />
@@ -1071,9 +1077,9 @@
                             </code>
                           </div>
                         <br />
-                        <h4>6. DuplicationColumnAttribute</h3>
+                        <h4 id="dupeattbr">6. DuplicationColumnAttribute</h3>
                           Properties decorated with this attribute will be evaluated when executing
-                          the IsDuplicated() method.<br />
+                          the TableModel class' IsDuplicated() method.<br />
                           <br />
                           This method's constructor lets you specify a duplication index that lets you
                           group different combinations of properties to evaluate for duplication.
